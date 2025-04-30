@@ -5,7 +5,7 @@ import TextInputComponent from "../../components/TextInput/index.js";
 import Button from "../../components/Button/index.js";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from 'react';
-import { UserContext } from '../../contexts/UserContext';
+import { UserContext } from '../../contexts/UserContext.js';
 
 
 export default function Login(){
@@ -32,8 +32,8 @@ export default function Login(){
         }
 
         try {
-            const credenciais = {email,senha:password}
-            const response = await login(credenciais)
+            console.log('Tentando fazer login com:', {email, password});
+            const response = await login({email,senha:password});
             alert('Login efetuado com sucesso!');
             navigation.navigate('MainHome');
         } catch (error) {
@@ -65,7 +65,7 @@ export default function Login(){
             <TouchableOpacity onPress={() => {navigation.navigate("Register")}}>
                 <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold'}}>Crie uma</Text></Text>
             </TouchableOpacity>
-            <Button text={"Login"} onPress={() => {}}/>
+            <Button text={"Login"} onPress={handleLogin}/>
         </View>
     )    
 }
