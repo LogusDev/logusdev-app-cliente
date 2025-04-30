@@ -2,13 +2,17 @@ import {View,Image,Text,StatusBar} from "react-native";
 import styles from "./styles.js";
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
+import ProfileCard from "../../components/ProfileCard";
 
 export default function Profile(){
     const {user} = useContext(UserContext);
     return(
-        <View>
-            <Text>{user.nome}</Text>
-            <Text>{user.id}</Text>
+        <View style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#FFFFFF" />
+            <View style={styles.viewTitle}>
+            <Text style={styles.title}>Meu Perfil</Text>
+            </View>
+            <ProfileCard/>
         </View>
     )
 }
