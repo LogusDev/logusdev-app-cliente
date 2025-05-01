@@ -29,7 +29,7 @@ export default function MainHome() {
             await watchPositionAsync({
                 accuracy: LocationAccuracy.Highest,
                 timeInterval: 1000,
-                distanceInterval: 1,
+                distanceInterval: 10,
             }, (response) => {
                 console.log('Nova localização recebida:', response.coords);
                 setLocation(response.coords);

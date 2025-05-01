@@ -1,7 +1,7 @@
 import {View,Image,Text,StatusBar} from "react-native";
 import styles from "./styles.js";
 import { useContext } from 'react';
-import { UserContext } from '../../contexts/UserContext';
+import { UserContext } from '../../contexts/UserContext.js';
 import ProfileCard from "../../components/ProfileCard";
 
 export default function Profile(){

@@ -85,16 +85,16 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: "600",
-    color: "#1F284E",
-    marginBottom: 4,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 0, height: 1,blur:5 },
+    color: '#1F284E',
+    textShadowColor: 'rgba(255, 255, 255, 0.94)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5.8,
+    fontWeight: "bold",
     
   },
   email: {
     marginTop: 4,
     fontSize: 14,
-    color: "#6C6C6C",
+    color: "#1F284E",
   },
 });
