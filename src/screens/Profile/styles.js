@@ -10,9 +10,10 @@ const styles = StyleSheet.create({
         alignItems:"flex-start",
         color:"#1F284E",
         fontSize:32,
-        fontWeight:600,
+        fontWeight:200,
         marginRight:"50%",
         marginTop:33,
+        fontFamily:"Poppins-SemiBold",
     },
 })
 

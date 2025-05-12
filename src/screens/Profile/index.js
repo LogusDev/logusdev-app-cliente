@@ -3,6 +3,7 @@ import styles from "./styles.js";
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
 import ProfileCard from "../../components/ProfileCard";
+import Options from "../../components/Options/index.js";    
 
 export default function Profile(){
     const {user} = useContext(UserContext);
@@ -13,6 +14,8 @@ export default function Profile(){
             <Text style={styles.title}>Meu Perfil</Text>
             </View>
             <ProfileCard/>
+            <Options name={"lock-closed-outline"} text={"Trocar Senha"} />
+            <Options name={"lock-closed-outline"} text={"Trocar Senha"} />
         </View>
     )
 }

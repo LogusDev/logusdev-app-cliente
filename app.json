@@ -13,7 +13,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Permita a localizacao"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",

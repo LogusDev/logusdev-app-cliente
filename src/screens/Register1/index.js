@@ -54,7 +54,7 @@ export default function Register1({route}){
             console.log('Dados do usuário:', userData);
             await registerUser(userData);
             alert('Cadastro realizado com sucesso!');
-            navigation.navigate('Login');
+            navigation.navigate('Register2', { email });
         } catch (error) {
             console.error ('Erro ao cadastrar', error);
             alert(error || 'Erro ao cadastrar');
@@ -69,8 +69,8 @@ export default function Register1({route}){
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Dados Pessoais</Text>
             <TextInputComponent placeholder="Nome completo..." name="person-outline" value={name} onChangeText={setName} />
-            <TextInputComponent placeholder="CPF..." name="document-text-outline" secureTextEntry={false} value={cpf} onChangeText={handleCpfChange} />
-            <TextInputComponent placeholder="Número do Celular..." name="call-outline" secureTextEntry={false} onChangeText={handleCelChange} value={phone} />
+            <TextInputComponent placeholder="CPF..." name="document-text-outline" secureTextEntry={false}  value={cpf} onChangeText={handleCpfChange} keyboardType='numeric' />
+            <TextInputComponent placeholder="Número do Celular..." name="call-outline" secureTextEntry={false} onChangeText={handleCelChange} value={phone} keyboardType='numeric' />
             
             <Button text={'Cadastrar'} onPress={handleSignIn}  />
         </View>

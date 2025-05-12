@@ -11,7 +11,6 @@ export default function Register({navigation}){
     const [password ,setPassword] = useState("");
     const [passwordRepeat ,setPasswordRepeat] = useState("");
 
-    
 
     function handleRegister() {
         if(email === "" || password === "" || passwordRepeat === ""){
