@@ -45,7 +45,7 @@ export default function Login(){
     
     return(
         <View style={styles.container}>
-            <StatusBar barStyle={"light-content"} backgroundColor={'black'}/>
+            <StatusBar barStyle={"light-content"} backgroundColor={'#FFFFFF'}/>
             <Image source={require("../../assets/images/logoG.png")} style={styles.logo}/>
             <Image source={require("../../assets/images/businessdeal.png")} />
             <Text style={styles.texto}>Acessar minha conta</Text>
@@ -70,5 +70,5 @@ export default function Login(){
             </TouchableOpacity>
             <Button text={"Login"} onPress={handleLogin}/>
         </View>
-    )    
+    )  
 }

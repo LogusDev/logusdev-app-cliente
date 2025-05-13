@@ -8,7 +8,7 @@ import Register1 from '../screens/Register1/';
 import Register2 from '../screens/Register2/';
 
 
-import bottomTabs from './bottomTabs';
+import MyTabs from './bottomTabs';
  
 import {UserProvider} from '../contexts/UserContext';
 
@@ -24,7 +24,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="Register1" component={Register1} />
                 <Stack.Screen name="Register2" component={Register2} />
-                <Stack.Screen name="MainHome" component={bottomTabs} />
+                <Stack.Screen name="MainHome" component={MyTabs} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

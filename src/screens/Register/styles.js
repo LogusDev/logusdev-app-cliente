@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#FFFFFF",
-        marginBottom:30,
+        
     },
     logo:{
         width:185.62,
@@ -15,9 +15,10 @@ const styles = StyleSheet.create({
     },
     texto:{
         fontSize:22,
-        fontWeight:"bold",
         color:"#1F284E",
         padding:24,
+        fontFamily:"Poppins-SemiBold",
+        fontWeight:"bold",
     },
 })
 

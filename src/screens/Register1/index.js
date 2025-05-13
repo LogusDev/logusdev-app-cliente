@@ -6,7 +6,6 @@ import TextInputComponent from '../../components/TextInput/index.js';
 import Button from '../../components/Button/index.js';
 import {mask} from 'react-native-mask-text';
 import unmaskFunc from '../../utils/mask.js';
-import {registerUser} from '../../services/registerUser.js';
 
 
 export default function Register1({route}){
@@ -29,7 +28,6 @@ export default function Register1({route}){
     }
 
     const handleSignIn = async () => {
-        console.log('Botão pressionado');
 
         if (!name || !cpf || !phone) {
             alert('Preencha todos os campos!');
@@ -42,23 +40,7 @@ export default function Register1({route}){
         const cnh_num = "ABC1234567"
         
 
-        try {
-            const userData = {
-                nome: name,
-                cpf: unmaskedCpf,
-                telefone: unmaskedPhone,
-                email,
-                senha: password,
-                cnh_num
-            };
-            console.log('Dados do usuário:', userData);
-            await registerUser(userData);
-            alert('Cadastro realizado com sucesso!');
-            navigation.navigate('Register2', { email });
-        } catch (error) {
-            console.error ('Erro ao cadastrar', error);
-            alert(error || 'Erro ao cadastrar');
-        }
+        navigation.navigate('Register2', {email,password,name,cpf: unmaskedCpf,phone: unmaskedPhone,cnh_num})
     }
 
 
@@ -72,7 +54,7 @@ export default function Register1({route}){
             <TextInputComponent placeholder="CPF..." name="document-text-outline" secureTextEntry={false}  value={cpf} onChangeText={handleCpfChange} keyboardType='numeric' />
             <TextInputComponent placeholder="Número do Celular..." name="call-outline" secureTextEntry={false} onChangeText={handleCelChange} value={phone} keyboardType='numeric' />
             
-            <Button text={'Cadastrar'} onPress={handleSignIn}  />
+            <Button text={'Proximo'} onPress={handleSignIn}  />
         </View>
     )
 }

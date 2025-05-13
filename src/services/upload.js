@@ -1,21 +1,21 @@
-import api from './api'; // Ajuste o caminho conforme necessário
+import api from './api'; 
 
 export const uploadFotoPorEmail = async (email, imagem) => {
   const formData = new FormData();
   
-  // Adiciona a imagem (obrigatório)
+  
   formData.append('foto', {
     uri: imagem.uri,
-    name: `foto_${Date.now()}.jpg`, // Nome do arquivo
-    type: 'image/jpeg', // Tipo MIME
+    name: `foto_${Date.now()}.jpg`, 
+    type: 'image/jpeg', 
   });
 
-  // Adiciona o email no body (como parâmetro adicional)
+  
   formData.append('email', email);
 
   try {
     const response = await api.post(
-      `/clientes/${email}/upload-foto`, // Usa email na URL
+      `/clientes/${email}/upload-foto`,
       formData,
       {
         headers: {
