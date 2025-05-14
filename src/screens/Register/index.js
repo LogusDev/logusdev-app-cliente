@@ -11,7 +11,6 @@ export default function Register({navigation}){
     const [password ,setPassword] = useState("");
     const [passwordRepeat ,setPasswordRepeat] = useState("");
 
-    
 
     function handleRegister() {
         if(email === "" || password === "" || passwordRepeat === ""){
@@ -40,7 +39,7 @@ export default function Register({navigation}){
 
     return(
         <View style={styles.container}>
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar barStyle={'light-content'}  />
             <Image source={require('../../assets/images/logoG.png')} />
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Criar minha conta</Text>

@@ -1,20 +1,17 @@
 import { StyleSheet } from "react-native";
-import {View,Text,TextInput} from "react-native";
+import {View,Text,TouchableOpacity} from "react-native";
 import {Ionicons} from '@expo/vector-icons';
 
 
-export default function TextInputComponent({label,placeholder,value,onChangeText,secureTextEntry,name,keyboardType}){
+export default function PhotoPicker({name,onPress}){
     return(
         <View style={styles.container}>
-            <Ionicons style={{marginRight:10}} name={name} size={20} color="#A7A7A7" />
-            <TextInput
-                style={styles.input}
-                placeholder={placeholder}
-                value={value}
-                onChangeText={onChangeText}
-                secureTextEntry={secureTextEntry}
-                keyboardType={keyboardType}
-            />
+            <TouchableOpacity
+             onPress={onPress}
+            >
+                <Ionicons style={{marginRight:10}} name={name} size={20} color="#A7A7A7" />
+                <Text style={styles.texto}>Foto do Rosto</Text>
+            </TouchableOpacity>
         </View>
     )
 }

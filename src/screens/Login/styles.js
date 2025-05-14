@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         color:"#1F284E",
         padding:24,
+        fontFamily:"Poppins-SemiBold",
     },
 })
 

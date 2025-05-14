@@ -1,4 +1,4 @@
-import { View,Text,Image,StatusBar, TouchableOpacity } from "react-native";
+import { View,Text,Image,StatusBar,Alert, TouchableOpacity } from "react-native";
 import {useState} from "react";
 import styles from "./styles.js";
 import TextInputComponent from "../../components/TextInput/index.js";
@@ -17,7 +17,10 @@ export default function Login(){
 
     const handleLogin = async () => {
         if (!email || !password) {
-            alert('PREENCHA TODOS OS CAMPOS');
+            Alert.alert('Credenciais inválidas', 'Por favor, preencha todos os campos.', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                { text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            ]);
             return;
         }
 
@@ -42,7 +45,7 @@ export default function Login(){
     
     return(
         <View style={styles.container}>
-            <StatusBar barStyle={"light-content"} backgroundColor={'black'}/>
+            <StatusBar barStyle={"light-content"} backgroundColor={'#FFFFFF'}/>
             <Image source={require("../../assets/images/logoG.png")} style={styles.logo}/>
             <Image source={require("../../assets/images/businessdeal.png")} />
             <Text style={styles.texto}>Acessar minha conta</Text>
@@ -63,9 +66,9 @@ export default function Login(){
              name={"lock-closed-outline"}
             />
             <TouchableOpacity onPress={() => {navigation.navigate("Register")}}>
-                <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold'}}>Crie uma</Text></Text>
+                <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold',fontFamily:'Poppins-Regular'}}>Crie uma</Text></Text>
             </TouchableOpacity>
             <Button text={"Login"} onPress={handleLogin}/>
         </View>
-    )    
+    )  
 }
