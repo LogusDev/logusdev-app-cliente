@@ -6,6 +6,7 @@ import Login from '../screens/Login/';
 import Register from '../screens/Register/';
 import Register1 from '../screens/Register1/';
 import Register2 from '../screens/Register2/';
+import EditProfile from '../screens/EditProfile';
 
 
 import MyTabs from './bottomTabs';
@@ -25,6 +26,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="Register1" component={Register1} />
                 <Stack.Screen name="Register2" component={Register2} />
                 <Stack.Screen name="MainHome" component={MyTabs} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>
