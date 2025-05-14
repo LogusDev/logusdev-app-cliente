@@ -3,7 +3,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { UserContext } from '../../contexts/UserContext';
 
-export default function ProfileCard() {
+export default function ProfileCard(props) {
+
 
     const { user } = useContext(UserContext);
 
@@ -19,7 +20,9 @@ export default function ProfileCard() {
         style={styles.avatar}
       />
 
-      <TouchableOpacity style={styles.editButton}>
+      <TouchableOpacity
+        onPress={props.onPress}
+        style={styles.editButton}>
         <Ionicons name="create-outline" size={20} color="#1F284E" />
       </TouchableOpacity>
 
