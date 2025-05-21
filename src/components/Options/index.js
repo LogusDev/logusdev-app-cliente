@@ -7,10 +7,10 @@ export default function Options(props){
         <TouchableOpacity>
           <View style={styles.container}>
               <View style={styles.container2}>
-                  <Ionicons name={props.name} size={24} color="black" />
+                  <Ionicons name={props.name} size={24} color={props.color || 'black'} />
                   <Text style={styles.text}>{props.text}</Text>
               </View>
-              <Ionicons name="chevron-forward-outline" size={24} color="black" />
+              <Ionicons name="chevron-forward-outline" size={24}  />
           </View>
         </TouchableOpacity>
     )
@@ -18,7 +18,7 @@ export default function Options(props){
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 37,
+        marginTop: 30,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

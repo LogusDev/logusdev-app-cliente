@@ -4,11 +4,15 @@ import styles from './styles';
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button/index.js';
 import { UserContext } from '../../contexts/UserContext.js';
+import {updateUser} from '../../services/registerUser.js';
+import {mask} from 'react-native-mask-text';
+import unmaskFunc from '../../utils/mask.js';
 
 export default function EditProfile() {
     const { user } = useContext(UserContext);
     const [telefone, setTelefone] = useState('');
     const [email, setEmail] = useState('');
+    
 
     function maskPhone(phone) {
         if (!phone) return '';
@@ -17,6 +21,40 @@ export default function EditProfile() {
             return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         }
         return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+
+    const handleCelChange = (text) => {
+        const masked = mask(text, '(99) 99999-9999');
+        setTelefone(masked);
+    }
+
+    const handleUpdate = async () =>{
+
+        const unmaskedPhone = unmaskFunc(telefone);
+
+        const id = user.id
+
+        if(!telefone || !email){
+            Alert.alert('Erro','Credenciais Invalidas, preencha os campos')
+            return
+        }
+
+        if (!email.includes('@') || !email.includes('.')) {
+            alert('E-mail inválido!');
+            return;
+        }
+
+        try{
+            const userData = {
+                telefone: unmaskedPhone,
+                email
+            }
+            await updateUser(id,userData)
+            alert('Credenciais Atualizadas com sucesso')
+        } catch (error){
+            console.error('Erro ao atualizar', error);
+            Alert.alert('Erro', error.message || 'Erro ao atualizar');
+        }
     }
 
     return (
@@ -45,22 +83,26 @@ export default function EditProfile() {
                     <TextInput
                         size={25}
                         style={styles.textInputMail}
-                        value={user.email}
+                        placeholder={user.email}
+                        value={email}
+                        onChangeText={setEmail}
                         name={'mail-outline'}
                         keyboardType={'none'}
-                        readOnly={true}
+                        readOnly={false}
                     />
                     <TextInput
                         size={25}
                         style={styles.textInputPhone}
-                        value={maskPhone(user.telefone)}
+                        placeholder={maskPhone(user.telefone)}
+                        value={telefone}
                         name={'call-outline'}
-                        keyboardType={'none'}
+                        keyboardType={'numeric'}
                         readOnly={false}
-                        onChangeText={setTelefone}
+                        onChangeText={handleCelChange}
                     />
                     <Button
                         text={'Confirmar'}
+                        onPress={handleUpdate}
                     />
                 </View>
             </ScrollView>

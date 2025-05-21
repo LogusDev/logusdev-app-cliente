@@ -5,12 +5,16 @@ import {Ionicons} from '@expo/vector-icons';
 
 export default function PhotoPicker({name,onPress}){
     return(
-        <View style={styles.container}>
+        <View>
             <TouchableOpacity
-             onPress={onPress}
-            >
-                <Ionicons style={{marginRight:10}} name={name} size={20} color="#A7A7A7" />
-                <Text style={styles.texto}>Foto do Rosto</Text>
+                onPress={onPress}
+                >
+                <View style={styles.container}>
+                    
+                        <Ionicons style={{marginRight:10}} name={name} size={20} color="#A7A7A7" />
+                        <Text style={styles.texto}>Foto do Rosto</Text>
+                    
+                </View>
             </TouchableOpacity>
         </View>
     )

@@ -45,7 +45,6 @@ export default function Register2({ route, navigation }) {
       Alert.alert('Selecione uma imagem antes de cadastrar!');
       return;
     }
-
     setIsLoading(true);
     try {
       const uploadResult = await handleUpload(selectedImage);

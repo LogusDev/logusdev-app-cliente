@@ -8,7 +8,7 @@ export default function TextInputComponent({label,placeholder,value,onChangeText
         <View style={styles.container}>
             <Ionicons style={{marginRight:10}} name={name} size={size || 20} color="#A7A7A7" />
             <TextInput
-                style={styles.input && style}
+                style={[styles.input, style]}
                 placeholder={placeholder}
                 value={value}
                 onChangeText={onChangeText}

@@ -16,11 +16,13 @@ const styles = StyleSheet.create({
         fontFamily:"Poppins-SemiBold",
     },
     avatar:{
-        width: 119,
-        height: 125,
+        width: 171,
+        height: 180,
         borderRadius: 100,
-        marginTop: 60,     
-        marginBottom: 60, 
+        marginTop: 40,     
+        marginBottom: 40, 
+        borderWidth: 3,
+        borderColor: '#DADADA',
     },
     textInput:{
         textAlignVertical: 'center',

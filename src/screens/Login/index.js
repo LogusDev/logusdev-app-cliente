@@ -51,15 +51,16 @@ export default function Login(){
             <Text style={styles.texto}>Acessar minha conta</Text>
             <TextInputComponent
              label={"Email"}
-             placeholder={"Digite seu email"}
+             placeholder={"Digite seu email..."}
              value={email}
              onChangeText={setEmail}
+             keyboardType={"email-address"}
              secureTextEntry={false}
              name={"mail-outline"}
             />
             <TextInputComponent
-             label={"Senha"}
-             placeholder={"Digite sua senha"}
+             
+             placeholder={"Digite sua senha..."}
              value={password}
              onChangeText={setPassword}
              secureTextEntry={true}

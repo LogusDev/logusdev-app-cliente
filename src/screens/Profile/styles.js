@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
         marginTop:33,
         fontFamily:"Poppins-SemiBold",
     },
+    
 })
 
 export default styles;

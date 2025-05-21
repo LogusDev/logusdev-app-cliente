@@ -1,4 +1,4 @@
-import {View,Image,Text,StatusBar} from "react-native";
+import {View,Image,Text,StatusBar,ScrollView} from "react-native";
 import styles from "./styles.js";
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
@@ -18,8 +18,11 @@ export default function Profile(){
             <ProfileCard
              onPress={() => navigation.navigate('EditProfile')}
             />
-            <Options name={"lock-closed-outline"} text={"Trocar Senha"} />
-            <Options name={"lock-closed-outline"} text={"Trocar Senha"} />
+            <Options name={"lock-closed-outline"} text={"Trocar senha"} />
+            <Options name={"people-outline"} text={"Parcerias"} />
+            <Options name={"help-circle-outline"} text={"Ajuda"} />
+            <Options name={"information-circle-outline"} text={"Sobre nós"} />
+            <Options name={"log-out-outline"} text={"Sair da conta"} color={'red'} />
         </View>
     )
 }

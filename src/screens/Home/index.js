@@ -1,7 +1,8 @@
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { StatusBar, StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function MainHome() {
     const [location, setLocation] = useState(null);
@@ -77,6 +78,20 @@ export default function MainHome() {
                 <Text style={{ fontSize: 22, color: '#1F284E', fontWeight: '600', marginTop: 36 }}>
                     Para onde vamos?
                 </Text>
+                <TouchableOpacity
+                  style={{
+                    width: '90%',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 8,
+                    padding: 16,
+                    marginTop: 16,
+                    borderWidth: 2,
+                    borderColor: '#EAEAEA',
+                  }}
+                  
+                >
+                    <Ionicons name="map-outline" size={15}  />
+                </TouchableOpacity>
             </View>
         </View>
     );
