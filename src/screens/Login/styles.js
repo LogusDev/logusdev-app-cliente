@@ -7,11 +7,7 @@ const styles = StyleSheet.create({
         alignItems:"center",
         backgroundColor:"#FFFFFF",
     },
-    logo:{
-        width:185.62,
-        height:42.17,
-        marginBottom:20,
-    },
+    
     texto:{
         fontSize:22,
         fontWeight:"bold",

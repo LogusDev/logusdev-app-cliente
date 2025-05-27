@@ -40,7 +40,7 @@ export default function Register({navigation}){
     return(
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'}  />
-            <Image source={require('../../assets/images/logoG.png')} />
+            <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Criar minha conta</Text>
             <TextInputComponent placeholder="Email..." name="mail-outline" value={email} onChangeText={setEmail} />

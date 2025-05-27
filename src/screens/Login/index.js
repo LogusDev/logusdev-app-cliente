@@ -3,6 +3,7 @@ import {useState} from "react";
 import styles from "./styles.js";
 import TextInputComponent from "../../components/TextInput/index.js";
 import Button from "../../components/Button/index.js";
+import Logo from "../../components/Logo"
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
@@ -46,7 +47,8 @@ export default function Login(){
     return(
         <View style={styles.container}>
             <StatusBar barStyle={"light-content"} backgroundColor={'#FFFFFF'}/>
-            <Image source={require("../../assets/images/logoG.png")} style={styles.logo}/>
+            {/*<Image source={require("../../assets/images/logoG.png")} style={styles.logo}/>*/}
+            <Logo />
             <Image source={require("../../assets/images/businessdeal.png")} />
             <Text style={styles.texto}>Acessar minha conta</Text>
             <TextInputComponent

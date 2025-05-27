@@ -13,7 +13,7 @@ export default function App() {
   
 
   if (!fontsLoaded) {
-    return null; // ou uma SplashScreen
+    return null;
   }
 
   return (

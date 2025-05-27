@@ -47,7 +47,7 @@ export default function Register1({route}){
     return(
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
-            <Image source={require('../../assets/images/logoG.png')} />
+            <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Dados Pessoais</Text>
             <TextInputComponent placeholder="Nome completo..." name="person-outline" value={name} onChangeText={setName} />

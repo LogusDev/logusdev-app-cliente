@@ -81,7 +81,7 @@ export default function Register2({ route, navigation }) {
       ) : (
         <>
           <StatusBar barStyle={'light-content'} />
-          <Image source={require('../../assets/images/logoG.png')} />
+          <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
           <Image source={require('../../assets/images/register.png')} />
           <Text style={styles.texto}>Verificação de documentos</Text>
           <Text style={styles.texto2}>

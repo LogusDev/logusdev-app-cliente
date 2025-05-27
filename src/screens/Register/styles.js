@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     logo:{
         width:185.62,
         height:42.17,
-        marginBottom:20,
+        position:"absolute",
+        top:90
     },
     texto:{
         fontSize:22,

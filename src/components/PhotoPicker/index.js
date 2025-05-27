@@ -10,10 +10,8 @@ export default function PhotoPicker({name,onPress}){
                 onPress={onPress}
                 >
                 <View style={styles.container}>
-                    
                         <Ionicons style={{marginRight:10}} name={name} size={20} color="#A7A7A7" />
                         <Text style={styles.texto}>Foto do Rosto</Text>
-                    
                 </View>
             </TouchableOpacity>
         </View>
@@ -25,7 +23,8 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         alignItems:"center",
         backgroundColor:"#FFF",
-        width:"90%",
+        width:360,
+        height:61,
         borderRadius:8,
         paddingHorizontal:10,
         marginVertical:5,
@@ -37,6 +36,11 @@ const styles = StyleSheet.create({
         flex:1,
         height:45,
         color:'black',
+    },
+    texto:{
+        textAlign:"center",
+
     }
+
 
 })

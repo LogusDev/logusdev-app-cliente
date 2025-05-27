@@ -10,7 +10,8 @@ const styles = StyleSheet.create({
     logo:{
         width:185.62,
         height:42.17,
-        marginBottom:20,
+        position:"absolute",
+        top:70
     },
     texto:{
         fontSize:22,
@@ -18,6 +19,9 @@ const styles = StyleSheet.create({
         color:"#1F284E",
         padding:24,
     },
+    texto2:{
+        textAlign:"center",
+    }
 })
 
 export default styles;
