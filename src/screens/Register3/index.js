@@ -13,7 +13,7 @@ import { createVehicle } from '../../services/registerUser.js';
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada } = route.params;
+  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada,categoria } = route.params;
 
   const {login} = useContext(UserContext);
 

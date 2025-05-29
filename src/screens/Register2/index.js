@@ -11,6 +11,7 @@ export default function Register2({navigation,route}){
     const [modelos,setModelos] = useState([]);
     const [anos,setAnos] = useState([]);
 
+    const [categoria,setCategoria] = useState(null);
     const [marcaSelecionada,setMarcaSelecionada] = useState(null);
     const [modeloSelecionado,setModeloSelecionado] = useState(null);
     const [anoSelecionado,setAnoSelecionado] = useState(null);
@@ -55,7 +56,7 @@ export default function Register2({navigation,route}){
             .then(response=>{
                 const lista = response.data.map(item=>({
                     label:item.nome,
-                    value:item.codigo
+                    value:item.codigo,
                 }));
                 setAnos(lista);
             })
@@ -67,7 +68,7 @@ export default function Register2({navigation,route}){
             alert("Campo inválido")
         }
 
-        navigation.navigate('Register3', {email,password,name,cpf: unmaskedCpf,phone: unmaskedPhone,cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada})
+        navigation.navigate('Register3', {email,password,name,cpf: unmaskedCpf,phone: unmaskedPhone,cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada,categoria});
     }
 
 
@@ -97,6 +98,18 @@ export default function Register2({navigation,route}){
              value={anoSelecionado}
              name={"calendar-outline"}
              onValueChange={setAnoSelecionado}
+            />
+            <PickerSelect
+             placeholder={{label:"Selecione a categoria...",value:null}}
+             items={[
+                {label:'Sedan', value:'sedan'},
+                {label:'Hatch', value:'hatch'},
+                {label:'SUV', value:'suv'},
+                {label:'Picape', value:'picape'},
+             ]}
+             value={categoria}
+             name={"filter-outline"}
+             onValueChange={setCategoria}
             />
             <Button text={'Proximo'} onPress={handleSignIn}/>
         </View>
