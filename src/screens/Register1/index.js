@@ -6,6 +6,7 @@ import TextInputComponent from '../../components/TextInput/index.js';
 import Button from '../../components/Button/index.js';
 import {mask} from 'react-native-mask-text';
 import unmaskFunc from '../../utils/mask.js';
+import Logo from '../../components/Logo/index.js';
 
 
 export default function Register1({route}){
@@ -47,7 +48,7 @@ export default function Register1({route}){
     return(
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
-            <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
+            <Logo/>
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Dados Pessoais</Text>
             <TextInputComponent placeholder="Nome completo..." name="person-outline" value={name} onChangeText={setName} />

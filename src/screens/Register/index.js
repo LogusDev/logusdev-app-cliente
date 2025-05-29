@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './styles.js';
 import TextInputComponent from '../../components/TextInput/index.js';
 import Button from '../../components/Button/index.js';
+import Logo from '../../components/Logo'
 
 export default function Register({navigation}){
 
@@ -40,7 +41,7 @@ export default function Register({navigation}){
     return(
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'}  />
-            <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
+            <Logo/>
             <Image source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Criar minha conta</Text>
             <TextInputComponent placeholder="Email..." name="mail-outline" value={email} onChangeText={setEmail} />
