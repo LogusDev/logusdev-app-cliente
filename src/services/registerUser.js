@@ -14,6 +14,15 @@ export const updateUser = async(id,userData) =>{
         const response = await api.put(`/clientes/${id}`, userData);
         return response.data
     } catch (error){
-        throw error.response ? error.response.data : 'erro ao conectar com o servidor'
+        throw error.response ? error.response.data : 'Erro ao conectar com o servidor'
+    }
+}
+
+export const createVehicle = async(vehicleData)=>{
+    try{
+        const response = await api.post('/veiculos', vehicleData);
+        return response.data;
+    } catch(error){
+        throw error.response ? error.response.data : 'Erro ao conectar com o servidor'
     }
 }
