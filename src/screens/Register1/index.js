@@ -54,7 +54,6 @@ export default function Register1({route}){
             <TextInputComponent placeholder="Nome completo..." name="person-outline" value={name} onChangeText={setName} />
             <TextInputComponent placeholder="CPF..." name="document-text-outline" secureTextEntry={false}  value={cpf} onChangeText={handleCpfChange} keyboardType='numeric' />
             <TextInputComponent placeholder="Número do Celular..." name="call-outline" secureTextEntry={false} onChangeText={handleCelChange} value={phone} keyboardType='numeric' />
-            
             <Button text={'Proximo'} onPress={handleSignIn}  />
         </View>
     )

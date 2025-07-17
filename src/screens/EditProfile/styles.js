@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex:1,
+        justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#FFFFFF",
     },
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
         fontSize:32,
         fontWeight:200,
         marginRight:"40%",
-        marginTop:33,
+        marginTop:10,
         fontFamily:"Poppins-SemiBold",
     },
     avatar:{

@@ -16,15 +16,15 @@ export default function Register2({navigation,route}){
     const [modeloSelecionado,setModeloSelecionado] = useState(null);
     const [anoSelecionado,setAnoSelecionado] = useState(null);
 
-      const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num } = route.params;
-
+    const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num } = route.params;
 
     useEffect(()=>{
-        axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas')
+        axios.get('https://fipe.parallelum.com.br/api/v2/cars/brands/')
         .then(response=>{
+            console.log(response.data)
             const lista = response.data.map(item=>({
-                label:item.nome,
-                value:item.codigo
+                label:item.name,
+                value:item.code
             }));
             setMarcas(lista);
         })
@@ -38,11 +38,11 @@ export default function Register2({navigation,route}){
     useEffect(()=>{
         if(marcaSelecionada){
             setModelos([]);
-            axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marcaSelecionada}/modelos`)
+            axios.get(`https://fipe.parallelum.com.br/api/v2/cars/brands/${marcaSelecionada}/models`)
             .then(response=>{
-                const lista = response.data.modelos.map(item=>({
-                    label:item.nome,
-                    value:item.codigo
+                const lista = response.data.map(item=>({
+                    label:item.name,
+                    value:item.code
                 }));
                 setModelos(lista);
             })
@@ -52,11 +52,11 @@ export default function Register2({navigation,route}){
     useEffect(()=>{
         if(modeloSelecionado){
             setAnos([]);
-            axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marcaSelecionada}/modelos/${modeloSelecionado}/anos`)
+            axios.get(`https://fipe.parallelum.com.br/api/v2/cars/brands/${marcaSelecionada}/models/${modeloSelecionado}/years`)
             .then(response=>{
                 const lista = response.data.map(item=>({
-                    label:item.nome,
-                    value:item.codigo,
+                    label:item.name,
+                    value:item.code,
                 }));
                 setAnos(lista);
             })
@@ -76,7 +76,7 @@ export default function Register2({navigation,route}){
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
             <Logo/>
-            <Image source={require('../../assets/images/register.png')} />
+            <Image style={{}} source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Dados do veículo</Text>
             <PickerSelect
              placeholder={{label:"Selecione a marca...",value:null}}

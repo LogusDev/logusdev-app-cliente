@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import Constants from "expo-constants";
 
 const styles = StyleSheet.create({
     container:{
@@ -6,6 +7,8 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#FFFFFF",
+        paddingTop: Constants.statusBarHeight + 10,
+
     },
     logo:{
         width:185.62,

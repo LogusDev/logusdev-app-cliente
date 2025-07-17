@@ -1,4 +1,4 @@
-import {View,Text,Image, StatusBar} from 'react-native';
+import {ScrollView,Text,Image, StatusBar,KeyboardAvoidingView,Platform, View} from 'react-native';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles.js';
@@ -38,16 +38,20 @@ export default function Register({navigation}){
     }
 
 
-    return(
-        <View style={styles.container}>
-            <StatusBar barStyle={'light-content'}  />
-            <Logo/>
-            <Image source={require('../../assets/images/register.png')} />
-            <Text style={styles.texto}>Criar minha conta</Text>
-            <TextInputComponent placeholder="Email..." name="mail-outline" value={email} onChangeText={setEmail} />
-            <TextInputComponent placeholder="Senha..." name="lock-closed-outline" secureTextEntry={true} value={password} onChangeText={setPassword} />
-            <TextInputComponent placeholder="Repita sua senha..." name="lock-closed-outline" secureTextEntry={true} onChangeText={setPasswordRepeat} value={passwordRepeat} />
-            <Button text={'Próximo'} onPress={handleRegister} />
-        </View>
+    return (
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+        style={styles.container}
+      >
+        <StatusBar barStyle={'light-content'} backgroundColor={'#ffffff'} />
+        <Logo />
+        <Image source={require('../../assets/images/register.png')} />
+        <Text style={styles.texto}>Criar minha conta</Text>
+        <TextInputComponent placeholder="Email..." name="mail-outline" value={email} onChangeText={setEmail} />
+        <TextInputComponent placeholder="Senha..." name="lock-closed-outline" secureTextEntry={true} value={password} onChangeText={setPassword} />
+        <TextInputComponent placeholder="Repita sua senha..." name="lock-closed-outline" secureTextEntry={true} onChangeText={setPasswordRepeat} value={passwordRepeat} />
+        <Button text={'Próximo'} onPress={handleRegister} />
+      </KeyboardAvoidingView>
     )
 }

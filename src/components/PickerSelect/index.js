@@ -13,7 +13,7 @@ export default function PickerSelect(props) {
       />
       <View style={{ flex: 1 }}>
         <RNPickerSelect
-          placeholder={{ label: props.placeholder, value: null }}
+          placeholder={props.placeholder}
           items={props.items}
           onValueChange={props.onValueChange}
           value={props.value}

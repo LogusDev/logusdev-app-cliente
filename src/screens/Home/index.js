@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function MainHome() {
+export default function MainHome({navigation}) {
     const [location, setLocation] = useState(null);
     const [permissionDenied, setPermissionDenied] = useState(false);
 
@@ -88,7 +88,9 @@ export default function MainHome() {
                     borderWidth: 2,
                     borderColor: '#EAEAEA',
                   }}
-                  
+                  onPress={() => {
+                    navigation.navigate('OrigemDestino',{userLocation: location});
+                  }}
                 >
                     <Ionicons name="map-outline" size={15}  />
                 </TouchableOpacity>
