@@ -60,6 +60,7 @@ export default function MainHome({navigation}) {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         }}
+                        showsBuildings={true}
                         style={{ flex: 1 }}
                         showsMyLocationButton={true}
                     >

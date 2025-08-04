@@ -15,6 +15,7 @@ import Splash from '../screens/Splash';
 import MyTabs from './bottomTabs';
  
 import {UserProvider} from '../contexts/UserContext';
+import CallConfirmation from '../screens/CallConfirmation';
 
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="MainHome" component={MyTabs} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="OrigemDestino" component={OrigemDestino} />
+                <Stack.Screen name="CallConfirmation" component={CallConfirmation} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

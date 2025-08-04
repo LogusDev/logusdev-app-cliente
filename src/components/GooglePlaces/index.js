@@ -11,8 +11,18 @@ import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../Button';
 import { useNavigation } from '@react-navigation/native';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
-const GOOGLE_API_KEY = 'AIzaSyBS5TYszHyw5VyTUU9gUCWYdNqOQ5pt7ik'; // Substitua pela sua key
+// Função para limpar sufixos indesejados dos endereços
+function limparEndereco(endereco) {
+  if (!endereco) return '';
+  return endereco
+    .replace(/\s*-\s*SP,\s*Brasil$/i, '')
+    .replace(/\s*-\s*Brasil$/i, '')
+    .replace(/\s*-\s*SP$/i, '');
+}
+
+const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
 
 export default function GooglePlaces({userLocation, onConfirm }) {
   const [origem, setOrigem] = useState('');
@@ -84,7 +94,7 @@ export default function GooglePlaces({userLocation, onConfirm }) {
           <Ionicons name="location-outline" size={20} color="#555" style={styles.icon} />
           <View style={styles.textContainer}>
             <Text style={styles.primaryText}>{item.structured_formatting.main_text}</Text>
-            <Text style={styles.secondaryText}>{item.structured_formatting.secondary_text}</Text>
+            <Text style={styles.secondaryText}>{limparEndereco(item.structured_formatting.secondary_text)}</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -93,23 +103,79 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   );
 
   const handleSelecionarOrigem = (item) => {
-    setOrigem(item.description);
+    setOrigem(limparEndereco(item.description));
     setSugestoesOrigem([]);
     setOrigemSelecionada(item);
   };
 
   const handleSelecionarDestino = (item) => {
-    setDestino(item.description);
+    setDestino(limparEndereco(item.description));
     setSugestoesDestino([]);
     setDestinoSelecionada(item);
   };
 
-  const confirmationRide = () => {
+
+  const getPlaceDetails = async (placeId) => {
+  try {
+    const response = await axios.get(
+      'https://maps.googleapis.com/maps/api/place/details/json',
+      {
+        params: {
+          place_id: placeId,
+          key: GOOGLE_API_KEY,
+        },
+      }
+    );
+
+    const location = response.data.result.geometry.location;
+    return {
+      latitude: location.lat,
+      longitude: location.lng,
+    };
+    } catch (error) {
+      console.error('Erro ao buscar detalhes:', error);
+      return null;
+    }
+  };
+
+  const confirmationRide = async () => {
+
+    const origemCoords = await getPlaceDetails(origemSelecionada.place_id);
+    const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
+     if (!origemCoords || !destinoCoords) {
+      console.error("Erro ao buscar coordenadas.");
+      return;
+    }
+
+    if (onConfirm) {
+    onConfirm({
+      origem: origemSelecionada,
+      destino: destinoSelecionada,
+      });
+    }
     onConfirm &&
               onConfirm({
                 origem: origemSelecionada,
                 destino: destinoSelecionada,
               })
+              getPlaceDetails(origemSelecionada.place_id)
+      navigation.navigate('CallConfirmation', {
+      origem: {
+        lat: origemCoords.latitude,
+        lng: origemCoords.longitude,
+        endereco: limparEndereco(origemSelecionada.description),
+      },
+      destino: {
+        lat: destinoCoords.latitude,
+        lng: destinoCoords.longitude,
+        endereco: limparEndereco(destinoSelecionada.description),
+      },
+      veiculo: {
+        modelo: 'Fusca',
+        ano: '1970',
+        tamanho: 'Pequeno',
+      },
+    });
   }
 
   return (
