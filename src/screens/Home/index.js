@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import PhotoCard from "../../components/PhotoCard";
 
 export default function MainHome({navigation}) {
     const [location, setLocation] = useState(null);
@@ -75,6 +76,9 @@ export default function MainHome({navigation}) {
                     console.log('Mapa não renderizado: localização inválida ou não carregada')
                 )
             )}
+            <View style={styles.photoCard}>
+                <PhotoCard/>
+            </View>
             <View style={styles.containerCard}>
                 <Text style={{ fontSize: 22, color: '#1F284E', fontWeight: '600', marginTop: 36 }}>
                     Para onde vamos?
@@ -111,4 +115,13 @@ const styles = StyleSheet.create({
         height: '30%',
         alignItems: 'center',
     },
+    photoCard:{
+        position:'absolute',
+        top:50,
+        left:'80%',
+        right:40,
+        zIndex:10,
+        borderRadius:3,
+        borderColor:'#EF8108'
+    }
 });

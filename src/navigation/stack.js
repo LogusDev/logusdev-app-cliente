@@ -16,6 +16,7 @@ import MyTabs from './bottomTabs';
  
 import {UserProvider} from '../contexts/UserContext';
 import CallConfirmation from '../screens/CallConfirmation';
+import PaymentConfirmation from '../screens/PaymentConfirmation';
 
 
 const Stack = createNativeStackNavigator();
@@ -35,6 +36,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="OrigemDestino" component={OrigemDestino} />
                 <Stack.Screen name="CallConfirmation" component={CallConfirmation} />
+                <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmation} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

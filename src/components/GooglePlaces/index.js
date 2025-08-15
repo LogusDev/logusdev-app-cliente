@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../Button';
 import { useNavigation } from '@react-navigation/native';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import TextInputComponent from '../TextInput';
 
 // Função para limpar sufixos indesejados dos endereços
 function limparEndereco(endereco) {
@@ -201,7 +202,7 @@ export default function GooglePlaces({userLocation, onConfirm }) {
 
       {/* DESTINO */}
       <TextInput
-        style={[styles.input, { marginTop: 20 }]}
+        style={styles.input}
         placeholder="Destino"
         placeholderTextColor="#888"
         value={destino}
@@ -235,7 +236,6 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     backgroundColor: '#fff',
     flex: 1,
-    
   },
   input: {
     height: 50,

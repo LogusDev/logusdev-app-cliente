@@ -30,11 +30,6 @@ export default function CallConfirmation({ route, navigation }) {
     }, []);
 
 
-    
-
-    
-
-
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
         mapRef.current.fitToCoordinates(
@@ -69,7 +64,10 @@ export default function CallConfirmation({ route, navigation }) {
             title="Origem"
             description={origem.endereco}
             pinColor="green"
-          />
+          >
+            <IconOrigem width={31} height={31} />
+
+          </Marker>
         )}
 
         {destino?.lat && destino?.lng && (
@@ -92,8 +90,14 @@ export default function CallConfirmation({ route, navigation }) {
         <View style={styles.infoItem}>
             <Ionicons name="map" size={24} color="#FFA500" style={styles.infoIcon} />
             <View style={styles.textContainer}>
-            <Text style={styles.placeTitle}>Etec Embu</Text>
-            <Text style={styles.placeAddress}>{origem.endereco}</Text>
+            <Text style={styles.placeTitle}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {origem.titulo || origem.endereco.split('-')[0]}
+              </Text>
+            </Text>
+            <Text style={styles.placeAddress}>
+              {origem.endereco.split('-')[1] ? origem.endereco.split('-')[1].trim() : origem.endereco}
+            </Text>
             </View>
         </View>
 
@@ -104,8 +108,14 @@ export default function CallConfirmation({ route, navigation }) {
         <View style={styles.infoItem}>
             <Ionicons name="location" size={24} color="#FFA500" style={styles.infoIcon} />
             <View style={styles.textContainer}>
-            <Text style={styles.placeTitle}>Padaria <Text style={{ fontWeight: 'bold' }}>Valo Velho</Text></Text>
-            <Text style={styles.placeAddress}>{destino.endereco}</Text>
+            <Text style={styles.placeTitle}>
+              <Text style={{ fontWeight: 'bold' }}>
+                {destino.titulo || destino.endereco.split('-')[0]}
+              </Text>
+            </Text>
+            <Text style={styles.placeAddress}>
+              {destino.endereco.split('-')[1] ? destino.endereco.split('-')[1].trim() : destino.endereco}
+            </Text>
             </View>
         </View>
 
@@ -122,7 +132,7 @@ export default function CallConfirmation({ route, navigation }) {
         </View>
 
         {/* Botão Confirmar */}
-        <Button text="Confirmar" onPress={() => console.log(destino)} />
+        <Button text="Confirmar" onPress={() => navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })} />
         </View>
     </View>
   );
