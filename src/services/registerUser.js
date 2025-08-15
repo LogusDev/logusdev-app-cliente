@@ -1,4 +1,4 @@
-import api from '../services/api';
+import api from './api';
 
 export const registerUser = async (userData) => {
     try {
@@ -24,5 +24,14 @@ export const createVehicle = async(vehicleData)=>{
         return response.data;
     } catch(error){
         throw error.response ? error.response.data : 'Erro ao conectar com o servidor'
+    }
+}
+
+export const getVehicles = async (userId) => {
+    try {
+        const response = await api.get(`/veiculos/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
     }
 }

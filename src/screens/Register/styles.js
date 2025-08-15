@@ -6,20 +6,20 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#FFFFFF",
-        
     },
-    logo:{
-        width:185.62,
-        height:42.17,
-        position:"absolute",
-        top:90
-    },
+    // logo:{
+    //     width:185.62,
+    //     height:42.17,
+    //     position:"absolute",
+    //     top:90
+    // },
     texto:{
         fontSize:22,
         color:"#1F284E",
         padding:24,
         fontFamily:"Poppins-SemiBold",
         fontWeight:"bold",
+        textAlign:"center",
     },
 })
 

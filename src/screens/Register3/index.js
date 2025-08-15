@@ -9,6 +9,7 @@ import { registerUser } from '../../services/registerUser.js';
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
 import { createVehicle } from '../../services/registerUser.js';
+import Logo from '../../components/Logo/index.js';
 
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function Register3({ route, navigation }) {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [1, 1],
         quality: 0.7,
       });
 
@@ -118,7 +119,7 @@ const handleSignIn = async () => {
       ) : (
         <>
           <StatusBar barStyle={'light-content'} />
-          <Image style={styles.logo} source={require('../../assets/images/logoG.png')} />
+          <Logo/>
           <Image source={require('../../assets/images/register.png')} />
           <Text style={styles.texto}>Verificação de documentos</Text>
           <Text style={styles.texto2}>

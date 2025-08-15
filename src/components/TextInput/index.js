@@ -22,7 +22,7 @@ export default function TextInputComponent({label,placeholder,value,onChangeText
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection:"row",
+        flexDirection:"row",        
         alignItems:"center",
         backgroundColor:"#FFF",
         width:"90%",

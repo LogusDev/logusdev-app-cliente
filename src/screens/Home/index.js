@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import PhotoCard from "../../components/PhotoCard";
 
-export default function MainHome() {
+export default function MainHome({navigation}) {
     const [location, setLocation] = useState(null);
     const [permissionDenied, setPermissionDenied] = useState(false);
 
@@ -60,6 +61,7 @@ export default function MainHome() {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         }}
+                        showsBuildings={true}
                         style={{ flex: 1 }}
                         showsMyLocationButton={true}
                     >
@@ -74,6 +76,9 @@ export default function MainHome() {
                     console.log('Mapa não renderizado: localização inválida ou não carregada')
                 )
             )}
+            <View style={styles.photoCard}>
+                <PhotoCard/>
+            </View>
             <View style={styles.containerCard}>
                 <Text style={{ fontSize: 22, color: '#1F284E', fontWeight: '600', marginTop: 36 }}>
                     Para onde vamos?
@@ -88,7 +93,9 @@ export default function MainHome() {
                     borderWidth: 2,
                     borderColor: '#EAEAEA',
                   }}
-                  
+                  onPress={() => {
+                    navigation.navigate('OrigemDestino',{userLocation: location});
+                  }}
                 >
                     <Ionicons name="map-outline" size={15}  />
                 </TouchableOpacity>
@@ -108,4 +115,13 @@ const styles = StyleSheet.create({
         height: '30%',
         alignItems: 'center',
     },
+    photoCard:{
+        position:'absolute',
+        top:50,
+        left:'80%',
+        right:40,
+        zIndex:10,
+        borderRadius:3,
+        borderColor:'#EF8108'
+    }
 });

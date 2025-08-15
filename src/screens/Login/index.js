@@ -1,4 +1,4 @@
-import { View,Text,Image,StatusBar,Alert, TouchableOpacity } from "react-native";
+import { View,Text,Image,StatusBar,Alert, TouchableOpacity,KeyboardAvoidingView,Platform } from "react-native";
 import {useState} from "react";
 import styles from "./styles.js";
 import TextInputComponent from "../../components/TextInput/index.js";
@@ -45,7 +45,9 @@ export default function Login(){
     }
     
     return(
-        <View style={styles.container}>
+        <KeyboardAvoidingView behavior="padding"
+         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+         style={styles.container}>
             <StatusBar barStyle={"light-content"} backgroundColor={'#FFFFFF'}/>
             {/*<Image source={require("../../assets/images/logoG.png")} style={styles.logo}/>*/}
             <Logo />
@@ -72,6 +74,6 @@ export default function Login(){
                 <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold',fontFamily:'Poppins-Regular'}}>Crie uma</Text></Text>
             </TouchableOpacity>
             <Button text={"Login"} onPress={handleLogin}/>
-        </View>
+        </KeyboardAvoidingView>
     )  
 }
