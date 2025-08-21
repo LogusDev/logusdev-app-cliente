@@ -8,6 +8,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import { getVehicles } from '../../services/registerUser';
 import IconOrigem from '../../components/IconOrigem';
+import socket from '../../services/socket';
 
 export default function CallConfirmation({ route, navigation }) {
     const { origem, destino, veiculo } = route.params;
@@ -132,7 +133,15 @@ export default function CallConfirmation({ route, navigation }) {
         </View>
 
         {/* Botão Confirmar */}
-        <Button text="Confirmar" onPress={() => navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })} />
+        <Button text="Confirmar" onPress={() => {
+          socket.emit("new_ticket", {
+            clientId: user.id,
+            origem,
+            destino,
+            veiculo: actualVehicle,
+            status: "pendente",
+          });
+          navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })}} />
         </View>
     </View>
   );
