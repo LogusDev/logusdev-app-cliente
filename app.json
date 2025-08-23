@@ -14,7 +14,8 @@
           "locationAlwaysAndWhenInUsePermission": "Permita a localizacao"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-video"
     ],
     "splash": {
       "image": "./src/assets/images/splash-icon.png",

@@ -6,13 +6,20 @@ import Button from '../../components/Button';
 import styles from './style';
 import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
-import { getVehicles } from '../../services/registerUser';
+import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
+import { createCall } from '../../services/calls';
 
 export default function PaymentConfirmation({ route, navigation }) {
     const { origem, destino, actualVehicle } = route.params;
     const mapRef = useRef(null);
     const { user } = useContext(UserContext);
+
+    const [pix, setPix] = useState(false);
+    const [dinheiro, setDinheiro] = useState(false);
+    const [cartao, setCartao] = useState(false);
+
+    const [selectedPayment, setSelectedPayment] = useState(null);
 
 
     const onMapReady = () => {
@@ -72,20 +79,39 @@ export default function PaymentConfirmation({ route, navigation }) {
 
         <Text style={styles.sectionTitle}>Opções de Pagamento:</Text>
 
-        <TouchableOpacity style={{borderColor:'#EAEAEA',borderWidth:1,backgroundColor: '#fff',width:'80%',height:45,marginBottom:21,borderRadius:15,padding:20}}>
-            <Text>Pix</Text>
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Pix</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{borderColor:'#EAEAEA',borderWidth:1,backgroundColor: '#fff',width:'80%',height:45,marginBottom:21,borderRadius:15,padding:20}}>
-            <Text>DInheiro</Text>
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Dinheiro</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{borderColor:'#EAEAEA',borderWidth:1,backgroundColor: '#fff',width:'80%',height:45, borderRadius:15,padding:20}}>
-            <Text>Cartão</Text>
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Cartão</Text>
         </TouchableOpacity>
 
-        {/* Botão Confirmar */}
-        <Button text="Confirmar" onPress={() => console.log(destino)} />
+        {/* Botão Buscar */}
+        <Button
+          text="Buscar"
+          onPress={async () => {
+            try {
+              const payload = {
+                latitude_inicial: origem.lat,
+                longitude_inicial: origem.lng,
+                latitude_final: destino.lat,
+                longitude_final: destino.lng,
+                descricao: 'Chamado via app',
+                carro_id: actualVehicle?.id,
+                cliente_id: user?.id,
+              };
+              const novo = await createCall(payload);
+              navigation.navigate('SearchCall', { origem, destino, actualVehicle, pix, callId: novo.id });
+            } catch (e) {
+              alert('Não foi possível criar o chamado. Tente novamente.');
+            }
+          }}
+        />
         </View>
     </View>
   );

@@ -4,7 +4,7 @@ import styles from './styles';
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button/index.js';
 import { UserContext } from '../../contexts/UserContext.js';
-import {updateUser} from '../../services/registerUser.js';
+import {updateUser} from '../../services/services.js';
 import {mask} from 'react-native-mask-text';
 import unmaskFunc from '../../utils/mask.js';
 

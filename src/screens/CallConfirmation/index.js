@@ -6,7 +6,7 @@ import Button from '../../components/Button';
 import styles from './style';
 import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
-import { getVehicles } from '../../services/registerUser';
+import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
 
 export default function CallConfirmation({ route, navigation }) {

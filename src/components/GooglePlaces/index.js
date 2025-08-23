@@ -13,6 +13,7 @@ import Button from '../Button';
 import { useNavigation } from '@react-navigation/native';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import TextInputComponent from '../TextInput';
+import { getCurrentPositionAsync } from 'expo-location';
 
 // Função para limpar sufixos indesejados dos endereços
 function limparEndereco(endereco) {
@@ -32,9 +33,9 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   const [sugestoesDestino, setSugestoesDestino] = useState([]);
   const [origemSelecionada, setOrigemSelecionada] = useState(null);
   const [destinoSelecionada, setDestinoSelecionada] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   const navigation = useNavigation();
-
 
   const buscarSugestoes = async (input, setSugestoes) => {
     if (input.length < 2) {
@@ -115,24 +116,23 @@ export default function GooglePlaces({userLocation, onConfirm }) {
     setDestinoSelecionada(item);
   };
 
-
   const getPlaceDetails = async (placeId) => {
-  try {
-    const response = await axios.get(
-      'https://maps.googleapis.com/maps/api/place/details/json',
-      {
-        params: {
-          place_id: placeId,
-          key: GOOGLE_API_KEY,
-        },
-      }
-    );
+    try {
+      const response = await axios.get(
+        'https://maps.googleapis.com/maps/api/place/details/json',
+        {
+          params: {
+            place_id: placeId,
+            key: GOOGLE_API_KEY,
+          },
+        }
+      );
 
-    const location = response.data.result.geometry.location;
-    return {
-      latitude: location.lat,
-      longitude: location.lng,
-    };
+      const location = response.data.result.geometry.location;
+      return {
+        latitude: location.lat,
+        longitude: location.lng,
+      };
     } catch (error) {
       console.error('Erro ao buscar detalhes:', error);
       return null;
@@ -140,27 +140,26 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   };
 
   const confirmationRide = async () => {
-
     const origemCoords = await getPlaceDetails(origemSelecionada.place_id);
     const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
-     if (!origemCoords || !destinoCoords) {
+    if (!origemCoords || !destinoCoords) {
       console.error("Erro ao buscar coordenadas.");
       return;
     }
 
     if (onConfirm) {
-    onConfirm({
-      origem: origemSelecionada,
-      destino: destinoSelecionada,
+      onConfirm({
+        origem: origemSelecionada,
+        destino: destinoSelecionada,
       });
     }
     onConfirm &&
-              onConfirm({
-                origem: origemSelecionada,
-                destino: destinoSelecionada,
-              })
-              getPlaceDetails(origemSelecionada.place_id)
-      navigation.navigate('CallConfirmation', {
+      onConfirm({
+        origem: origemSelecionada,
+        destino: destinoSelecionada,
+      })
+    getPlaceDetails(origemSelecionada.place_id)
+    navigation.navigate('CallConfirmation', {
       origem: {
         lat: origemCoords.latitude,
         lng: origemCoords.longitude,
@@ -179,21 +178,62 @@ export default function GooglePlaces({userLocation, onConfirm }) {
     });
   }
 
+  async function handleUseCurrentLocation() {
+    setLoadingLocation(true);
+    try {
+      const position = await getCurrentPositionAsync({});
+      const { latitude, longitude } = position.coords;
+
+      // Buscar endereço pelo reverse geocoding
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`
+      );
+      const endereco = response.data.results[0]?.formatted_address || 'Localização atual';
+
+      setOrigem(endereco);
+      setOrigemSelecionada({
+        endereco,
+        lat: latitude,
+        lng: longitude,
+        titulo: 'Localização atual'
+      });
+    } catch (error) {
+      alert('Não foi possível obter sua localização.');
+    }
+    setLoadingLocation(false);
+  }
+
   return (
     <View style={styles.container}>
       {/* ORIGEM */}
-      <View>
-      <TextInput
-        style={styles.input}
-        placeholder="Local de origem"
-        placeholderTextColor="#888"
-        value={origem}
-        onChangeText={(text) => {
-          setOrigem(text);
-          setOrigemSelecionada(null);
-        }}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          style={[styles.input, { flex: 1, marginTop: 50 }]}
+          placeholder="Local de origem"
+          placeholderTextColor="#888"
+          value={origem}
+          onChangeText={(text) => {
+            setOrigem(text);
+            setOrigemSelecionada(null);
+          }}
+        />
+        <TouchableOpacity
+          style={{
+            
+            backgroundColor: '#F3F3F3',
+            borderRadius: 20,
+            padding: 6,
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 2,
+          }}
+          onPress={handleUseCurrentLocation}
+          disabled={loadingLocation}
+        >
+          <Ionicons name="locate" size={20} color="#EF8108" />
+        </TouchableOpacity>
       </View>
+      
       {sugestoesOrigem.length > 0 && (
         <View style={styles.suggestionsBox}>
           {renderSugestoes(sugestoesOrigem, handleSelecionarOrigem)}
@@ -219,10 +259,10 @@ export default function GooglePlaces({userLocation, onConfirm }) {
 
       {/* BOTÃO DE CONFIRMAR */}
       {origemSelecionada && destinoSelecionada && (
-        <View style={{justifyContent:"center",alignItems:"center"}}>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Button
-          text="Confirmar"
-          onPress={confirmationRide}
+            text="Confirmar"
+            onPress={confirmationRide}
           />
         </View>
       )}
@@ -246,7 +286,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 15,
     elevation: 3,
-    marginTop:50
+    marginTop: 50
   },
   suggestionsBox: {
     backgroundColor: '#fff',
