@@ -25,4 +25,14 @@ export const cancelCall = async (id) => {
     } catch (error) {
         throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
     }
-}; 
+};
+
+
+export const updateCall = async (id) => {
+    try {
+        const response = await api.patch(`/chamados/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
+    }
+};

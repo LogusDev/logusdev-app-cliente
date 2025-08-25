@@ -51,6 +51,7 @@ export default function CallConfirmation({ route, navigation }) {
         ref={mapRef}
         style={styles.map}
         onMapReady={onMapReady}
+        key={'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U'}
         initialRegion={{
           latitude: origem.lat,
           longitude: origem.lng,

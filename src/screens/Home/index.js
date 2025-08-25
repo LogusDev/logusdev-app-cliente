@@ -64,6 +64,7 @@ export default function MainHome({navigation}) {
                         showsBuildings={true}
                         style={{ flex: 1 }}
                         showsMyLocationButton={true}
+                        provider="google"
                     >
                         <Marker
                             coordinate={{
@@ -94,7 +95,7 @@ export default function MainHome({navigation}) {
                     borderColor: '#EAEAEA',
                   }}
                   onPress={() => {
-                    navigation.navigate('OrigemDestino',{userLocation: location});
+                    navigation.navigate('OriginDestiny',{userLocation: location});
                   }}
                 >
                     <Ionicons name="map-outline" size={15}  />

@@ -1,21 +1,92 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text,Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './style';
 import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import IconOrigem from '../../components/IconOrigem';
+import Guincho from '../../assets/images/guincho.svg';
 import MapViewDirections from 'react-native-maps-directions';
 
 export default function CallProgress({ route, navigation }) {
-    const { origem, destino, actualVehicle, callId } = route.params;
+    const { origem, destino, callId } = route.params;
     const mapRef = useRef(null);
     const { user } = useContext(UserContext);
-
-    console.log(actualVehicle.modelo)
+    const [distance, setDistance] = useState(null);
+    const [duration, setDuration] = useState(null);
+    const [chegada, setChegada] = useState(false);
+    const [etapaViagem, setEtapaViagem] = useState('guincheiro_a_caminho');
 
     const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
+
+    const guincheiro = {
+        name: "Bob Santos",
+        calls: 1593,
+        rating: 4.9,
+        phone: "123-456-7890",
+        photo: "https://fielmanchete.com/storage/media-items/images/2025/04/craque-neto_20250405051606.webp",
+        latitude:    -23.62801717235814,
+        longitude:  -46.79246539689628
+    };
+
+    -46.78604694729831
+
+    -23.63171438165086
+
+    -46.79246539689628
+    -23.62801717235814
+
+    const [guincheiroPos, setGuincheiroPos] = useState({
+        latitude: guincheiro.latitude,
+        longitude: guincheiro.longitude,
+    });
+
+    useEffect(() => {
+        setGuincheiroPos({ latitude: guincheiro.latitude, longitude: guincheiro.longitude });
+    }, [guincheiro.latitude, guincheiro.longitude]);
+
+    const vehicle = {
+        model: "Atego 1726",
+        color: "Branco",
+        brand: "Mercedes-Benz",
+        year: 2010,
+        dimensions: "8m x 2.60m x 4m",
+        licensePlate: "ABC1D23"
+    };
+
+    
+    useEffect(() => {
+        if (distance === null) return;
+
+        if (etapaViagem === 'guincheiro_a_caminho' && distance < 0.1) {
+            console.log("Chegou na origem, mudando para a etapa 2.");
+            setEtapaViagem('levando_ao_destino');
+            setDistance(null);
+        }
+        
+        else if (etapaViagem === 'levando_ao_destino' && distance < 0.1) {
+            console.log("Chegou ao destino final! Navegando...");
+            navigation.replace('CallCompleted', {
+                origem, destino, guincheiro, vehicle, callId,
+            });
+        }
+
+    }, [distance, etapaViagem, navigation]);
+
+
+    let rotaOrigem, rotaDestino;
+
+    if (etapaViagem === 'guincheiro_a_caminho') {
+    rotaOrigem = { latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude };
+    rotaDestino = { latitude: origem.lat, longitude: origem.lng };
+    console.log(callId);
+    console.log(etapaViagem);
+    } else {
+        rotaOrigem = { latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude };
+        rotaDestino = { latitude: destino.lat, longitude: destino.lng };
+    }
+
 
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
@@ -32,12 +103,28 @@ export default function CallProgress({ route, navigation }) {
         }
     };
 
+    const call = {
+        distance: "11 minutos"
+    };
+
+    const handleCall = () => {
+        // Implementar chamada telefônica
+        console.log('Ligando para:', guincheiro.phone);
+    };
+
+    const handleChat = () => {
+        // Navegar para tela de chat
+        navigation.navigate('Chat', { guincheiro, call });
+    };
+
     return (
         <View style={styles.container}>
             <MapView
+                provider="google"
                 ref={mapRef}
                 style={styles.map}
                 onMapReady={onMapReady}
+                showsBuildings={true}
                 initialRegion={{
                     latitude: origem.lat,
                     longitude: origem.lng,
@@ -45,32 +132,50 @@ export default function CallProgress({ route, navigation }) {
                     longitudeDelta: 0.05,
                 }}
             >
-                {origem?.lat && origem?.lng && (
+                <Marker
+                    coordinate={{ latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude }}
+                    title="Guincheiro"
+                    anchor={{ x: 0.5, y: 0.5 }}
+                >
+                    <Guincho width={35} height={35} />
+                </Marker>
+
+                {etapaViagem === 'guincheiro_a_caminho' ? (
                     <Marker
                         coordinate={{ latitude: origem.lat, longitude: origem.lng }}
                         title="Você"
                         description={origem.endereco}
                     >
-                        <IconOrigem width={31} height={31} />
+                        <IconOrigem width={35} height={35} />
                     </Marker>
-                )}
-                {destino?.lat && destino?.lng && (
+                ) : (
                     <Marker
                         coordinate={{ latitude: destino.lat, longitude: destino.lng }}
-                        title="Guincheiro"
+                        title="Destino final"
                         description={destino.endereco}
                     >
-                        <IconOrigem width={31} height={31} />
+                        <Ionicons name="flag" size={30} color="#3498db" />
                     </Marker>
                 )}
                 
                 {origem && destino && (
                     <MapViewDirections
-                        origin={{ latitude: origem.lat, longitude: origem.lng }}
-                        destination={{ latitude: destino.lat, longitude: destino.lng }}
+                        key={etapaViagem}
+                        origin={rotaOrigem} 
+                        destination={rotaDestino}
                         apikey={GOOGLE_API_KEY}
                         strokeWidth={3}
+                        precision='high'
                         strokeColor="#EF8108"
+                        mode='driving'
+                        onReady={result => {
+                            setDistance(result.distance);
+                            setDuration(result.duration);
+                            mapRef.current.fitToCoordinates(result.coordinates, {
+                                edgePadding: { top: 100, right: 50, bottom: 100, left: 50 },
+                                animated: true
+                            });
+                        }}
                     />
                 )}
             </MapView>
@@ -78,29 +183,73 @@ export default function CallProgress({ route, navigation }) {
             <View style={styles.infoContainer}>
                 <Text style={styles.sectionTitle}>Situação do chamado:</Text>
 
-                {/* Origem */}
-                <View style={styles.infoItem}>
-                    <View style={styles.textContainer}>
+                {/* GUINCHEIRO */}
+                <View style={styles.guincheiroContainer}>
+                    <Image
+                        style={styles.guincheiroImage}
+                        source={{ uri: guincheiro.photo }}
+                    />
+                    <View style={styles.guincheiroInfo}>
+                        <View style={styles.nameRatingRow}>
+                            <Text style={styles.guincheiroName}>{guincheiro.name}</Text>
+                            <View style={styles.ratingContainer}>
+                                <Text style={styles.ratingText}>{guincheiro.rating}★</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.guincheiroCalls}>
+                            Mais de {guincheiro.calls} chamados atendidos
+                        </Text>
                         
+                        {/* INFORMAÇÕES DO VEÍCULO DENTRO DO MESMO CONTAINER */}
+                        <View style={styles.vehicleInfoInline}>
+                            <View style={styles.vehicleTextContainer}>
+                                <Text style={styles.vehicleModel}>
+                                    {vehicle.model} - {vehicle.color}
+                                </Text>
+                                <Text style={styles.vehicleDetails}>
+                                    {vehicle.brand} {vehicle.year} - {vehicle.dimensions}
+                                </Text>
+                                <Text style={styles.licensePlate}>
+                                    Placa: {vehicle.licensePlate}
+                                </Text>
+                            </View>
+                        </View>
                     </View>
                 </View>
 
                 <View style={styles.separatorLine} />
 
-                {/* Destino */}
-                <View style={styles.infoItem}>
-                    
+                {/* TEMPO ESTIMADO */}
+                {!chegada ?(
+                <View style={styles.timeContainer}>
+                    <Text style={styles.timeText}>
+                        <Text style={styles.timeHighlight}>{guincheiro.name}</Text> está a{' '}
+                        <Text style={styles.timeHighlight}>{Math.ceil(duration)}</Text> minutos do local destinado
+                    </Text>
                 </View>
+                ) : (
+                    <View style={styles.timeContainer}>
+                    <Text style={styles.timeText}>
+                        <Text style={styles.timeHighlight}>{guincheiro.name}</Text>{' '}
+                            chegou ao local destinado!
+                    </Text>
+                </View>
+                )}
 
-                <View style={styles.separatorLine} />
-
-                {/* Veículo */}
-                <View style={styles.infoItem}>
-                    <Ionicons name="car-sport" size={24} color="#FFA500" style={styles.infoIcon} />
-                    <View style={styles.textContainer}>
-                        <Text style={styles.placeTitle}>{actualVehicle?.modelo}</Text>
-                        <Text style={styles.placeAddress}>{actualVehicle?.marca} • {actualVehicle?.ano_fabricacao}</Text>
-                    </View>
+                {/* BOTÕES DE COMUNICAÇÃO */}
+                <View style={styles.communicationContainer}>
+                    <TouchableOpacity
+                        style={[styles.communicationButton, styles.phoneButton]}
+                        onPress={handleCall}
+                    >
+                        <Ionicons name="call" size={24} color="#4a4a4a" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.communicationButton, styles.chatButton]}
+                        onPress={handleChat}
+                    >
+                        <Ionicons name="chatbubble-ellipses" size={24} color="#4a4a4a" />
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

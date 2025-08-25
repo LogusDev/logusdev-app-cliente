@@ -90,21 +90,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Mantém os mesmos estilos de tipografia da tela concluída
-  vehicleModel: {
-    fontSize: 14,
-    color: '#1F284E',
-  },
-  vehicleDetails: {
-    fontSize: 12,
-    color: '#666',
-  },
-  licensePlate: {
-    fontSize: 12,
-    color: '#1F284E',
-    fontWeight: 'bold',
-  },
-
   ratingContainer: {
     backgroundColor: '#fad7b0',
     paddingHorizontal: 8,

@@ -2,7 +2,7 @@ import { useRoute } from '@react-navigation/native';
 import AutocompleteOrigemDestino from '../../components/GooglePlaces';
 import { StatusBar } from 'react-native';
 
-export default function OrigemDestinoScreen() {
+export default function OriginDestiny() {
   const route = useRoute();
   const userLocation = route.params?.userLocation; // { latitude, longitude }
 

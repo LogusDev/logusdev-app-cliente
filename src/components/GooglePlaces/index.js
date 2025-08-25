@@ -139,44 +139,48 @@ export default function GooglePlaces({userLocation, onConfirm }) {
     }
   };
 
-  const confirmationRide = async () => {
-    const origemCoords = await getPlaceDetails(origemSelecionada.place_id);
-    const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
-    if (!origemCoords || !destinoCoords) {
-      console.error("Erro ao buscar coordenadas.");
-      return;
-    }
+  // Em GooglePlaces.js
 
-    if (onConfirm) {
-      onConfirm({
-        origem: origemSelecionada,
-        destino: destinoSelecionada,
-      });
+const confirmationRide = async () => {
+    try {
+        let origemFinal, destinoFinal;
+
+        if (origemSelecionada.lat && origemSelecionada.lng) {
+            origemFinal = {
+                lat: origemSelecionada.lat,
+                lng: origemSelecionada.lng,
+                endereco: limparEndereco(origemSelecionada.endereco),
+            };
+        } else {
+            const coords = await getPlaceDetails(origemSelecionada.place_id);
+            if (!coords) throw new Error("Não foi possível obter as coordenadas da origem.");
+            origemFinal = {
+                lat: coords.latitude,
+                lng: coords.longitude,
+                endereco: limparEndereco(origemSelecionada.description),
+            };
+        }
+
+        const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
+        if (!destinoCoords) throw new Error("Não foi possível obter as coordenadas do destino.");
+        
+        destinoFinal = {
+            lat: destinoCoords.latitude,
+            lng: destinoCoords.longitude,
+            endereco: limparEndereco(destinoSelecionada.description),
+        };
+        console.log("Navegando com dados válidos:", { origem: origemFinal, destino: destinoFinal });
+
+        navigation.navigate('CallConfirmation', {
+            origem: origemFinal,
+            destino: destinoFinal,
+        });
+
+    } catch (error) {
+        console.error("Erro na confirmação da corrida:", error.message);
+        alert("Ocorreu um erro ao confirmar os locais. Por favor, tente novamente.");
     }
-    onConfirm &&
-      onConfirm({
-        origem: origemSelecionada,
-        destino: destinoSelecionada,
-      })
-    getPlaceDetails(origemSelecionada.place_id)
-    navigation.navigate('CallConfirmation', {
-      origem: {
-        lat: origemCoords.latitude,
-        lng: origemCoords.longitude,
-        endereco: limparEndereco(origemSelecionada.description),
-      },
-      destino: {
-        lat: destinoCoords.latitude,
-        lng: destinoCoords.longitude,
-        endereco: limparEndereco(destinoSelecionada.description),
-      },
-      veiculo: {
-        modelo: 'Fusca',
-        ano: '1970',
-        tamanho: 'Pequeno',
-      },
-    });
-  }
+  };
 
   async function handleUseCurrentLocation() {
     setLoadingLocation(true);

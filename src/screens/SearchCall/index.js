@@ -44,7 +44,7 @@ export default function SearchCall({ route, navigation }) {
                     if (res?.status_chamado && res.status_chamado !== 'aguardando') {
                         cancelled = true;
                         if (timer) clearTimeout(timer);
-                        navigation.replace('CallProgress', { origem, destino, actualVehicle });
+                        navigation.replace('CallProgress', { origem, destino, actualVehicle, callId });
                         return;
                     }
                     delayMs = Math.min(10000, Math.round(delayMs * 1.5));

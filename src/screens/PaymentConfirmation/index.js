@@ -20,8 +20,7 @@ export default function PaymentConfirmation({ route, navigation }) {
     const [cartao, setCartao] = useState(false);
 
     const [selectedPayment, setSelectedPayment] = useState(null);
-
-
+    
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
         mapRef.current.fitToCoordinates(
