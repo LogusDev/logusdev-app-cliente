@@ -8,9 +8,10 @@ import { useContext } from 'react';
 import IconOrigem from '../../components/IconOrigem';
 import Guincho from '../../assets/images/guincho.svg';
 import MapViewDirections from 'react-native-maps-directions';
+import { driverSearch } from '../../services/driver';
 
 export default function CallProgress({ route, navigation }) {
-    const { origem, destino, callId } = route.params;
+    const { origem, destino, callId, guincheiroInfo } = route.params;
     const mapRef = useRef(null);
     const { user } = useContext(UserContext);
     const [distance, setDistance] = useState(null);
@@ -20,22 +21,26 @@ export default function CallProgress({ route, navigation }) {
 
     const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
 
+
+    console.log('guincheiroInfo', guincheiroInfo?.nome)
+
     const guincheiro = {
-        name: "Bob Santos",
+        name: guincheiroInfo?.nome || "Bob Santos", // sem .guincheiro
         calls: 1593,
         rating: 4.9,
-        phone: "123-456-7890",
+        phone: guincheiroInfo?.telefone || "123-456-7890",
         photo: "https://fielmanchete.com/storage/media-items/images/2025/04/craque-neto_20250405051606.webp",
-        latitude:    -23.62801717235814,
-        longitude:  -46.79246539689628
+        latitude: -23.647832358184974,
+        longitude: -46.82858992350528
     };
 
-    -46.78604694729831
 
-    -23.63171438165086
+    -23.647832358184974, -46.82858992350528
 
-    -46.79246539689628
-    -23.62801717235814
+    -23.64435954525415, -46.83947866787124
+
+
+    -23.647841027106956, -46.82946651298266
 
     const [guincheiroPos, setGuincheiroPos] = useState({
         latitude: guincheiro.latitude,
@@ -73,6 +78,7 @@ export default function CallProgress({ route, navigation }) {
         }
 
     }, [distance, etapaViagem, navigation]);
+
 
 
     let rotaOrigem, rotaDestino;
@@ -191,7 +197,7 @@ export default function CallProgress({ route, navigation }) {
                     />
                     <View style={styles.guincheiroInfo}>
                         <View style={styles.nameRatingRow}>
-                            <Text style={styles.guincheiroName}>{guincheiro.name}</Text>
+                            <Text style={styles.guincheiroName}>{guincheiro.name || ''}</Text>
                             <View style={styles.ratingContainer}>
                                 <Text style={styles.ratingText}>{guincheiro.rating}★</Text>
                             </View>
@@ -223,14 +229,14 @@ export default function CallProgress({ route, navigation }) {
                 {!chegada ?(
                 <View style={styles.timeContainer}>
                     <Text style={styles.timeText}>
-                        <Text style={styles.timeHighlight}>{guincheiro.name}</Text> está a{' '}
+                        <Text style={styles.timeHighlight}>{guincheiro.name || 'Nome não disponível'}</Text> está a{' '}
                         <Text style={styles.timeHighlight}>{Math.ceil(duration)}</Text> minutos do local destinado
                     </Text>
                 </View>
                 ) : (
                     <View style={styles.timeContainer}>
                     <Text style={styles.timeText}>
-                        <Text style={styles.timeHighlight}>{guincheiro.name}</Text>{' '}
+                        <Text style={styles.timeHighlight}>{guincheiro.name || 'Nome não disponível'}</Text>{' '}
                             chegou ao local destinado!
                     </Text>
                 </View>

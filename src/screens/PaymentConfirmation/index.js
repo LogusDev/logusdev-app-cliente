@@ -105,7 +105,7 @@ export default function PaymentConfirmation({ route, navigation }) {
                 cliente_id: user?.id,
               };
               const novo = await createCall(payload);
-              navigation.navigate('SearchCall', { origem, destino, actualVehicle, pix, callId: novo.id });
+              navigation.navigate('SearchCall', { origem, destino, actualVehicle, callId: novo.id });
             } catch (e) {
               alert('Não foi possível criar o chamado. Tente novamente.');
             }

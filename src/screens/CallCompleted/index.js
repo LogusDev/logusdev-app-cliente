@@ -15,17 +15,7 @@ export default function CallCompleted({ route, navigation }) {
 
     const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
 
-    const onMapReady = () => {
-        if (mapRef.current && origem && destino) {
-            mapRef.current.fitToCoordinates(
-                [
-                    { latitude: origem.lat, longitude: origem.lng },
-                    { latitude: destino.lat, longitude: destino.lng }
-                ],
-                { edgePadding: { top: 100, right: 50, bottom: 400, left: 50 }, animated: true }
-            );
-        }
-    };
+    console.log(guincheiro.calls)
 
     const handleFinalizar = async () => {
         if (isLoading) return;
@@ -49,7 +39,6 @@ export default function CallCompleted({ route, navigation }) {
                 provider="google"
                 ref={mapRef}
                 style={styles.map}
-                onMapReady={onMapReady}
                 initialRegion={{
                     latitude: origem.lat,
                     longitude: origem.lng,
@@ -57,18 +46,14 @@ export default function CallCompleted({ route, navigation }) {
                     longitudeDelta: 0.05,
                 }}
             >
-                {/* Marcador do Ponto de Partida */}
                 <Marker coordinate={{ latitude: origem.lat, longitude: origem.lng }} title="Ponto de partida">
                     <IconOrigem width={35} height={35} />
                 </Marker>
-                
-                {/* Marcador do Destino Final */}
-                {/* CORREÇÃO: Usando destino.lat e destino.lng */}
+
                 <Marker coordinate={{ latitude: destino.lat, longitude: destino.lng }} title="Destino final">
                     <Ionicons name="flag" size={30} color="#3498db" />
                 </Marker>
 
-                {/* CORREÇÃO: O <MapViewDirections /> FOI REMOVIDO DAQUI */}
                 
             </MapView>
 
@@ -105,19 +90,21 @@ export default function CallCompleted({ route, navigation }) {
                             </View>
                         </View>
                     </View>
-                    <View style={styles.separatorLine} />
-                    <View style={styles.timeContainer}>
+                </View>
+                <View style={styles.separatorLine} />
+                <View style={styles.timeContainer}>
                     <Text style={styles.timeText}>
-                        {guincheiro.name} Bob concluiu o transporte do seu veiculo.
+                        <Text style={styles.timeHighlight}>{guincheiro.name}</Text> concluiu o transporte do seu veículo{' '}
+                        <Text style={styles.timeHighlight}></Text>
                     </Text>
                 </View>
-
-                </View>
+                <View style={styles.buttonContainer}>
                 <Button
-                    text={isLoading ? <ActivityIndicator color="#fff" /> : 'Finalizar e Avaliar'}
+                    text={isLoading ? <ActivityIndicator color="#fff" /> : 'Finalizar'}
                     onPress={handleFinalizar}
                     disabled={isLoading}
                 />
+            </View>
             </View>
         </View>
     );

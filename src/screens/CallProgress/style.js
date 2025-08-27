@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
 
   vehicleTextContainer: {
     flex: 1,
+    bottom:10
   },
 
   // Mantém os mesmos estilos de tipografia da tela concluída
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F284E',
     lineHeight: 22,
+    textAlign:'center'
   },
 
   timeHighlight: {

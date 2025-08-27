@@ -61,8 +61,10 @@ export default function MainHome({navigation}) {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         }}
+
+                        mapType="standard"
                         showsBuildings={true}
-                        style={{ flex: 1 }}
+                        style={styles.map}
                         showsMyLocationButton={true}
                         provider="google"
                     >
@@ -124,5 +126,8 @@ const styles = StyleSheet.create({
         zIndex:10,
         borderRadius:3,
         borderColor:'#EF8108'
+    },
+    map:{
+        flex:1,
     }
 });

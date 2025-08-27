@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontFamily:'Poppins-SemiBold',
     flex: 1,
-   
   },
 
   guincheiroCalls: {
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F284E',
     lineHeight: 22,
+
   },
 
   timeHighlight: {
@@ -158,30 +158,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
-  phoneButton: {
-    backgroundColor: '#F5F5F5',
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    borderTopRightRadius: 0,
-    left: 20,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  chatButton: {
-    backgroundColor: '#F5F5F5',
-    borderBottomRightRadius: 25,
-    borderTopRightRadius: 25,
-    right: 20,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-
   separatorLine: {
     height: 1,
     backgroundColor: '#E0E0E0',
     marginVertical: 16,
   },
+
+  buttonContainer:{
+    alignItems:'center',
+    marginBottom:20
+  }
 });
 
 export default styles;

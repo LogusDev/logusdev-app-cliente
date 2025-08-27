@@ -214,7 +214,7 @@ const confirmationRide = async () => {
         <TextInput
           style={[styles.input, { flex: 1, marginTop: 50 }]}
           placeholder="Local de origem"
-          placeholderTextColor="#888"
+          placeholderTextColor="#000000"
           value={origem}
           onChangeText={(text) => {
             setOrigem(text);
@@ -248,7 +248,7 @@ const confirmationRide = async () => {
       <TextInput
         style={styles.input}
         placeholder="Destino"
-        placeholderTextColor="#888"
+        placeholderTextColor="#000000"
         value={destino}
         onChangeText={(text) => {
           setDestino(text);
@@ -290,7 +290,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 15,
     elevation: 3,
-    marginTop: 50
+    marginTop: 50,
+    color:'#000000'
   },
   suggestionsBox: {
     backgroundColor: '#fff',
@@ -320,12 +321,12 @@ const styles = StyleSheet.create({
   primaryText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#222',
+    color: '#000000',
   },
   secondaryText: {
     fontSize: 14,
-    color: '#777',
-    marginTop: 2,
+    color: '#000000',
+    marginTop: 2, 
   },
   confirmButton: {
     marginTop: 30,
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmText: {
-    color: '#fff',
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },

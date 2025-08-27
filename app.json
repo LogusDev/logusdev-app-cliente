@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "plugins": [
       [
         "expo-location",
@@ -39,11 +39,10 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "logusdev.guinchaqui",
-       "usesCleartextTraffic": true
+      "package": "logusdev.guinchaqui"
     },
     "web": {
-        "favicon": "./assets/favicon.png"
+        "favicon": "./assets/icon.png"
       },
     "extra": {
       "eas": {
