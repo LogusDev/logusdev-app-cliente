@@ -7,6 +7,7 @@ import Logo from "../../components/Logo"
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
+import socket, { connectSocket } from "../../services/socket.js";
 
 
 export default function Login(){
@@ -15,6 +16,34 @@ export default function Login(){
     const navigation = useNavigation();
 
     const {login} = useContext(UserContext);
+
+    function setupSocketListeners() {
+        if (!socket) return;
+
+        socket.on('connect', () => {
+            console.log("Socket conectado!");
+        });
+
+        socket.on("rideStatusUpdate", (data) => {
+            console.log("Atualização de status da corrida:", data);
+        })
+
+        socket.on("notification", (data) => {
+            console.log("Nova notificação recebida:", data);
+        })
+
+        socket.on("chatMessage", (msg) => {
+            console.log("Nova mensagem de chat recebida:", msg);
+        });
+
+        socket.on("newRide", (ride) => {
+            console.log("Nova corrida recebida:", ride)
+        })
+
+        socket.on('disconnect', () => {
+            console.log("Socket desconectado!");
+        })
+    }
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -39,6 +68,8 @@ export default function Login(){
             console.log('Tentando fazer login com:', {email, password});
             const response = await login({email,senha:password});
             alert('Login efetuado com sucesso!');
+            connectSocket(response.token);
+            setupSocketListeners();
             navigation.navigate('MainHome');
         } catch (error) {
             alert('Erro ao fazer login. Verifique suas credenciais e tente novamente.');}

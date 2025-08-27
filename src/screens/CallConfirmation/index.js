@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import { getVehicles } from '../../services/registerUser';
 import IconOrigem from '../../components/IconOrigem';
-import socket from '../../services/socket';
+import socket, { offEvent, onEvent } from '../../services/socket';
 
 export default function CallConfirmation({ route, navigation }) {
     const { origem, destino, veiculo } = route.params;
@@ -28,6 +28,19 @@ export default function CallConfirmation({ route, navigation }) {
 
     useEffect(() => {
         fetchVehicles();
+    }, []);
+
+    
+    useEffect(() => {
+      function handleRideStatusUpdate(data) {
+          console.log("Atualização de status da corrida:", data);
+      }
+
+      onEvent("rideStatusUpdate", handleRideStatusUpdate);
+
+      return () => {
+          offEvent("rideStatusUpdate", handleRideStatusUpdate);
+      };
     }, []);
 
 
