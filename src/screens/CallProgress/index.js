@@ -1,0 +1,263 @@
+import React, { useRef, useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
+import styles from './style';
+import { UserContext } from '../../contexts/UserContext';
+import { useContext } from 'react';
+import IconOrigem from '../../components/IconOrigem';
+import Guincho from '../../assets/images/guincho.svg';
+import MapViewDirections from 'react-native-maps-directions';
+import { driverSearch } from '../../services/driver';
+
+export default function CallProgress({ route, navigation }) {
+    const { origem, destino, callId, guincheiroInfo } = route.params;
+    const mapRef = useRef(null);
+    const { user } = useContext(UserContext);
+    const [distance, setDistance] = useState(null);
+    const [duration, setDuration] = useState(null);
+    const [chegada, setChegada] = useState(false);
+    const [etapaViagem, setEtapaViagem] = useState('guincheiro_a_caminho');
+
+    const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
+
+
+    console.log('guincheiroInfo', guincheiroInfo?.nome)
+
+    const guincheiro = {
+        name: guincheiroInfo?.nome || "Bob Santos", // sem .guincheiro
+        calls: 1593,
+        rating: 4.9,
+        phone: guincheiroInfo?.telefone || "123-456-7890",
+        photo: "https://fielmanchete.com/storage/media-items/images/2025/04/craque-neto_20250405051606.webp",
+        latitude: -23.647832358184974,
+        longitude: -46.82858992350528
+    };
+
+
+    -23.647832358184974, -46.82858992350528
+
+    -23.64435954525415, -46.83947866787124
+
+
+    -23.647841027106956, -46.82946651298266
+
+    const [guincheiroPos, setGuincheiroPos] = useState({
+        latitude: guincheiro.latitude,
+        longitude: guincheiro.longitude,
+    });
+
+    useEffect(() => {
+        setGuincheiroPos({ latitude: guincheiro.latitude, longitude: guincheiro.longitude });
+    }, [guincheiro.latitude, guincheiro.longitude]);
+
+    const vehicle = {
+        model: "Atego 1726",
+        color: "Branco",
+        brand: "Mercedes-Benz",
+        year: 2010,
+        dimensions: "8m x 2.60m x 4m",
+        licensePlate: "ABC1D23"
+    };
+
+    
+    useEffect(() => {
+        if (distance === null) return;
+
+        if (etapaViagem === 'guincheiro_a_caminho' && distance < 0.1) {
+            console.log("Chegou na origem, mudando para a etapa 2.");
+            setEtapaViagem('levando_ao_destino');
+            setDistance(null);
+        }
+        
+        else if (etapaViagem === 'levando_ao_destino' && distance < 0.1) {
+            console.log("Chegou ao destino final! Navegando...");
+            navigation.replace('CallCompleted', {
+                origem, destino, guincheiro, vehicle, callId,
+            });
+        }
+
+    }, [distance, etapaViagem, navigation]);
+
+
+
+    let rotaOrigem, rotaDestino;
+
+    if (etapaViagem === 'guincheiro_a_caminho') {
+    rotaOrigem = { latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude };
+    rotaDestino = { latitude: origem.lat, longitude: origem.lng };
+    console.log(callId);
+    console.log(etapaViagem);
+    } else {
+        rotaOrigem = { latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude };
+        rotaDestino = { latitude: destino.lat, longitude: destino.lng };
+    }
+
+
+    const onMapReady = () => {
+        if (mapRef.current && origem && destino) {
+            mapRef.current.fitToCoordinates(
+                [
+                    { latitude: origem.lat, longitude: origem.lng },
+                    { latitude: destino.lat, longitude: destino.lng }
+                ],
+                {
+                    edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+                    animated: true
+                }
+            );
+        }
+    };
+
+    const call = {
+        distance: "11 minutos"
+    };
+
+    const handleCall = () => {
+        // Implementar chamada telefônica
+        console.log('Ligando para:', guincheiro.phone);
+    };
+
+    const handleChat = () => {
+        // Navegar para tela de chat
+        navigation.navigate('Chat', { guincheiro, call });
+    };
+
+    return (
+        <View style={styles.container}>
+            <MapView
+                provider="google"
+                ref={mapRef}
+                style={styles.map}
+                onMapReady={onMapReady}
+                showsBuildings={true}
+                initialRegion={{
+                    latitude: origem.lat,
+                    longitude: origem.lng,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                }}
+            >
+                <Marker
+                    coordinate={{ latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude }}
+                    title="Guincheiro"
+                    anchor={{ x: 0.5, y: 0.5 }}
+                >
+                    <Guincho width={35} height={35} />
+                </Marker>
+
+                {etapaViagem === 'guincheiro_a_caminho' ? (
+                    <Marker
+                        coordinate={{ latitude: origem.lat, longitude: origem.lng }}
+                        title="Você"
+                        description={origem.endereco}
+                    >
+                        <IconOrigem width={35} height={35} />
+                    </Marker>
+                ) : (
+                    <Marker
+                        coordinate={{ latitude: destino.lat, longitude: destino.lng }}
+                        title="Destino final"
+                        description={destino.endereco}
+                    >
+                        <Ionicons name="flag" size={30} color="#3498db" />
+                    </Marker>
+                )}
+                
+                {origem && destino && (
+                    <MapViewDirections
+                        key={etapaViagem}
+                        origin={rotaOrigem} 
+                        destination={rotaDestino}
+                        apikey={GOOGLE_API_KEY}
+                        strokeWidth={3}
+                        precision='high'
+                        strokeColor="#EF8108"
+                        mode='driving'
+                        onReady={result => {
+                            setDistance(result.distance);
+                            setDuration(result.duration);
+                            mapRef.current.fitToCoordinates(result.coordinates, {
+                                edgePadding: { top: 100, right: 50, bottom: 100, left: 50 },
+                                animated: true
+                            });
+                        }}
+                    />
+                )}
+            </MapView>
+
+            <View style={styles.infoContainer}>
+                <Text style={styles.sectionTitle}>Situação do chamado:</Text>
+
+                {/* GUINCHEIRO */}
+                <View style={styles.guincheiroContainer}>
+                    <Image
+                        style={styles.guincheiroImage}
+                        source={{ uri: guincheiro.photo }}
+                    />
+                    <View style={styles.guincheiroInfo}>
+                        <View style={styles.nameRatingRow}>
+                            <Text style={styles.guincheiroName}>{guincheiro.name || ''}</Text>
+                            <View style={styles.ratingContainer}>
+                                <Text style={styles.ratingText}>{guincheiro.rating}★</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.guincheiroCalls}>
+                            Mais de {guincheiro.calls} chamados atendidos
+                        </Text>
+                        
+                        {/* INFORMAÇÕES DO VEÍCULO DENTRO DO MESMO CONTAINER */}
+                        <View style={styles.vehicleInfoInline}>
+                            <View style={styles.vehicleTextContainer}>
+                                <Text style={styles.vehicleModel}>
+                                    {vehicle.model} - {vehicle.color}
+                                </Text>
+                                <Text style={styles.vehicleDetails}>
+                                    {vehicle.brand} {vehicle.year} - {vehicle.dimensions}
+                                </Text>
+                                <Text style={styles.licensePlate}>
+                                    Placa: {vehicle.licensePlate}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.separatorLine} />
+
+                {/* TEMPO ESTIMADO */}
+                {!chegada ?(
+                <View style={styles.timeContainer}>
+                    <Text style={styles.timeText}>
+                        <Text style={styles.timeHighlight}>{guincheiro.name || 'Nome não disponível'}</Text> está a{' '}
+                        <Text style={styles.timeHighlight}>{Math.ceil(duration)}</Text> minutos do local destinado
+                    </Text>
+                </View>
+                ) : (
+                    <View style={styles.timeContainer}>
+                    <Text style={styles.timeText}>
+                        <Text style={styles.timeHighlight}>{guincheiro.name || 'Nome não disponível'}</Text>{' '}
+                            chegou ao local destinado!
+                    </Text>
+                </View>
+                )}
+
+                {/* BOTÕES DE COMUNICAÇÃO */}
+                <View style={styles.communicationContainer}>
+                    <TouchableOpacity
+                        style={[styles.communicationButton, styles.phoneButton]}
+                        onPress={handleCall}
+                    >
+                        <Ionicons name="call" size={24} color="#4a4a4a" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.communicationButton, styles.chatButton]}
+                        onPress={handleChat}
+                    >
+                        <Ionicons name="chatbubble-ellipses" size={24} color="#4a4a4a" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+    );
+}

@@ -5,10 +5,10 @@ import { uploadFotoPorEmail } from '../../services/upload.js';
 import styles from './styles.js';
 import Button from '../../components/Button/index.js';
 import PhotoPicker from '../../components/PhotoPicker/index.js';
-import { registerUser } from '../../services/registerUser.js';
+import { registerUser } from '../../services/services.js';
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
-import { createVehicle } from '../../services/registerUser.js';
+import { createVehicle } from '../../services/services.js';
 import Logo from '../../components/Logo/index.js';
 
 export default function Register3({ route, navigation }) {

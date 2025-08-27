@@ -13,6 +13,7 @@ import Button from '../Button';
 import { useNavigation } from '@react-navigation/native';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import TextInputComponent from '../TextInput';
+import { getCurrentPositionAsync } from 'expo-location';
 
 // Função para limpar sufixos indesejados dos endereços
 function limparEndereco(endereco) {
@@ -32,9 +33,9 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   const [sugestoesDestino, setSugestoesDestino] = useState([]);
   const [origemSelecionada, setOrigemSelecionada] = useState(null);
   const [destinoSelecionada, setDestinoSelecionada] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   const navigation = useNavigation();
-
 
   const buscarSugestoes = async (input, setSugestoes) => {
     if (input.length < 2) {
@@ -115,85 +116,128 @@ export default function GooglePlaces({userLocation, onConfirm }) {
     setDestinoSelecionada(item);
   };
 
-
   const getPlaceDetails = async (placeId) => {
-  try {
-    const response = await axios.get(
-      'https://maps.googleapis.com/maps/api/place/details/json',
-      {
-        params: {
-          place_id: placeId,
-          key: GOOGLE_API_KEY,
-        },
-      }
-    );
+    try {
+      const response = await axios.get(
+        'https://maps.googleapis.com/maps/api/place/details/json',
+        {
+          params: {
+            place_id: placeId,
+            key: GOOGLE_API_KEY,
+          },
+        }
+      );
 
-    const location = response.data.result.geometry.location;
-    return {
-      latitude: location.lat,
-      longitude: location.lng,
-    };
+      const location = response.data.result.geometry.location;
+      return {
+        latitude: location.lat,
+        longitude: location.lng,
+      };
     } catch (error) {
       console.error('Erro ao buscar detalhes:', error);
       return null;
     }
   };
 
-  const confirmationRide = async () => {
+  // Em GooglePlaces.js
 
-    const origemCoords = await getPlaceDetails(origemSelecionada.place_id);
-    const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
-     if (!origemCoords || !destinoCoords) {
-      console.error("Erro ao buscar coordenadas.");
-      return;
+const confirmationRide = async () => {
+    try {
+        let origemFinal, destinoFinal;
+
+        if (origemSelecionada.lat && origemSelecionada.lng) {
+            origemFinal = {
+                lat: origemSelecionada.lat,
+                lng: origemSelecionada.lng,
+                endereco: limparEndereco(origemSelecionada.endereco),
+            };
+        } else {
+            const coords = await getPlaceDetails(origemSelecionada.place_id);
+            if (!coords) throw new Error("Não foi possível obter as coordenadas da origem.");
+            origemFinal = {
+                lat: coords.latitude,
+                lng: coords.longitude,
+                endereco: limparEndereco(origemSelecionada.description),
+            };
+        }
+
+        const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
+        if (!destinoCoords) throw new Error("Não foi possível obter as coordenadas do destino.");
+        
+        destinoFinal = {
+            lat: destinoCoords.latitude,
+            lng: destinoCoords.longitude,
+            endereco: limparEndereco(destinoSelecionada.description),
+        };
+        console.log("Navegando com dados válidos:", { origem: origemFinal, destino: destinoFinal });
+
+        navigation.navigate('CallConfirmation', {
+            origem: origemFinal,
+            destino: destinoFinal,
+        });
+
+    } catch (error) {
+        console.error("Erro na confirmação da corrida:", error.message);
+        alert("Ocorreu um erro ao confirmar os locais. Por favor, tente novamente.");
     }
+  };
 
-    if (onConfirm) {
-    onConfirm({
-      origem: origemSelecionada,
-      destino: destinoSelecionada,
+  async function handleUseCurrentLocation() {
+    setLoadingLocation(true);
+    try {
+      const position = await getCurrentPositionAsync({});
+      const { latitude, longitude } = position.coords;
+
+      // Buscar endereço pelo reverse geocoding
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`
+      );
+      const endereco = response.data.results[0]?.formatted_address || 'Localização atual';
+
+      setOrigem(endereco);
+      setOrigemSelecionada({
+        endereco,
+        lat: latitude,
+        lng: longitude,
+        titulo: 'Localização atual'
       });
+    } catch (error) {
+      alert('Não foi possível obter sua localização.');
     }
-    onConfirm &&
-              onConfirm({
-                origem: origemSelecionada,
-                destino: destinoSelecionada,
-              })
-              getPlaceDetails(origemSelecionada.place_id)
-      navigation.navigate('CallConfirmation', {
-      origem: {
-        lat: origemCoords.latitude,
-        lng: origemCoords.longitude,
-        endereco: limparEndereco(origemSelecionada.description),
-      },
-      destino: {
-        lat: destinoCoords.latitude,
-        lng: destinoCoords.longitude,
-        endereco: limparEndereco(destinoSelecionada.description),
-      },
-      veiculo: {
-        modelo: 'Fusca',
-        ano: '1970',
-        tamanho: 'Pequeno',
-      },
-    });
+    setLoadingLocation(false);
   }
 
   return (
     <View style={styles.container}>
       {/* ORIGEM */}
-      <View>
-      <TextInput
-        style={styles.input}
-        placeholder="Local de origem"
-        placeholderTextColor="#888"
-        value={origem}
-        onChangeText={(text) => {
-          setOrigem(text);
-          setOrigemSelecionada(null);
-        }}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          style={[styles.input, { flex: 1, marginTop: 50 }]}
+          placeholder="Local de origem"
+          placeholderTextColor="#000000"
+          value={origem}
+          onChangeText={(text) => {
+            setOrigem(text);
+            setOrigemSelecionada(null);
+          }}
+        />
+        <TouchableOpacity
+          style={{
+            
+            backgroundColor: '#F3F3F3',
+            borderRadius: 20,
+            padding: 6,
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 2,
+          }}
+          onPress={handleUseCurrentLocation}
+          disabled={loadingLocation}
+        >
+          <Ionicons name="locate" size={20} color="#EF8108" />
+        </TouchableOpacity>
       </View>
+      
       {sugestoesOrigem.length > 0 && (
         <View style={styles.suggestionsBox}>
           {renderSugestoes(sugestoesOrigem, handleSelecionarOrigem)}
@@ -204,7 +248,7 @@ export default function GooglePlaces({userLocation, onConfirm }) {
       <TextInput
         style={styles.input}
         placeholder="Destino"
-        placeholderTextColor="#888"
+        placeholderTextColor="#000000"
         value={destino}
         onChangeText={(text) => {
           setDestino(text);
@@ -219,10 +263,10 @@ export default function GooglePlaces({userLocation, onConfirm }) {
 
       {/* BOTÃO DE CONFIRMAR */}
       {origemSelecionada && destinoSelecionada && (
-        <View style={{justifyContent:"center",alignItems:"center"}}>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Button
-          text="Confirmar"
-          onPress={confirmationRide}
+            text="Confirmar"
+            onPress={confirmationRide}
           />
         </View>
       )}
@@ -246,7 +290,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 15,
     elevation: 3,
-    marginTop:50
+    marginTop: 50,
+    color:'#000000'
   },
   suggestionsBox: {
     backgroundColor: '#fff',
@@ -276,12 +321,12 @@ const styles = StyleSheet.create({
   primaryText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#222',
+    color: '#000000',
   },
   secondaryText: {
     fontSize: 14,
-    color: '#777',
-    marginTop: 2,
+    color: '#000000',
+    marginTop: 2, 
   },
   confirmButton: {
     marginTop: 30,
@@ -291,7 +336,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmText: {
-    color: '#fff',
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },

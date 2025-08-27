@@ -35,3 +35,4 @@ export const getVehicles = async (userId) => {
         throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
     }
 }
+

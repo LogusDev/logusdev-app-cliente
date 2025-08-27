@@ -61,9 +61,12 @@ export default function MainHome({navigation}) {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         }}
+
+                        mapType="standard"
                         showsBuildings={true}
-                        style={{ flex: 1 }}
+                        style={styles.map}
                         showsMyLocationButton={true}
+                        provider="google"
                     >
                         <Marker
                             coordinate={{
@@ -94,7 +97,7 @@ export default function MainHome({navigation}) {
                     borderColor: '#EAEAEA',
                   }}
                   onPress={() => {
-                    navigation.navigate('OrigemDestino',{userLocation: location});
+                    navigation.navigate('OriginDestiny',{userLocation: location});
                   }}
                 >
                     <Ionicons name="map-outline" size={15}  />
@@ -123,5 +126,8 @@ const styles = StyleSheet.create({
         zIndex:10,
         borderRadius:3,
         borderColor:'#EF8108'
+    },
+    map:{
+        flex:1,
     }
 });

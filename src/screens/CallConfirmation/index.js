@@ -6,7 +6,7 @@ import Button from '../../components/Button';
 import styles from './style';
 import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
-import { getVehicles } from '../../services/registerUser';
+import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
 import socket, { offEvent, onEvent } from '../../services/socket';
 
@@ -65,6 +65,7 @@ export default function CallConfirmation({ route, navigation }) {
         ref={mapRef}
         style={styles.map}
         onMapReady={onMapReady}
+        key={'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U'}
         initialRegion={{
           latitude: origem.lat,
           longitude: origem.lng,

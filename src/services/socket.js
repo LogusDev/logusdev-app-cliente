@@ -27,7 +27,7 @@ export function requestRideStatus(rideId) {
 }
 
 export function onEvent(event, callback) {
-    socket.ont(event, callback);
+    socket.on(event, callback);
 }
 
 export function offEvent(event, callback) {

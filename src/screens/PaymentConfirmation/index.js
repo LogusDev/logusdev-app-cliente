@@ -6,9 +6,10 @@ import Button from '../../components/Button';
 import styles from './style';
 import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
-import { getVehicles } from '../../services/registerUser';
+import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
 import socket from '../../services/socket';
+import { createCall } from '../../services/calls';
 
 export default function PaymentConfirmation({ route, navigation }) {
     const { origem, destino, actualVehicle } = route.params;
@@ -16,7 +17,12 @@ export default function PaymentConfirmation({ route, navigation }) {
     const { user } = useContext(UserContext);
     const [metodoPagamento, setMetodoPagamento] = useState("pix");
 
+    const [pix, setPix] = useState(false);
+    const [dinheiro, setDinheiro] = useState(false);
+    const [cartao, setCartao] = useState(false);
 
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
         mapRef.current.fitToCoordinates(
@@ -104,6 +110,39 @@ export default function PaymentConfirmation({ route, navigation }) {
           handlePaymentConfirmation();
           console.log(destino)} 
         } />
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Pix</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Dinheiro</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.paymentOption}>
+            <Text style={styles.paymentOptionText}>Cartão</Text>
+        </TouchableOpacity>
+
+        {/* Botão Buscar */}
+        <Button
+          text="Buscar"
+          onPress={async () => {
+            try {
+              const payload = {
+                latitude_inicial: origem.lat,
+                longitude_inicial: origem.lng,
+                latitude_final: destino.lat,
+                longitude_final: destino.lng,
+                descricao: 'Chamado via app',
+                carro_id: actualVehicle?.id,
+                cliente_id: user?.id,
+              };
+              const novo = await createCall(payload);
+              navigation.navigate('SearchCall', { origem, destino, actualVehicle, callId: novo.id });
+            } catch (e) {
+              alert('Não foi possível criar o chamado. Tente novamente.');
+            }
+          }}
+        />
         </View>
     </View>
   );
