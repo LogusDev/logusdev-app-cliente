@@ -1,4 +1,3 @@
-import React from 'react';
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
   vehicleInfoInline: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 8,
+    marginBottom: 8,
   },
 
   vehicleTextContainer: {
@@ -167,7 +166,22 @@ const styles = StyleSheet.create({
   buttonContainer:{
     alignItems:'center',
     marginBottom:20
-  }
+  },
+
+  vehicleModel: {
+    fontSize: 14,
+    color: '#1F284E',
+    
+  },
+  vehicleDetails: {
+    fontSize: 12,
+    color: '#666',
+  },
+  licensePlate: {
+    fontSize: 12,
+    color: '#1F284E',
+    fontWeight: 'bold',
+  },
 });
 
 export default styles;

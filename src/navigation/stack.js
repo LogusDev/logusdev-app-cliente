@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import React from 'react';
 import 'react-native-get-random-values';
 
 import Login from '../screens/Login/';
@@ -22,7 +21,17 @@ import CallProgress from '../screens/CallProgress';
 import CallCompleted from '../screens/CallCompleted';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator({
+    screens:{
+        EditProfile: {
+            Screen:EditProfile,
+            options:{
+                headerBackTitle:'Voltar',
+                headerBackTitleStyle:{fontSize:10}
+            }
+        }
+    }
+});
 
 export default function StackNavigator(){
     return(

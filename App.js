@@ -1,6 +1,7 @@
 import StackNavigator from './src/navigation/stack';
 import * as Font from 'expo-font';
 import { useFonts } from 'expo-font';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
 
@@ -17,6 +18,9 @@ export default function App() {
   }
 
   return (
-  <StackNavigator/>
+  <>
+    <StackNavigator/>
+    <Toast/>
+  </>
   )
 }

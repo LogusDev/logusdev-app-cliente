@@ -21,6 +21,8 @@ export default function SearchCall({ route, navigation }) {
     const { user } = useContext(UserContext);
     const [videoReady, setVideoReady] = useState(false);
     const [guincheiroInfo, setGuincheiroInfo] = useState(null);
+    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+
 
 
     // polling do status
@@ -78,8 +80,6 @@ export default function SearchCall({ route, navigation }) {
         }, [callId, navigation, origem, destino, actualVehicle])
     );
 
-    // Substitua esta chave pela sua chave real da Google Maps API.
-    const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
 
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {

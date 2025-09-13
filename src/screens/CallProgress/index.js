@@ -8,7 +8,6 @@ import { useContext } from 'react';
 import IconOrigem from '../../components/IconOrigem';
 import Guincho from '../../assets/images/guincho.svg';
 import MapViewDirections from 'react-native-maps-directions';
-import { driverSearch } from '../../services/driver';
 
 export default function CallProgress({ route, navigation }) {
     const { origem, destino, callId, guincheiroInfo } = route.params;
@@ -19,28 +18,33 @@ export default function CallProgress({ route, navigation }) {
     const [chegada, setChegada] = useState(false);
     const [etapaViagem, setEtapaViagem] = useState('guincheiro_a_caminho');
 
-    const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
+    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+
 
 
     console.log('guincheiroInfo', guincheiroInfo?.nome)
 
     const guincheiro = {
-        name: guincheiroInfo?.nome || "Bob Santos", // sem .guincheiro
+        name: guincheiroInfo?.nome || "Bob Santos",
         calls: 1593,
         rating: 4.9,
         phone: guincheiroInfo?.telefone || "123-456-7890",
         photo: "https://fielmanchete.com/storage/media-items/images/2025/04/craque-neto_20250405051606.webp",
-        latitude: -23.647832358184974,
-        longitude: -46.82858992350528
+        latitude: -23.632899963150052,
+        longitude: -46.78679058962039
     };
 
+    -23.585560645299317, -46.68307517700226 //itaim
 
-    -23.647832358184974, -46.82858992350528
+    -23.631670671763185, -46.78601038499403 //rua clara muchini
 
-    -23.64435954525415, -46.83947866787124
+    -23.628097429242555, -46.79256090559714 // rua angelina
 
+ -23.632899963150052, -46.78679058962039
 
-    -23.647841027106956, -46.82946651298266
+    
+
+    //avenida paulista _ itaim
 
     const [guincheiroPos, setGuincheiroPos] = useState({
         latitude: guincheiro.latitude,
