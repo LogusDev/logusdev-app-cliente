@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 import StarRating from "react-native-star-rating-widget";
-import Button from "../../components/Button/index"; // Reutilize seu componente de botão
+import Button from "../../components/Button/index"; 
 import styles from './style';
-import { ratingCall } from '../../services/calls'; // Verifique o caminho da sua API
+import { ratingCall } from '../../services/calls'; 
 
-// O Modal recebe os dados e as funções de controle como props
 export default function RatingModal({ visible, onClose, guincheiro, vehicle, callId, navigation }) {
     const [rating, setRating] = useState(0);
     const [comentario, setComentario] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Reseta o estado do modal sempre que ele for fechado e reaberto
     useEffect(() => {
         if (visible) {
             setRating(0);
@@ -27,9 +25,7 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
         setIsLoading(true);
         try {
             await ratingCall({ nota: rating, comentario, chamado_id: callId });
-            // Após enviar, fecha o modal
             onClose(); 
-            // Opcional: navegar para a home após fechar
             navigation.navigate('MainHome');
         } catch (error) {
             console.error("Erro ao enviar avaliação:", error);
@@ -39,7 +35,6 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
         }
     };
 
-    // Não renderiza nada se não houver dados
     if (!guincheiro || !vehicle) {
         return null;
     }
@@ -49,14 +44,13 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={onClose} // Permite fechar com o botão "voltar" do Android
+            onRequestClose={onClose}
         >
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.modalOverlay}
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    {/* View para capturar o toque fora do modal e fechar */}
                     <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onClose} />
 
                     <View style={styles.modalContent} onStartShouldSetResponder={() => true}>

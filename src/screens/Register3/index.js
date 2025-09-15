@@ -14,9 +14,29 @@ import Logo from '../../components/Logo/index.js';
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada,categoria } = route.params;
+  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada } = route.params;
 
   const {login} = useContext(UserContext);
+
+  const successAlert = () => {
+          Toast.show({
+              type:'success',
+              text1:'Usuário cadastrado com sucesso',
+              position:'top',
+              visibilityTime:1500,
+          })
+      }
+
+  const errorAlert = () => {
+          Toast.show({
+              type:'error',
+              text1:'Erro ao cadastrar',
+              text2:'Verifique suas credenciais e tente novamente',
+              position:'bottom',
+              visibilityTime:1500,
+              bottomOffset:300
+          })
+      }
 
   const handleSelectImage = async () => {
     try {
@@ -46,7 +66,6 @@ export default function Register3({ route, navigation }) {
     return await uploadFotoPorEmail(email, imagem);
   };
 
-  // ...existing code...
 
 const handleSignIn = async () => {
   if (!selectedImage) {
@@ -70,7 +89,7 @@ const handleSignIn = async () => {
       telefone: unmaskedPhone,
       email,
       senha: password,
-      cnh_num,
+      cnh_num: "ABC12345671",
       foto_url: uploadResult.data.fotoUrl
     };
     const userRes = await registerUser(userData);
@@ -78,11 +97,6 @@ const handleSignIn = async () => {
 
     const id = userRes.id;
 
-    /*const loginResult = await login({ email, senha: password });
-    console.log('Login result:', loginResult);
-
-    const id = loginResult.id;
-    console.log('ID do usuário:', id);*/
 
     const ano = anoSelecionado.slice(0, -2)
 
@@ -98,14 +112,14 @@ const handleSignIn = async () => {
     const vehicleRes = await createVehicle(vehicleData);
     console.log('Veículo cadastrado:', vehicleRes);
 
-    alert('Cadastro realizado com sucesso!');
+    successAlert();
     navigation.navigate('Login', {
       fotoUrl: uploadResult.data.fotoUrl
     });
 
   } catch (error) {
     console.error('Erro ao cadastrar', error);
-    Alert.alert('Erro', error.message || 'Erro ao cadastrar');
+    errorAlert();
   } finally {
     setIsLoading(false);
   }
