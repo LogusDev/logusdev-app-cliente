@@ -15,8 +15,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalContent: {
-    width: '90%',
-    maxWidth: 400,
+    width: '80%',
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 24,
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
   },
   commentPrompt: {
     fontSize: 15,
-    color: '#333',
+    color: '#000000',
     marginTop: 15,
     fontFamily: 'Poppins-Regular',
     alignSelf: 'flex-start',
@@ -111,6 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlignVertical: 'top',
     fontSize: 14,
+    color:'#000000'
   },
 });
 

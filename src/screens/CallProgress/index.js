@@ -30,8 +30,8 @@ export default function CallProgress({ route, navigation }) {
         rating: 4.9,
         phone: guincheiroInfo?.telefone || "123-456-7890",
         photo: "https://fielmanchete.com/storage/media-items/images/2025/04/craque-neto_20250405051606.webp",
-        latitude: -23.632899963150052,
-        longitude: -46.78679058962039
+        latitude: -23.628097429242555,
+        longitude: -46.79256090559714
     };
 
     -23.585560645299317, -46.68307517700226 //itaim

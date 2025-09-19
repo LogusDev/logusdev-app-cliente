@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
 import { createVehicle } from '../../services/services.js';
 import Logo from '../../components/Logo/index.js';
+import Toast from 'react-native-toast-message';
 
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -129,7 +130,7 @@ const handleSignIn = async () => {
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#ffffff" />
       ) : (
         <>
           <StatusBar barStyle={'light-content'} />
