@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useRef, useEffect, useState, use } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Button'; 
@@ -9,11 +9,13 @@ import { useContext } from 'react';
 import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
 
+
 export default function CallConfirmation({ route, navigation }) {
     const { origem, destino, veiculo } = route.params;
     const mapRef = useRef(null);
     const { user } = useContext(UserContext);
     const [actualVehicle, setActualVehicles] = useState();
+    const [isLoading,setIsLoading] = useState(false)
 
 
     const fetchVehicles = async () => {
@@ -51,6 +53,7 @@ export default function CallConfirmation({ route, navigation }) {
         ref={mapRef}
         style={styles.map}
         onMapReady={onMapReady}
+        key={'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U'}
         initialRegion={{
           latitude: origem.lat,
           longitude: origem.lng,
@@ -126,13 +129,13 @@ export default function CallConfirmation({ route, navigation }) {
         <View style={styles.infoItem}>
             <Ionicons name="car-sport" size={24} color="#FFA500" style={styles.infoIcon} />
             <View style={styles.textContainer}>
-            <Text style={styles.placeTitle}>{actualVehicle?.modelo}</Text>
-            <Text style={styles.placeAddress}>{actualVehicle?.marca} • {actualVehicle?.ano_fabricacao}</Text>
+            {isLoading ?  <ActivityIndicator color="#fff" /> : <Text style={styles.placeTitle}>{actualVehicle?.modelo}</Text>}
+            {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.placeAddress}>{actualVehicle?.marca} • {actualVehicle?.ano_fabricacao}</Text>}
             </View>
         </View>
 
         {/* Botão Confirmar */}
-        <Button text="Confirmar" onPress={() => navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })} />
+        {isLoading ? <ActivityIndicator color="#fff" /> : <Button text="Confirmar" onPress={() => navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })} />}
         </View>
     </View>
   );

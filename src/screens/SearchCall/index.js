@@ -13,12 +13,17 @@ import MapViewDirections from 'react-native-maps-directions';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCallStatus, cancelCall } from '../../services/calls';
 import { AppState } from 'react-native';
+import { driverSearch } from '../../services/driver';
 
 export default function SearchCall({ route, navigation }) {
     const { origem, destino, actualVehicle, callId } = route.params;
     const mapRef = useRef(null);
     const { user } = useContext(UserContext);
     const [videoReady, setVideoReady] = useState(false);
+    const [guincheiroInfo, setGuincheiroInfo] = useState(null);
+    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+
+
 
     // polling do status
     useFocusEffect(
@@ -44,7 +49,17 @@ export default function SearchCall({ route, navigation }) {
                     if (res?.status_chamado && res.status_chamado !== 'aguardando') {
                         cancelled = true;
                         if (timer) clearTimeout(timer);
-                        navigation.replace('CallProgress', { origem, destino, actualVehicle });
+                        // --- LÓGICA DE DEBUG ADICIONADA ---
+                        console.log("Status do chamado mudou. Buscando dados do guincheiro...");
+                        
+                        // 1. BUSCA OS DADOS DO GUINCHEIRO
+                        const driverData = await driverSearch(callId);
+                        console.log("Dados recebidos da API:", JSON.stringify(driverData, null, 2));
+
+                        // 2. EXTRAI O OBJETO 'GUINCHEIRO'
+                        const guincheiro = driverData?.guincheiro || null;
+                        console.log("Objeto 'guincheiro' que será enviado:", JSON.stringify(guincheiro, null, 2));
+                        navigation.replace('CallProgress', { origem, destino, actualVehicle, callId, guincheiroInfo: guincheiro });
                         return;
                     }
                     delayMs = Math.min(10000, Math.round(delayMs * 1.5));
@@ -65,8 +80,6 @@ export default function SearchCall({ route, navigation }) {
         }, [callId, navigation, origem, destino, actualVehicle])
     );
 
-    // Substitua esta chave pela sua chave real da Google Maps API.
-    const GOOGLE_API_KEY = 'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U';
 
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
@@ -184,7 +197,7 @@ export default function SearchCall({ route, navigation }) {
                     </View>
                 </View>
 
-                <Button text="Cancelar" style={{ backgroundColor: 'red' }} onPress={async () => {
+                <Button text="Cancelar" style={{...styles.button, backgroundColor: 'red' }} onPress={async () => {
                     try {
                         if (callId) await cancelCall(callId);
                     } catch {}

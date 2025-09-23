@@ -11,6 +11,7 @@ export default function TextInputComponent({label,placeholder,value,onChangeText
                 style={[styles.input, style]}
                 placeholder={placeholder}
                 value={value}
+                placeholderTextColor={'#000000'}
                 onChangeText={onChangeText}
                 secureTextEntry={secureTextEntry}
                 keyboardType={keyboardType}
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
         flex:1,
         height:45,
         color:'black',
+    
     }
 
 })

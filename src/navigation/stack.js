@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import React from 'react';
 import 'react-native-get-random-values';
 
 import Login from '../screens/Login/';
@@ -9,7 +8,7 @@ import Register1 from '../screens/Register1/';
 import Register2 from '../screens/Register2/';
 import Register3 from '../screens/Register3/';
 import EditProfile from '../screens/EditProfile';
-import OrigemDestino from '../screens/OrigemDestino';
+import OriginDestiny from '../screens/OriginDestiny';
 import Splash from '../screens/Splash';
 
 import MyTabs from './bottomTabs';
@@ -19,9 +18,20 @@ import CallConfirmation from '../screens/CallConfirmation';
 import PaymentConfirmation from '../screens/PaymentConfirmation';
 import SearchCall from '../screens/SearchCall';
 import CallProgress from '../screens/CallProgress';
+import CallCompleted from '../screens/CallCompleted';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator({
+    screens:{
+        EditProfile: {
+            Screen:EditProfile,
+            options:{
+                headerBackTitle:'Voltar',
+                headerBackTitleStyle:{fontSize:10}
+            }
+        }
+    }
+});
 
 export default function StackNavigator(){
     return(
@@ -36,11 +46,12 @@ export default function StackNavigator(){
                 <Stack.Screen name="Register3" component={Register3} />
                 <Stack.Screen name="MainHome" component={MyTabs} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
-                <Stack.Screen name="OrigemDestino" component={OrigemDestino} />
+                <Stack.Screen name="OriginDestiny" component={OriginDestiny} />
                 <Stack.Screen name="CallConfirmation" component={CallConfirmation} />
                 <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmation} />
                 <Stack.Screen name='SearchCall' component={SearchCall} />
                 <Stack.Screen name='CallProgress' component={CallProgress} />
+                <Stack.Screen name='CallCompleted' component={CallCompleted} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

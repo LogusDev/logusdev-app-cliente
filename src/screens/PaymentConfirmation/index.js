@@ -21,7 +21,37 @@ export default function PaymentConfirmation({ route, navigation }) {
 
     const [selectedPayment, setSelectedPayment] = useState(null);
 
+    const handlePaymentSelection = () => {
+      if (selectedPayment === 'pix') {
+        setSelectedPayment(null);
+        setPix(false);
+      } else {
+        setSelectedPayment('pix');
+        setPix(true);
+        setDinheiro(false);
+        setCartao(false);
+      }
 
+      if (selectedPayment === 'dinheiro') {
+        setSelectedPayment(null);
+        setDinheiro(false);
+      } else {
+        setSelectedPayment('dinheiro');
+        setDinheiro(true);
+        setPix(false);
+        setCartao(false);
+      }
+      if (selectedPayment === 'cartao') {
+        setSelectedPayment(null);
+        setCartao(false);
+      } else {
+        setSelectedPayment('cartao');
+        setCartao(true);
+        setDinheiro(false);
+        setPix(false);
+      }
+    }
+    
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
         mapRef.current.fitToCoordinates(
@@ -76,19 +106,36 @@ export default function PaymentConfirmation({ route, navigation }) {
 
       {/* DADOS CONFIRMADOS */}
       <View style={styles.infoContainer}>
-
         <Text style={styles.sectionTitle}>Opções de Pagamento:</Text>
 
-        <TouchableOpacity style={styles.paymentOption}>
-            <Text style={styles.paymentOptionText}>Pix</Text>
+        <TouchableOpacity
+          style={[
+            styles.paymentOption,
+            selectedPayment === 'pix' && { borderColor: '#EF8108', borderWidth: 2 }
+          ]}
+          onPress={() => setSelectedPayment('pix')}
+        >
+          <Text style={styles.paymentOptionText}>Pix</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.paymentOption}>
-            <Text style={styles.paymentOptionText}>Dinheiro</Text>
+        <TouchableOpacity
+          style={[
+            styles.paymentOption,
+            selectedPayment === 'dinheiro' && { borderColor: '#EF8108', borderWidth: 2 }
+          ]}
+          onPress={() => setSelectedPayment('dinheiro')}
+        >
+          <Text style={styles.paymentOptionText}>Dinheiro</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.paymentOption}>
-            <Text style={styles.paymentOptionText}>Cartão</Text>
+        <TouchableOpacity
+          style={[
+            styles.paymentOption,
+            selectedPayment === 'cartao' && { borderColor: '#EF8108', borderWidth: 2 }
+          ]}
+          onPress={() => setSelectedPayment('cartao')}
+        >
+          <Text style={styles.paymentOptionText}>Cartão</Text>
         </TouchableOpacity>
 
         {/* Botão Buscar */}
@@ -106,13 +153,13 @@ export default function PaymentConfirmation({ route, navigation }) {
                 cliente_id: user?.id,
               };
               const novo = await createCall(payload);
-              navigation.navigate('SearchCall', { origem, destino, actualVehicle, pix, callId: novo.id });
+              navigation.navigate('SearchCall', { origem, destino, actualVehicle, callId: novo.id });
             } catch (e) {
               alert('Não foi possível criar o chamado. Tente novamente.');
             }
           }}
         />
-        </View>
+      </View>
     </View>
   );
 }

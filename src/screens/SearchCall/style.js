@@ -87,7 +87,7 @@ sectionTitle: {
 infoItem: {
   flexDirection: 'row',
   alignItems: 'flex-start',
-  marginBottom: 16,
+  marginBottom: 8,
 },
 
 infoIcon: {

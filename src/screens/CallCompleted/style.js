@@ -1,4 +1,3 @@
-import React from 'react';
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
@@ -32,7 +31,6 @@ const styles = StyleSheet.create({
     fontFamily:'Poppins-SemiBold'
   },
 
-  // Estilos para o guincheiro
   guincheiroContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -69,7 +67,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontFamily:'Poppins-SemiBold',
     flex: 1,
-   
   },
 
   guincheiroCalls: {
@@ -83,27 +80,11 @@ const styles = StyleSheet.create({
   vehicleInfoInline: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 8,
+    marginBottom: 8,
   },
 
   vehicleTextContainer: {
     flex: 1,
-    bottom:10
-  },
-
-  // Mantém os mesmos estilos de tipografia da tela concluída
-  vehicleModel: {
-    fontSize: 14,
-    color: '#1F284E',
-  },
-  vehicleDetails: {
-    fontSize: 12,
-    color: '#666',
-  },
-  licensePlate: {
-    fontSize: 12,
-    color: '#1F284E',
-    fontWeight: 'bold',
   },
 
   ratingContainer: {
@@ -161,7 +142,7 @@ const styles = StyleSheet.create({
   communicationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 39,
+    gap: 16,
   },
 
   communicationButton: {
@@ -175,29 +156,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
-  phoneButton: {
-    backgroundColor: '#F5F5F5',
-    borderBottomRightRadius: 0,
-    borderTopRightRadius: 0,
-    borderTopRightRadius: 0,
-    left: 20,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  chatButton: {
-    backgroundColor: '#F5F5F5',
-    borderBottomRightRadius: 25,
-    borderTopRightRadius: 25,
-    right: 20,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-
   separatorLine: {
     height: 1,
     backgroundColor: '#E0E0E0',
     marginVertical: 16,
+  },
+
+  buttonContainer:{
+    alignItems:'center',
+    marginBottom:20
+  },
+
+  vehicleModel: {
+    fontSize: 14,
+    color: '#1F284E',
+    
+  },
+  vehicleDetails: {
+    fontSize: 12,
+    color: '#666',
+  },
+  licensePlate: {
+    fontSize: 12,
+    color: '#1F284E',
+    fontWeight: 'bold',
   },
 });
 

@@ -1,59 +1,93 @@
-import { StatusBar, StyleSheet, Text, View,TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import { StatusBar, StyleSheet, Text, View, TouchableOpacity, Animated } from "react-native"; // Adicionado Animated
+import React, { useEffect, useState, useRef } from "react"; // Adicionado useRef
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PhotoCard from "../../components/PhotoCard";
+import LoadingScreen from "../../components/LoadingScreen";
 
-export default function MainHome({navigation}) {
+export default function MainHome({ navigation }) {
     const [location, setLocation] = useState(null);
     const [permissionDenied, setPermissionDenied] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); 
+    const fadeAnim = useRef(new Animated.Value(1)).current;
 
-    async function requestLocationPermission() {
-        const { granted } = await requestForegroundPermissionsAsync();
+    const onLoadingComplete = () => {
+        const MINIMUM_LOADING_TIME = 5000; 
 
-        if (granted) {
-            const currentPosition = await getCurrentPositionAsync();
-            console.log('Localização obtida:', currentPosition);
-            setLocation(currentPosition.coords);
-        } else {
-            console.log('Permissão de localização negada');
-            setPermissionDenied(true);
+        const elapsedTime = Date.now() - startTime.current;
+        const remainingTime = MINIMUM_LOADING_TIME - elapsedTime;
+
+        setTimeout(() => {
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 500, 
+                useNativeDriver: true,
+            }).start(() => {
+                setIsLoading(false); 
+            });
+        }, remainingTime > 0 ? remainingTime : 0);
+    };
+
+    const startTime = useRef(null);
+
+    useEffect(() => {
+        startTime.current = Date.now();
+
+        async function requestLocationPermission() {
+            const { granted } = await requestForegroundPermissionsAsync();
+
+            if (granted) {
+                const currentPosition = await getCurrentPositionAsync();
+                setLocation(currentPosition.coords);
+                onLoadingComplete(); 
+            } else {
+                setPermissionDenied(true);
+                onLoadingComplete(); 
+            }
         }
-    }
 
-    useEffect(() => {
         requestLocationPermission();
-    }, []);
 
-    useEffect(() => {
-        const watchPosition = async () => {
-            await watchPositionAsync({
+        let watcher;
+        const startWatching = async () => {
+            watcher = await watchPositionAsync({
                 accuracy: LocationAccuracy.Highest,
                 timeInterval: 1000,
                 distanceInterval: 10,
             }, (response) => {
-                console.log('Nova localização recebida:', response.coords);
                 setLocation(response.coords);
             });
         };
 
-        watchPosition();
-    }, []);
+        startWatching();
 
-    useEffect(() => {
-        console.log('Localização atual:', location);
-    }, [location]);
+        return () => {
+            if (watcher) {
+                watcher.remove();
+            }
+        };
+    }, []); 
+
+    if (isLoading) {
+        return (
+            <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+                <LoadingScreen />
+            </Animated.View>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={'#FFFFFF'} barStyle={"light-content"} />
+            <StatusBar backgroundColor={'#FFFFFF'} barStyle={"dark-content"} />
             {permissionDenied ? (
-                <Text style={{ textAlign: 'center', marginTop: 20 }}>
-                    Permissão de localização negada. Habilite-a nas configurações do dispositivo.
-                </Text>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+                    <Text style={{ textAlign: 'center' }}>
+                        Permissão de localização negada. Habilite-a nas configurações do dispositivo para usar o mapa.
+                    </Text>
+                </View>
             ) : (
-                location && location.latitude && location.longitude ? (
+                <>
                     <MapView
                         region={{
                             latitude: location.latitude,
@@ -61,9 +95,11 @@ export default function MainHome({navigation}) {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         }}
+                        mapType="standard"
                         showsBuildings={true}
-                        style={{ flex: 1 }}
+                        style={styles.map}
                         showsMyLocationButton={true}
+                        provider="google"
                     >
                         <Marker
                             coordinate={{
@@ -72,34 +108,32 @@ export default function MainHome({navigation}) {
                             }}
                         />
                     </MapView>
-                ) : (
-                    console.log('Mapa não renderizado: localização inválida ou não carregada')
-                )
+                    <View style={styles.photoCard}>
+                        <PhotoCard />
+                    </View>
+                    <View style={styles.containerCard}>
+                        <Text style={{ fontSize: 22, color: '#1F284E', fontWeight: '600', marginTop: 36 }}>
+                            Para onde vamos?
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: '90%',
+                                backgroundColor: '#FFFFFF',
+                                borderRadius: 8,
+                                padding: 16,
+                                marginTop: 16,
+                                borderWidth: 2,
+                                borderColor: '#EAEAEA',
+                            }}
+                            onPress={() => {
+                                navigation.navigate('OriginDestiny', { userLocation: location });
+                            }}
+                        >
+                            <Ionicons name="map-outline" size={15} />
+                        </TouchableOpacity>
+                    </View>
+                </>
             )}
-            <View style={styles.photoCard}>
-                <PhotoCard/>
-            </View>
-            <View style={styles.containerCard}>
-                <Text style={{ fontSize: 22, color: '#1F284E', fontWeight: '600', marginTop: 36 }}>
-                    Para onde vamos?
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    width: '90%',
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: 8,
-                    padding: 16,
-                    marginTop: 16,
-                    borderWidth: 2,
-                    borderColor: '#EAEAEA',
-                  }}
-                  onPress={() => {
-                    navigation.navigate('OrigemDestino',{userLocation: location});
-                  }}
-                >
-                    <Ionicons name="map-outline" size={15}  />
-                </TouchableOpacity>
-            </View>
         </View>
     );
 }
@@ -112,7 +146,7 @@ const styles = StyleSheet.create({
     containerCard: {
         backgroundColor: '#fff',
         width: '100%',
-        height: '30%',
+        height: '35%',
         alignItems: 'center',
     },
     photoCard:{
@@ -123,5 +157,8 @@ const styles = StyleSheet.create({
         zIndex:10,
         borderRadius:3,
         borderColor:'#EF8108'
+    },
+    map:{
+        flex:1,
     }
 });

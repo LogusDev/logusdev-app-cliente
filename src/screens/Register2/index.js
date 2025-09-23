@@ -76,7 +76,7 @@ export default function Register2({navigation,route}){
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
             <Logo/>
-            <Image style={{}} source={require('../../assets/images/register.png')} />
+            <Image style={{height: 270, width: 270}} source={require('../../assets/images/register.png')} />
             <Text style={styles.texto}>Dados do veículo</Text>
             <PickerSelect
              placeholder={{label:"Selecione a marca...",value:null}}
@@ -111,7 +111,7 @@ export default function Register2({navigation,route}){
              name={"filter-outline"}
              onValueChange={setCategoria}
             />
-            <Button text={'Proximo'} onPress={handleSignIn}/>
+            <Button style={{marginTop: 12}} text={'Proximo'} onPress={handleSignIn}/>
         </View>
     )
 }

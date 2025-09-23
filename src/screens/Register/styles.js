@@ -21,6 +21,12 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         textAlign:"center",
     },
+    scrollContainer:{
+        flexGrow: 1, // Permite que o conteúdo cresça para preencher o espaço
+        justifyContent: 'center', // Centraliza o conteúdo verticalmente
+        alignItems: 'center', // Centraliza o conteúdo horizontalmente
+        paddingVertical: 10 // Adiciona um espaçamento vertical
+    }
 })
 
 export default styles;
