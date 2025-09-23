@@ -34,26 +34,15 @@ export default function CallProgress({ route, navigation }) {
         longitude: -46.79256090559714
     };
 
-    -23.585560645299317, -46.68307517700226 //itaim
+    const pontoInicial = { latitude:-23.585560645299317, longitude: -46.68307517700226}; //itaim
 
-    -23.631670671763185, -46.78601038499403 //rua clara muchini
+    const pontoIntermediario = {latitude :-23.631670671763185, longitude: -46.78601038499403}; //rua clara muchini
 
-    -23.628097429242555, -46.79256090559714 // rua angelina
+    const pontoFinal = {latitude: -23.628097429242555, longitude: -46.79256090559714}; // rua angelina
 
- -23.632899963150052, -46.78679058962039
 
-    
+    const [guincheiroPos, setGuincheiroPos] = useState(pontoInicial);
 
-    //avenida paulista _ itaim
-
-    const [guincheiroPos, setGuincheiroPos] = useState({
-        latitude: guincheiro.latitude,
-        longitude: guincheiro.longitude,
-    });
-
-    useEffect(() => {
-        setGuincheiroPos({ latitude: guincheiro.latitude, longitude: guincheiro.longitude });
-    }, [guincheiro.latitude, guincheiro.longitude]);
 
     const vehicle = {
         model: "Atego 1726",
@@ -189,6 +178,44 @@ export default function CallProgress({ route, navigation }) {
                     />
                 )}
             </MapView>
+
+                        <TouchableOpacity
+                onPress={() => {
+                    console.log('Setando posição: PONTO INICIAL');
+                    setGuincheiroPos(pontoInicial);
+                }}
+                style={{
+                    position: 'absolute', top: 60, left: 20,
+                    width: 80, height: 80,
+                    //backgroundColor: 'rgba(0, 0, 255, 0.3)', // Cor para debug
+                }}
+            />
+
+            {/* Botão 2: Define a posição INTERMEDIÁRIA (chegada no cliente) */}
+            <TouchableOpacity
+                onPress={() => {
+                    console.log('Setando posição: PONTO INTERMEDIÁRIO');
+                    setGuincheiroPos(pontoIntermediario);
+                }}
+                style={{
+                    position: 'absolute', top: 60, alignSelf: 'center',
+                    width: 80, height: 80,
+                    //backgroundColor: 'rgba(0, 255, 0, 0.3)', // Cor para debug
+                }}
+            />
+
+            {/* Botão 3: Define a posição FINAL (chegada no destino) */}
+            <TouchableOpacity
+                onPress={() => {
+                    console.log('Setando posição: PONTO FINAL');
+                    setGuincheiroPos(pontoFinal);
+                }}
+                style={{
+                    position: 'absolute', top: 60, right: 20,
+                    width: 80, height: 80,
+                    //backgroundColor: 'rgba(255, 0, 0, 0.3)', // Cor para debug
+                }}
+            />
 
             <View style={styles.infoContainer}>
                 <Text style={styles.sectionTitle}>Situação do chamado:</Text>

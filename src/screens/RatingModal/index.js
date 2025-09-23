@@ -26,7 +26,10 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
         try {
             await ratingCall({ nota: rating, comentario, chamado_id: callId });
             onClose(); 
-            navigation.navigate('MainHome');
+            navigation.reset({
+                index:0,
+                routes: [{ name: 'MainHome' }],
+            })
         } catch (error) {
             console.error("Erro ao enviar avaliação:", error);
             alert("Não foi possível enviar sua avaliação. Tente novamente.");

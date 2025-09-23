@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     fontFamily:'Poppins-SemiBold'
   },
 
-  // Estilos para o guincheiro
   guincheiroContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F284E',
     lineHeight: 22,
-
+    textAlign:'center'
   },
 
   timeHighlight: {

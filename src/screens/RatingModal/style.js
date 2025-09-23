@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  // Estilos do Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -33,7 +32,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontFamily: 'Poppins-SemiBold'
   },
-  // Conteúdo interno (adaptado do seu estilo original)
   guincheiroContainer: {
     flexDirection: 'row',
     alignItems: 'center',

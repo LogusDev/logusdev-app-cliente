@@ -30,6 +30,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "softwareKeyboardLayoutMode": "resize" ,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U"

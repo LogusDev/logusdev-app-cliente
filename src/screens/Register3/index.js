@@ -129,10 +129,6 @@ const handleSignIn = async () => {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#ffffff" />
-      ) : (
-        <>
           <StatusBar barStyle={'light-content'} />
           <Logo/>
           <Image source={require('../../assets/images/register.png')} />
@@ -147,9 +143,7 @@ const handleSignIn = async () => {
               style={{ width: 120, height: 120, alignSelf: 'center', marginVertical: 10, borderRadius: 10 }}
             />
           )}
-          <Button text={'Cadastrar'} onPress={handleSignIn} />
-        </>
-      )}
+          <Button text={isLoading ? <ActivityIndicator size="small" color="#ffffff" /> : "Cadastrar"} onPress={handleSignIn} />
     </View>
   );
 }

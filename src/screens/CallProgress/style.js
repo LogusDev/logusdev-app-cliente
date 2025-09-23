@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   communicationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 16,
+    gap: 39,
   },
 
   communicationButton: {
