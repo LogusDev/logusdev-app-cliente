@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import StackNavigator from './src/navigation/stack';
+import * as Font from 'expo-font';
+import { useFonts } from 'expo-font';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const [fontsLoaded] = useFonts({
+    'Poppins-Regular': require('./src/assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Bold': require('./src/assets/fonts/Poppins-Bold.ttf'),
+    'Poppins-SemiBold': require('./src/assets/fonts/Poppins-SemiBold.ttf'),
+    'Poppins-Light': require('./src/assets/fonts/Poppins-Light.ttf'),
+  });
+  
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+  <>
+    <StackNavigator/>
+    <Toast/>
+  </>
+  )
+}

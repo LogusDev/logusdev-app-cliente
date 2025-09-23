@@ -1,0 +1,32 @@
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#FFFFFF",
+    },
+    // logo:{
+    //     width:185.62,
+    //     height:42.17,
+    //     position:"absolute",
+    //     top:90
+    // },
+    texto:{
+        fontSize:22,
+        color:"#1F284E",
+        padding:24,
+        fontFamily:"Poppins-SemiBold",
+        fontWeight:"bold",
+        textAlign:"center",
+    },
+    scrollContainer:{
+        flexGrow: 1, // Permite que o conteúdo cresça para preencher o espaço
+        justifyContent: 'center', // Centraliza o conteúdo verticalmente
+        alignItems: 'center', // Centraliza o conteúdo horizontalmente
+        paddingVertical: 10 // Adiciona um espaçamento vertical
+    }
+})
+
+export default styles;

@@ -1,14 +1,24 @@
 {
   "expo": {
-    "name": "app-cliente",
+    "name": "GuinchAqui",
     "slug": "app-cliente",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permita a localizacao"
+        }
+      ],
+      "expo-font",
+      "expo-video"
+    ],
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./src/assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,10 +29,26 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "softwareKeyboardLayoutMode": "resize" ,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U"
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "logusdev.guinchaqui"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+        "favicon": "./assets/icon.png"
+      },
+    "extra": {
+      "eas": {
+        "projectId": "a17c794f-7c1d-42fa-aada-00aad7015590"
+      }
     }
   }
 }
