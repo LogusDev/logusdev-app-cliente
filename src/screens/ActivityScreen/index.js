@@ -1,7 +1,7 @@
 import { StatusBar, StyleSheet, Text,View } from "react-native";
 
 
-export default function Activity(){
+export default function ActivityScreen(){
 
     return(
         <View style={styles.container}>

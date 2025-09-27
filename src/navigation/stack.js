@@ -52,6 +52,7 @@ export default function StackNavigator(){
                 <Stack.Screen name='SearchCall' component={SearchCall} />
                 <Stack.Screen name='CallProgress' component={CallProgress} />
                 <Stack.Screen name='CallCompleted' component={CallCompleted} />
+                <Stack.Screen name='ActivityScreen' component={ActivityScreen} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

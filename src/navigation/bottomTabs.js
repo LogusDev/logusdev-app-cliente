@@ -23,6 +23,13 @@ export default function MyTabs() {
           <Ionicons name="home-outline" size={28} color={color} />
         ),
       }}/>
+      <Tab.Screen name="Atividade" component={ActivityScreen} options={{
+        tabBarActiveTintColor:'#EF8108',
+        tabBarInactiveTintColor:'#A5A5A5',
+        tabBarIcon:({color,size})=>(
+          <Ionicons name="hourglass-outline" size={28} color={color} />
+        ),
+      }}/>
       <Tab.Screen name="Profile" component={ProfileScreen} options={{
         tabBarActiveTintColor: '#EF8108',
         tabBarInactiveTintColor: '#A5A5A5',
