@@ -19,6 +19,7 @@ import PaymentConfirmation from '../screens/PaymentConfirmation';
 import SearchCall from '../screens/SearchCall';
 import CallProgress from '../screens/CallProgress';
 import CallCompleted from '../screens/CallCompleted';
+import CarSelection from '../screens/CarSelection';
 
 
 const Stack = createNativeStackNavigator({
@@ -52,7 +53,7 @@ export default function StackNavigator(){
                 <Stack.Screen name='SearchCall' component={SearchCall} />
                 <Stack.Screen name='CallProgress' component={CallProgress} />
                 <Stack.Screen name='CallCompleted' component={CallCompleted} />
-                <Stack.Screen name='CarSelect' component={SelectCar} />
+                <Stack.Screen name='CarSelect' component={CarSelection} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

@@ -1,0 +1,137 @@
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Carro from '../../assets/images/carHatch.svg'
+
+export default function VehicleCard({ vehicle, active }) {
+
+    const { modelo, ano_fabricacao, marca, placa, cor } = vehicle || {};
+
+    return (
+        <>
+        <TouchableOpacity 
+            style={[
+                styles.cardContainer,
+                active && {borderColor: '#EF8108'}
+            ]}
+        >
+            <View style={styles.textContainer}>
+                <Text style={styles.name}>{modelo || 'Modelo não informado'}</Text>
+                <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
+            </View>
+            
+            <TouchableOpacity style={styles.editButton}>
+                <Ionicons name="create-outline" size={20} color="#1F284E"/>
+            </TouchableOpacity>
+            
+            <Carro width={130} height={120} left={110} top={17}/>
+            
+            <Text style={styles.color}>{cor || 'Vermelho'}</Text>
+            
+            <View style={styles.textContainer2}>
+                <Text style={styles.class}>Classe: Sedan</Text>
+                <Text style={styles.placa}>Placa: {placa || 'Não informada'}</Text>
+            </View> 
+        </TouchableOpacity>
+
+        </>
+    );
+}
+
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: "#FFFFFF",
+    width: 380,
+    height: 150,
+    alignSelf: "center",
+    borderRadius: 16,
+    borderColor: "#BEBEBE",
+    borderStyle: "solid",
+    borderWidth: 5,
+    marginTop: 30,
+    elevation: 4,
+    overflow: "hidden",
+    position: "relative",
+  },
+
+  editButton: {
+    position: "absolute",
+    right: "86%",
+    top: "60%",
+    backgroundColor: "#FFFFFF",
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  textContainer: {
+    position: "absolute",
+    top: '7%',
+    left: '5%',
+  },
+
+  textContainer2: {
+    position: "absolute",
+    top: '60%',
+    left: "67%",
+  },
+
+  name: {
+    fontSize: 17,
+    color: '#1F284E',
+    textShadowColor: 'rgba(255, 255, 255, 0.94)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5.8,
+    fontWeight: "bold",
+    textDecorationLine: 'underline'
+    
+  },
+  yearBrand : {
+    top: "-10%",
+    marginTop: 4,
+    fontSize: 12,
+    color: "#1F284E",
+  },
+
+  class : {
+    left: "13%",
+    marginTop: 4,
+    fontSize: 13,
+    color: "#1F284E",
+  },
+
+  placa: {
+    fontSize: 13,
+    color: '#1F284E',
+    textShadowColor: 'rgba(255, 255, 255, 0.94)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5.8,
+    fontWeight: "bold",
+  },
+
+  carImage: {
+    width: "80%",
+    height: "60%",
+    position: "absolute",
+    left: "8%", 
+    top: "20%", 
+    resizeMode: "contain" 
+    },
+    
+    color: {
+    position: "absolute",
+    top: "80%",
+    left: "42%",
+    color: "#454545ff",
+    width: "30%",
+    height: "20%",
+    textDecorationLine: 'underline',
+    fontSize: 12, 
+    },
+});

@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/Home';
 import ProfileScreen from '../screens/Profile';
+import CarSelection from '../screens/CarSelection';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,7 @@ export default function MyTabs() {
         ),
       }}/>
 
-      <Tab.Screen name="CarSelection" component={ProfileScreen} options={{
+      <Tab.Screen name="Veiculos" component={CarSelection} options={{
               tabBarActiveTintColor: '#EF8108',
               tabBarInactiveTintColor: '#A5A5A5',
               tabBarIcon: ({ color, size }) => (
