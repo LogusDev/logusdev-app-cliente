@@ -81,8 +81,8 @@ export default function Login(){
             <Image source={require("../../assets/images/businessdeal.png")} />
             <Text style={styles.texto}>Acessar minha conta</Text>
             <TextInputComponent
-             label={"Email"}
-             placeholder={"Digite seu email..."}
+             label={"E-mail"}
+             placeholder={"Digite seu e-mail..."}
              value={email}
              onChangeText={setEmail}
              keyboardType={"email-address"}
@@ -100,7 +100,7 @@ export default function Login(){
             <TouchableOpacity onPress={() => {navigation.navigate("Register")}}>
                 <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold',fontFamily:'Poppins-Regular'}}>Crie uma</Text></Text>
             </TouchableOpacity>
-            <Button text={isLoading ? <ActivityIndicator color="#fff" /> : 'Login'} onPress={handleLogin}/>
+            <Button text={isLoading ? <ActivityIndicator color="#fff" /> : 'Entrar'} onPress={handleLogin}/>
         </KeyboardAvoidingView>
     )  
 }
