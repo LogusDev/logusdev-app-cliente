@@ -63,6 +63,8 @@ export default function Register2({navigation,route}){
         }
     },[modeloSelecionado]);
 
+    console.log(categoria);
+
     function handleSignIn(){
         if(!marcaSelecionada || !anoSelecionado || !modeloSelecionado){
             alert("Campo inválido")
@@ -102,15 +104,15 @@ export default function Register2({navigation,route}){
             <PickerSelect
              placeholder={{label:"Selecione a categoria...",value:null}}
              items={[
-                {label:'Sedan', value:'sedan'},
-                {label:'Hatch', value:'hatch'},
-                {label:'SUV', value:'suv'},
-                {label:'Picape', value:'picape'},
+                {label:'Sedan', value:1},
+                {label:'Hatch', value:2},
+                {label:'SUV', value:3},
+                {label:'Picape', value:4},
              ]}
              value={categoria}
              name={"filter-outline"}
              onValueChange={setCategoria}
-            />
+            />      
             <Button style={{marginTop: 12}} text={'Proximo'} onPress={handleSignIn}/>
         </View>
     )

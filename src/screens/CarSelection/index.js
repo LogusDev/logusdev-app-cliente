@@ -17,6 +17,7 @@ export default function CarSelection() {
             console.log('Tipo:', typeof response);
             console.log('É array?', Array.isArray(response));
             console.log('Valor:', response);
+
             
             let vehiclesArray = [];
             

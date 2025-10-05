@@ -4,7 +4,9 @@ import Carro from '../../assets/images/carHatch.svg'
 
 export default function VehicleCard({ vehicle, active }) {
 
-    const { modelo, ano_fabricacao, marca, placa, cor } = vehicle || {};
+    const { modelo, ano_fabricacao, marca, placa, cor,categoria } = vehicle || {};
+
+    console.log(categoria)
 
     return (
         <>
@@ -23,12 +25,12 @@ export default function VehicleCard({ vehicle, active }) {
                 <Ionicons name="create-outline" size={20} color="#1F284E"/>
             </TouchableOpacity>
             
-            <Carro width={130} height={120} left={110} top={17}/>
+            <Carro width={130} height={120} left={98} top={20}/>
             
             <Text style={styles.color}>{cor || 'Vermelho'}</Text>
             
             <View style={styles.textContainer2}>
-                <Text style={styles.class}>Classe: Sedan</Text>
+                <Text style={styles.class}>Categoria: {categoria}</Text>
                 <Text style={styles.placa}>Placa: {placa || 'Não informada'}</Text>
             </View> 
         </TouchableOpacity>
@@ -41,7 +43,7 @@ export default function VehicleCard({ vehicle, active }) {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "#FFFFFF",
-    width: 380,
+    width: "90%",
     height: 150,
     alignSelf: "center",
     borderRadius: 16,
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
   },
 
   class : {
-    left: "13%",
+    left: "4%",
     marginTop: 4,
     fontSize: 13,
     color: "#1F284E",
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "60%",
     position: "absolute",
-    left: "8%", 
+    left: "6%", 
     top: "20%", 
     resizeMode: "contain" 
     },
