@@ -2,9 +2,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Carro from '../../assets/images/carHatch.svg'
 
-export default function VehicleCard({ vehicle, active }) {
+export default function VehicleCard({ vehicle, active, onSelect }) {
 
-    const { modelo, ano_fabricacao, marca, placa, cor,categoria } = vehicle || {};
+    const { modelo, ano_fabricacao, marca, placa ,categoria } = vehicle || {};
 
     console.log(categoria)
 
@@ -15,7 +15,15 @@ export default function VehicleCard({ vehicle, active }) {
                 styles.cardContainer,
                 active && {borderColor: '#EF8108'}
             ]}
+            onPress={onSelect}
+            activeOpacity={0.8}
         >
+
+          {active && (  
+            <View style={styles.badgeContainer}>
+              <Text style={styles.badgeText}>Atual</Text>
+            </View>
+          )}
             <View style={styles.textContainer}>
                 <Text style={styles.name}>{modelo || 'Modelo não informado'}</Text>
                 <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
@@ -27,7 +35,7 @@ export default function VehicleCard({ vehicle, active }) {
             
             <Carro width={130} height={120} left={98} top={20}/>
             
-            <Text style={styles.color}>{cor || 'Vermelho'}</Text>
+            <Text style={styles.color}>{'Vermelho'}</Text>
             
             <View style={styles.textContainer2}>
                 <Text style={styles.class}>Categoria: {categoria}</Text>
@@ -52,7 +60,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     marginTop: 30,
     elevation: 4,
-    overflow: "hidden",
+    // overflow: "hidden",
     position: "relative",
   },
 
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain" 
     },
     
-    color: {
+  color: {
     position: "absolute",
     top: "80%",
     left: "42%",
@@ -136,4 +144,25 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontSize: 12, 
     },
+
+  badgeContainer: {
+    position: "absolute",
+    top: -12,
+    left: '80%',
+    width: 60,
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#EF8108",
+    paddingHorizontal: 12,
+    paddingVertical: 3,
+    borderRadius: 12,
+    zIndex: 10,
+  },
+
+  badgeText: {
+    color: "#fff",
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
 });

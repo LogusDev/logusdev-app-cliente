@@ -15,7 +15,8 @@
         }
       ],
       "expo-font",
-      "expo-video"
+      "expo-video",
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./src/assets/images/splash-icon.png",
@@ -30,7 +31,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "softwareKeyboardLayoutMode": "resize" ,
+      "softwareKeyboardLayoutMode": "resize",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U"
@@ -43,8 +44,8 @@
       "package": "logusdev.guinchaqui"
     },
     "web": {
-        "favicon": "./assets/icon.png"
-      },
+      "favicon": "./assets/icon.png"
+    },
     "extra": {
       "eas": {
         "projectId": "a17c794f-7c1d-42fa-aada-00aad7015590"
