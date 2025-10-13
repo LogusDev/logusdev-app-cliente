@@ -2,10 +2,10 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function AddButton() {
+export default function AddButton({ onPress }) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onPress}>
         <Ionicons name="add" size={40} color="#A0A0A0" />
       </TouchableOpacity>
     </View>

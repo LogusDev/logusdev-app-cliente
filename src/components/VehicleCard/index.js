@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Carro from '../../assets/images/carHatch.svg'
 
-export default function VehicleCard({ vehicle, active, onSelect }) {
+export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
 
     const { modelo, ano_fabricacao, marca, placa ,categoria } = vehicle || {};
 
@@ -29,7 +29,7 @@ export default function VehicleCard({ vehicle, active, onSelect }) {
                 <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
             </View>
             
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity style={styles.editButton} onPress={onEdit}>
                 <Ionicons name="create-outline" size={20} color="#1F284E"/>
             </TouchableOpacity>
             
