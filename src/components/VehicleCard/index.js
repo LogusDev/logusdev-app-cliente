@@ -1,12 +1,27 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Carro from '../../assets/images/carHatch.svg'
+import Hatch from '../../assets/images/carHatch.svg'
+import Sedan from '../../assets/images/carSedan.svg'
+import Suv from '../../assets/images/carSuv.svg'
 
 export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
 
     const { modelo, ano_fabricacao, marca, placa ,categoria } = vehicle || {};
 
     console.log(categoria)
+
+    const carImages = {
+      hatch: Hatch,
+      sedan: Sedan,
+      suv: Suv,
+      picape: Suv,
+    };
+
+    const normalizedCategory = categoria?.toLowerCase().trim();
+    const CarImage = carImages[normalizedCategory] || Hatch;
+
+    console.log('Vehicle completo:', vehicle);
+
 
     return (
         <>
@@ -33,7 +48,7 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
                 <Ionicons name="create-outline" size={20} color="#1F284E"/>
             </TouchableOpacity>
             
-            <Carro width={130} height={120} left={98} top={20}/>
+            <CarImage width={130} height={120} left={98} top={20}/>
             
             <Text style={styles.color}>{'Vermelho'}</Text>
             
