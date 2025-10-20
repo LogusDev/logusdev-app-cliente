@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import VehicleCard from "../../components/VehicleCard";
 import styles from "./styles";
 import AddButton from "../../components/AddButton";
-import { getVehicles } from "../../services/services";
+import { getVehicles, updateVehicle } from "../../services/services";
 import { UserContext } from "../../contexts/UserContext";
 import VehicleEditModal from "../VehicleEditModal";
 import VehicleAddModal from "../VehicleAddModal";
@@ -93,13 +93,24 @@ export default function CarSelection() {
         visible={isVehicleEditModalVisible}
         onClose={() => setVehicleEditModalVisible(false)}
         vehicle={vehicleEdit}
-        onSave={(updatedVehicle) => {
-          setVehicles((prevVehicles) =>
-            prevVehicles.map((v) =>
-              v.id === updatedVehicle.id ? updatedVehicle : v
-            )
-          );
-          setVehicleEditModalVisible(false);
+        onSave={async (updatedVehicle) => {
+          try {
+
+            const formattedVehicle = {
+              ...updatedVehicle,
+              placa: updatedVehicle.placa.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+            };
+
+            const updated = await updateVehicle(formattedVehicle.id, formattedVehicle, user.token);
+
+            setVehicles((prevVehicles) => 
+              prevVehicles.map((v) =>
+                v.id === updated.id ? updated : v))
+          } catch (error) {
+            console.log("Erro ao atualizar veículo", error)
+          } finally {
+            setVehicleEditModalVisible(false);
+          }
         }}
       />
 

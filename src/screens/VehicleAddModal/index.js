@@ -203,8 +203,19 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
                     style={styles.textInputWithIcon}
                     placeholder="Placa"
                     value={placaSelecionada}
-                    onChangeText={setPlacaSelecionada}
-                    maxLength={7}
+                    onChangeText={(text) => {
+                      let formatted = text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+                      if (formatted.length > 3) {
+                        formatted = formatted.slice(0, 3) + "-" + formatted.slice(3);
+                      }
+
+                      if (formatted.length > 8) {
+                        formatted = formatted.slice(0, 8);
+                      }
+
+                      setPlacaSelecionada(formatted);
+                    }}
+                    maxLength={8}
                     autoCapitalize="characters"
                   />
                   <Icon

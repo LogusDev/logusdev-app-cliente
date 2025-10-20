@@ -30,6 +30,18 @@ export const createVehicle = async(vehicleData, token) => {
   }
 }
 
+export const updateVehicle = async(vehicleId, vehicleData, token) => {
+  try {
+    const response = await api.put(`/veiculos/${vehicleId}`, vehicleData, {
+      headers: { 'x-access-token': token } 
+    });
+    return response.data;
+  } catch(error) {
+    console.log('Erro Axios:', error.response?.data || error.message);
+    throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
+  }
+}
+
 
 export const getVehicles = async (userId, token) => {
     try {

@@ -22,6 +22,15 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
 
     console.log('Vehicle completo:', vehicle);
 
+    const formattedLicensePlate = (placa ) => {
+      if (!placa) return 'Não informada';
+
+      const clearLicensePlate = placa.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()
+
+      if (clearLicensePlate.length > 3) return clearLicensePlate.slice(0, 3) + "-" + clearLicensePlate.slice(3);
+
+      return clearLicensePlate
+    }
 
     return (
         <>
@@ -54,7 +63,7 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
             
             <View style={styles.textContainer2}>
                 <Text style={styles.class}>Categoria: {categoria}</Text>
-                <Text style={styles.placa}>Placa: {placa || 'Não informada'}</Text>
+                <Text style={styles.placa}>Placa: {formattedLicensePlate(placa) || 'Não informada'}</Text>
             </View> 
         </TouchableOpacity>
 
