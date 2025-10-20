@@ -8,61 +8,123 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import Button from "../../components/Button";
+import PickerSelect from "../../components/PickerSelect";
+import axios from "axios";
 import styles from "./style";
+import { createVehicle } from "../../services/services";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { UserContext } from "../../contexts/UserContext";
+import { useContext } from "react";
+
 
 export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
-  const [formData, setFormData] = useState({
-    marca: "",
-    modelo: "",
-    ano: "",
-    categoria: "",
-    placa: "",
-    cor: "",
-  });
+  const { user } = useContext(UserContext);
+  const [marcas, setMarcas] = useState([]);
+  const [modelos, setModelos] = useState([]);
+  const [anos, setAnos] = useState([]);
 
- 
+  const [marcaSelecionada, setMarcaSelecionada] = useState(null);
+  const [modeloSelecionado, setModeloSelecionado] = useState(null);
+  const [anoSelecionado, setAnoSelecionado] = useState(null);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
+  const [placaSelecionada, setPlacaSelecionada] = useState(null);
+  const [corSelecionada, setCorSelecionada] = useState(null);
+
   useEffect(() => {
-  if (visible) {
-    if (vehicle) {
-
-      setFormData({
-        marca: vehicle.marca || "",
-        modelo: vehicle.modelo || "",
-        ano: vehicle.ano || "",
-        categoria: vehicle.categoria || "",
-        placa: vehicle.placa || "",
-        cor: vehicle.cor || "",
-      });
+    if(vehicle) {
+      setMarcaSelecionada(vehicle.marca);
+      setModeloSelecionado(vehicle.modelo);
+      setAnoSelecionado(vehicle.ano_fabricacao);
+      setCategoriaSelecionada(vehicle.categoria);
+      setPlacaSelecionada(vehicle.placa);
+      setCorSelecionada(vehicle.cor);
     } else {
-    
-      setFormData({
-        marca: "",
-        modelo: "",
-        ano: "",
-        categoria: "",
-        placa: "",
-        cor: "",
-      });
+      setMarcaSelecionada(null);
+      setModeloSelecionado(null);
+      setAnoSelecionado(null);
+      setCategoriaSelecionada(null);
+      setPlacaSelecionada(null);
+      setCorSelecionada(null);
     }
-  }
-}, [visible, vehicle]);
+  }, [vehicle, visible]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  // Buscar marcas
+  useEffect(() => {
+    if (visible) {
+      axios.get("https://fipe.parallelum.com.br/api/v2/cars/brands/")
+        .then((response) => {
+          const lista = response.data.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }));
+          console.log("Marca selecionada:", marcaSelecionada);
+          setMarcas(lista);
+        })
+        .catch((error) => console.log("Erro ao buscar marcas:", error));
+    } 
+  }, [visible]);
 
-  const handleSave = () => {
+  // Buscar modelos
+  useEffect(() => {
+    if (marcaSelecionada) {
+      setModelos([]);
+      axios.get(`https://fipe.parallelum.com.br/api/v2/cars/brands/${marcaSelecionada}/models`)
+        .then((response) => {
+          const lista = response.data.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }));
+          setModelos(lista);
+        })
+        .catch((error) => console.log("Erro ao buscar modelos:", error));
+    }
+  }, [marcaSelecionada]);
 
-    const { marca, modelo, ano, categoria, placa, cor } = formData;
-    if (!marca || !modelo || !ano || !categoria || !placa || !cor) {
-      alert("Por favor, preencha todos os campos.");
+  // Buscar anus kk
+  useEffect(() => {
+    if (modeloSelecionado) {
+      setAnos([]);
+      axios.get(`https://fipe.parallelum.com.br/api/v2/cars/brands/${marcaSelecionada}/models/${modeloSelecionado}/years`)
+        .then((response) => {
+          const lista = response.data.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }));
+          setAnos(lista);
+        })
+        .catch((error) => console.log("Erro ao buscar anos:", error));
+    }
+  }, [modeloSelecionado]);
+
+  const handleSave = async () => {
+    if (!marcaSelecionada || !modeloSelecionado || !anoSelecionado || !categoriaSelecionada || !placaSelecionada || !corSelecionada) {
+      Alert.alert("Atenção", "Por favor, preencha todos os campos.");
       return;
     }
 
-    if (onSave) onSave(formData);
-    onClose();
+    const anoFormated = anoSelecionado.split("-")[0];
+
+    const vehicleData = {
+      marca: marcaSelecionada,
+      modelo: modeloSelecionado,
+      ano_fabricacao: anoFormated,
+      categoria: categoriaSelecionada,
+      placa: placaSelecionada,
+      cor: corSelecionada,
+      cliente_id: user.id,
+    };
+
+    try {
+      const savedVehicle = await createVehicle(vehicleData, user.token);
+      if (onSave) onSave(savedVehicle);
+      onClose();
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível adicionar o veículo.");
+      console.log("Erro ao adicionar veículo:", error);
+    }
   };
 
   return (
@@ -73,59 +135,108 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
-            <Text style={styles.title}>Adicionar novo Veículo:</Text>
+            <Text style={styles.title}>{vehicle ? "Editar Veículo" : "Adicionar novo Veículo"}</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Marca do seu carro..."
-              placeholderTextColor="#999"
-              value={formData.marca}
-              onChangeText={(text) => handleChange("marca", text)}
-            />
+            {/* Marcas */}
+            <View style={styles.pickerWrapper}>
+              <PickerSelect
+                placeholder={{ label: "Marca do seu carro...", value: null }}
+                items={marcas}
+                value={marcaSelecionada}
+                onValueChange={setMarcaSelecionada}
+                style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"key-outline"}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Modelo..."
-              placeholderTextColor="#999"
-              value={formData.modelo}
-              onChangeText={(text) => handleChange("modelo", text)}
-            />
+            {/* Modelos */}
+            <View style={styles.pickerWrapper}>
+              <PickerSelect
+                placeholder={{ label: "Modelo...", value: null }}
+                items={modelos}
+                value={modeloSelecionado}
+                onValueChange={setModeloSelecionado}
+                style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"car-outline"}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Ano..."
-              placeholderTextColor="#999"
-              keyboardType="numeric"
-              value={formData.ano}
-              onChangeText={(text) => handleChange("ano", text)}
-            />
+            {/* Anos */}
+            <View style={styles.pickerWrapper}>
+              <PickerSelect
+                placeholder={{ label: "Ano...", value: null }}
+                items={anos}
+                value={anoSelecionado}
+                onValueChange={setAnoSelecionado}
+                style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"calendar-outline"}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Categoria..."
-              placeholderTextColor="#999"
-              value={formData.categoria}
-              onChangeText={(text) => handleChange("categoria", text)}
-            />
+            {/* Categoria */}
+            <View style={styles.pickerWrapper}>
+              <PickerSelect
+                placeholder={{ label: "Categoria...", value: null }}
+                items={[
+                  { label: "Suv", value: "suv" },
+                  { label: "Hatch", value: "hatch" },
+                  { label: "Sedan", value: "sedan" },
+                  { label: "Picape", value: "picape" },
+                ]}
+                value={categoriaSelecionada}
+                onValueChange={setCategoriaSelecionada}
+                style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"car-sport-outline"}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Placa..."
-              placeholderTextColor="#999"
-              value={formData.placa}
-              onChangeText={(text) => handleChange("placa", text)}
-            />
+            {/* Placa e Cor */}
+            <View style={styles.divInputHalf}>
+              {/* Placa */}
+              <View style={[styles.inputHalf, {borderColor: 'transparent'}]}>
+                <View style={styles.inputWithIcon}>
+                  <TextInput
+                    style={styles.textInputWithIcon}
+                    placeholder="Placa"
+                    value={placaSelecionada}
+                    onChangeText={setPlacaSelecionada}
+                    maxLength={7}
+                    autoCapitalize="characters"
+                  />
+                  <Icon
+                    name="pricetag-outline"
+                    size={24}
+                    color="#b9b9b9ff"
+                    style={styles.iconStyleRight}
+                  />
+                </View>
+              </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Cor..."
-              placeholderTextColor="#999"
-              value={formData.cor}
-              onChangeText={(text) => handleChange("cor", text)}
-            />
+              {/* Cor */}
+              <View style={[styles.inputHalf, {borderColor: 'transparent'}]}>
+                <View style={styles.inputWithIcon}>
+                  <TextInput
+                    style={styles.textInputWithIcon}
+                    placeholder="Cor"
+                    value={corSelecionada}
+                    onChangeText={setCorSelecionada}
+                  />
+                  <Icon
+                    name="color-palette-outline"
+                    size={24}
+                    color="#b9b9b9ff"
+                    style={styles.iconStyleRight}
+                  />
+                </View>
+              </View>
+            </View>
 
-            <Button text="Salvar" onPress={handleSave} />
-
+            {/* Botões */}
+            <Button style={styles.button} text="Salvar" onPress={handleSave} />
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>

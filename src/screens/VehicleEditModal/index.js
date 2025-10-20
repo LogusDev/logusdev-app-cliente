@@ -35,6 +35,7 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
         <Modal
             visible={visible} 
             onRequestClose={onClose}
+            animationType="fade"
             transparent={true}
         >
         <View style={styles.overlay}>

@@ -25,7 +25,7 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
             </View>
           )}
             <View style={styles.textContainer}>
-                <Text style={styles.name}>{modelo || 'Modelo não informado'}</Text>
+                <Text style={styles.name}>{(modelo ? modelo.split(' ').slice(0, 1).join(' ') : 'Modelo não informado')}</Text>
                 <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
             </View>
             
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 17,
+    fontSize: 16,
     color: '#1F284E',
     textShadowColor: 'rgba(255, 255, 255, 0.94)',
     textShadowOffset: { width: 0, height: 0 },

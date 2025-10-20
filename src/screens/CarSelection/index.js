@@ -18,7 +18,7 @@ export default function CarSelection() {
 
   const fetchVehicles = async () => {
     try {
-      const response = await getVehicles(user.id);
+      const response = await getVehicles(user.id, user.token);
       console.log("Tipo:", typeof response);
       console.log("É array?", Array.isArray(response));
       console.log("Valor:", response);
