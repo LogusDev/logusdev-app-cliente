@@ -33,8 +33,6 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
     preto: "#000000",
     cinza: "#8E8E93",
     laranja: "#FF9500",
-    roxo: "#AF52DE",
-    rosa: "#FF2D55",
     marrom: "#A52A2A",
   };
 
@@ -78,7 +76,7 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
            
           </View>
         )}
-        <Text style={styles.class}>Categoria: {categoria}</Text>
+        <Text style={styles.class}>Categoria: {categoria ? categoria.charAt(0).toUpperCase() + categoria.slice(1) : ''}</Text>
         <Text style={styles.placa}>Placa: {formattedLicensePlate(placa) || 'Não informada'}</Text>
       </View>
     </TouchableOpacity>

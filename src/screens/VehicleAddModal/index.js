@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Modal, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert} from "react-native";
 import Button from "../../components/Button";
 import PickerSelect from "../../components/PickerSelect";
 import axios from "axios";
@@ -106,10 +96,11 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
     }
 
     const anoFormated = anoSelecionado.split("-")[0];
+    const modeloNome = modelos.find(m => m.value == modeloSelecionado)?.label || modeloSelecionado; //Troca Id pelo nome da marca
 
     const vehicleData = {
       marca: marcaSelecionada,
-      modelo: modeloSelecionado,
+      modelo: modeloNome,
       ano_fabricacao: anoFormated,
       categoria: categoriaSelecionada,
       placa: placaSelecionada,
@@ -185,6 +176,10 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
                   { label: "Hatch", value: "hatch" },
                   { label: "Sedan", value: "sedan" },
                   { label: "Picape", value: "picape" },
+                  { label: "Van", value: "van" },
+                  { label: "MiniVan", value: "minivan" },
+                  { label: "Coupê", value: "coupe" },
+                  { label: "Perua", value: "perua" },
                 ]}
                 value={categoriaSelecionada}
                 onValueChange={setCategoriaSelecionada}

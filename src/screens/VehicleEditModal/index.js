@@ -197,6 +197,11 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
                   { label: "Hatch", value: "hatch" },
                   { label: "Sedan", value: "sedan" },
                   { label: "Picape", value: "picape" },
+                  { label: "Van", value: "van" },
+                  { label: "MiniVan", value: "minivan" },
+                  { label: "Coupê", value: "coupe" },
+                  { label: "Perua", value: "perua" },
+
                 ]}
                 value={categoriaSelecionada}
                 onValueChange={setCategoriaSelecionada}
