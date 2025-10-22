@@ -20,8 +20,8 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
   const [modeloSelecionado, setModeloSelecionado] = useState(null);
   const [anoSelecionado, setAnoSelecionado] = useState(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [placaSelecionada, setPlacaSelecionada] = useState(null);
-  const [corSelecionada, setCorSelecionada] = useState(null);
+  const [placaSelecionada, setPlacaSelecionada] = useState("");
+  const [corSelecionada, setCorSelecionada] = useState("");
 
   useEffect(() => {
     if(vehicle) {
@@ -29,15 +29,15 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
       setModeloSelecionado(vehicle.modelo);
       setAnoSelecionado(vehicle.ano_fabricacao);
       setCategoriaSelecionada(vehicle.categoria);
-      setPlacaSelecionada(vehicle.placa);
-      setCorSelecionada(vehicle.cor);
+      setPlacaSelecionada(vehicle.placa || "");
+      setCorSelecionada(vehicle.cor || "");
     } else {
       setMarcaSelecionada(null);
       setModeloSelecionado(null);
       setAnoSelecionado(null);
       setCategoriaSelecionada(null);
-      setPlacaSelecionada(null);
-      setCorSelecionada(null);
+      setPlacaSelecionada("");
+      setCorSelecionada("");
     }
   }, [vehicle, visible]);
 
@@ -197,6 +197,7 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
                   <TextInput
                     style={styles.textInputWithIcon}
                     placeholder="Placa"
+                    placeholderTextColor="#999"
                     value={placaSelecionada}
                     onChangeText={(text) => {
                       let formatted = text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
@@ -228,6 +229,7 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
                   <TextInput
                     style={styles.textInputWithIcon}
                     placeholder="Cor"
+                    placeholderTextColor="#999"
                     value={corSelecionada}
                     onChangeText={setCorSelecionada}
                   />
