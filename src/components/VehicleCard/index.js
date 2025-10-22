@@ -5,72 +5,85 @@ import Sedan from '../../assets/images/carSedan.svg'
 import Suv from '../../assets/images/carSuv.svg'
 
 export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
+  const { modelo, ano_fabricacao, marca, placa, categoria, cor } = vehicle || {};
 
-    const { modelo, ano_fabricacao, marca, placa ,categoria } = vehicle || {};
+  const carImages = {
+    hatch: Hatch,
+    sedan: Sedan,
+    suv: Suv,
+    picape: Suv,
+  };
 
-    console.log(categoria)
+  const normalizedCategory = categoria?.toLowerCase().trim();
+  const CarImage = carImages[normalizedCategory] || Hatch;
 
-    const carImages = {
-      hatch: Hatch,
-      sedan: Sedan,
-      suv: Suv,
-      picape: Suv,
-    };
+  const formattedLicensePlate = (placa) => {
+    if (!placa) return 'Não informada';
+    const clearLicensePlate = placa.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()
+    if (clearLicensePlate.length > 3) return clearLicensePlate.slice(0, 3) + "-" + clearLicensePlate.slice(3);
+    return clearLicensePlate
+  }
 
-    const normalizedCategory = categoria?.toLowerCase().trim();
-    const CarImage = carImages[normalizedCategory] || Hatch;
+  const colorMap = {
+    vermelho: "#FF3B30",
+    azul: "#007AFF",
+    verde: "#34C759",
+    amarelo: "#FFCC00",
+    branco: "#FFFFFF",
+    preto: "#000000",
+    cinza: "#8E8E93",
+    laranja: "#FF9500",
+    roxo: "#AF52DE",
+    rosa: "#FF2D55",
+    marrom: "#A52A2A",
+  };
 
-    console.log('Vehicle completo:', vehicle);
+  const colorKey = cor?.trim().toLowerCase();
 
-    const formattedLicensePlate = (placa ) => {
-      if (!placa) return 'Não informada';
+  return (
+    <TouchableOpacity 
+      style={[styles.cardContainer, active && {borderColor: '#EF8108'}]}
+      onPress={onSelect}
+      activeOpacity={0.8}
+    >
+      {active && (  
+        <View style={styles.badgeContainer}>
+          <Text style={styles.badgeText}>Atual</Text>
+        </View>
+      )}
 
-      const clearLicensePlate = placa.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()
+      <View style={styles.textContainer}>
+        <Text style={styles.name}>{(modelo ? modelo.split(' ')[0] : 'Modelo não informado')}</Text>
+        <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
+      </View>
+        
+      <TouchableOpacity style={styles.editButton} onPress={onEdit}>
+        <Ionicons name="create-outline" size={20} color="#1F284E"/>
+      </TouchableOpacity>
+        
+      <CarImage 
+        width={115}
+        height={120} 
+        left={"32%"} 
+        top={30} 
+        style={{ transform: [{ scaleX: -1 }] }}
+      />
 
-      if (clearLicensePlate.length > 3) return clearLicensePlate.slice(0, 3) + "-" + clearLicensePlate.slice(3);
-
-      return clearLicensePlate
-    }
-
-    return (
-        <>
-        <TouchableOpacity 
-            style={[
-                styles.cardContainer,
-                active && {borderColor: '#EF8108'}
-            ]}
-            onPress={onSelect}
-            activeOpacity={0.8}
-        >
-
-          {active && (  
-            <View style={styles.badgeContainer}>
-              <Text style={styles.badgeText}>Atual</Text>
-            </View>
-          )}
-            <View style={styles.textContainer}>
-                <Text style={styles.name}>{(modelo ? modelo.split(' ').slice(0, 1).join(' ') : 'Modelo não informado')}</Text>
-                <Text style={styles.yearBrand}>{ano_fabricacao} - {marca}</Text>
-            </View>
+      <View style={styles.infoRight}>
+        {cor && (
+          <View style={styles.colorWrapper}>
+            <Text style={styles.colorText}>{cor}</Text>
             
-            <TouchableOpacity style={styles.editButton} onPress={onEdit}>
-                <Ionicons name="create-outline" size={20} color="#1F284E"/>
-            </TouchableOpacity>
-            
-            <CarImage width={130} height={120} left={98} top={20}/>
-            
-            <Text style={styles.color}>{'Vermelho'}</Text>
-            
-            <View style={styles.textContainer2}>
-                <Text style={styles.class}>Categoria: {categoria}</Text>
-                <Text style={styles.placa}>Placa: {formattedLicensePlate(placa) || 'Não informada'}</Text>
-            </View> 
-        </TouchableOpacity>
-
-        </>
-    );
+            <View style={[styles.colorBadge, { backgroundColor: colorMap[colorKey] || "#CCC" }]} />
+           
+          </View>
+        )}
+        <Text style={styles.class}>Categoria: {categoria}</Text>
+        <Text style={styles.placa}>Placa: {formattedLicensePlate(placa) || 'Não informada'}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 }
-
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -84,7 +97,6 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     marginTop: 30,
     elevation: 4,
-    // overflow: "hidden",
     position: "relative",
   },
 
@@ -104,38 +116,39 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
+
   textContainer: {
     position: "absolute",
     top: '7%',
     left: '5%',
   },
 
-  textContainer2: {
+  infoRight: {
     position: "absolute",
-    top: '60%',
-    left: "67%",
+    top: '50%',
+    right: '5%',
+    alignItems: 'flex-end',
   },
 
   name: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#1F284E',
     textShadowColor: 'rgba(255, 255, 255, 0.94)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 5.8,
     fontWeight: "bold",
-    textDecorationLine: 'underline'
-    
+    textDecorationLine: 'underline'  
   },
+
   yearBrand : {
     top: "-10%",
     marginTop: 4,
-    fontSize: 12,
+    fontSize: 13,
     color: "#1F284E",
   },
 
   class : {
-    left: "4%",
-    marginTop: 4,
+    marginTop: -4,
     fontSize: 13,
     color: "#1F284E",
   },
@@ -148,32 +161,34 @@ const styles = StyleSheet.create({
     textShadowRadius: 5.8,
     fontWeight: "bold",
   },
-
-  carImage: {
-    width: "80%",
-    height: "60%",
-    position: "absolute",
-    left: "6%", 
-    top: "20%", 
-    resizeMode: "contain" 
-    },
     
-  color: {
-    position: "absolute",
-    top: "80%",
-    left: "42%",
-    color: "#454545ff",
-    width: "30%",
-    height: "20%",
-    textDecorationLine: 'underline',
-    fontSize: 12, 
-    },
+  colorWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 4,
+  },
+
+  colorBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+
+  colorText: {
+    fontSize: 12,
+    color: "#454545",
+    fontWeight: 'bold',
+    textDecorationLine: "underline"
+  },
 
   badgeContainer: {
     position: "absolute",
-    top: -12,
+    top: -10,
     left: '80%',
-    width: 60,
+    width: 90,
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',

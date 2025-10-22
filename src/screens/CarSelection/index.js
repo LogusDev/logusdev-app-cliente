@@ -102,6 +102,7 @@ export default function CarSelection() {
             };
 
             const updated = await updateVehicle(formattedVehicle.id, formattedVehicle, user.token);
+            await fetchVehicles(); //Tá recarregando a lista pra aparecer a cor certinha depois de atualizar
 
             setVehicles((prevVehicles) => 
               prevVehicles.map((v) =>
