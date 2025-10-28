@@ -19,6 +19,7 @@ import PaymentConfirmation from '../screens/PaymentConfirmation';
 import SearchCall from '../screens/SearchCall';
 import CallProgress from '../screens/CallProgress';
 import CallCompleted from '../screens/CallCompleted';
+import ActivityScreen from '../screens/ActivityScreen'
 
 
 const Stack = createNativeStackNavigator({
