@@ -1,42 +1,91 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import ActivityCard from "../../components/ActivityCard";
+import { getUserCalls, updateExistingAddresses } from "../../services/calls";
+import { UserContext } from "../../contexts/UserContext";
 
-export default function ActivityScreen() {
+export default function ActivityScreen({ userId }) {
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const { user, token } = useContext(UserContext);
+
+  
+  useEffect(() => {
+    async function fetchActivities() {
+      try {
+        setLoading(true);
+
+        await updateExistingAddresses(token);
+        console.log("Atualizou endereços, agora vai buscar os chamados...")
+        const data = await getUserCalls(token);
+        setActivities(data);
+      } catch (error) {
+        console.log("Erro ao buscar atividades:", error);
+      } finally {
+        setLoading(false);
+        console.log("Finalizou carregamento");
+      }
+    }
+    
+    if (user && token) {
+      fetchActivities();
+    }
+  }, [user, token]);
+
+
+  const groupedByDate = activities.length
+    ? activities.reduce((acc, activity) => {
+        const date = activity.requisitado_em?.split("T")[0] || "Sem data";
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(activity);
+        return acc;
+      }, {})
+    : {};
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1F284E" />
+        <Text>Carregando atividades...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Atividade</Text>
+      <Text style={styles.title}>Atividades</Text>
 
-      {/* Data */}
-      <Text style={styles.date}>23/04/2025</Text>
-      <ActivityCard
-        user="José Almeida"
-        avatar="https://i.pravatar.cc/100?img=1"
-        startTime="23:47"
-        endTime="00:32"
-        startAddress="Rua Capivari, Parque Luiz..."
-        endAddress="R. Marcelino Pinto, Parque Industrial..."
-      />
-
-      <Text style={styles.date}>12/01/2025</Text>
-      <ActivityCard
-        user="Anderson Costa"
-        avatar="https://i.pravatar.cc/100?img=2"
-        startTime="10:31"
-        endTime="10:54"
-        startAddress="Rua Andorinha, Jardim S. Eduardo..."
-        endAddress="Rua das Acácias Pinto, Jardim V..."
-      />
-
-      <Text style={styles.date}>27/11/2024</Text>
-      <ActivityCard
-        user="Julio Jamerson"
-        avatar="https://i.pravatar.cc/100?img=3"
-        startTime="15:03"
-        endTime="15:23"
-        startAddress="Rua da Fonte, Jardim Vista..."
-        endAddress="Rua Cândido Portinari, Vila..."
-      />
+      {Object.keys(groupedByDate).length === 0 ? (
+        <Text style={styles.emptyText}>Nenhum chamado encontrado.</Text>
+      ) : (
+        Object.keys(groupedByDate).map((date) => (
+          <View key={date}>
+            <Text style={styles.date}>{date}</Text>
+            {groupedByDate[date].map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                user={activity.guincheiro?.nome || "Nome não encontrado"}
+                avatar={activity.guincheiro?.foto_url || "https://cdn-icons-png.flaticon.com/512/12225/12225881.png"}
+                startTime={new Date(activity.requisitado_em).toLocaleTimeString("pt-BR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                endTime={
+                  activity.completado_em
+                    ? new Date(activity.completado_em).toLocaleTimeString("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "--:--"
+                }
+                startAddress={activity.endereco_inicial || activity.latitude_inicial}
+                endAddress={activity.endereco_final || activity.latitude_final}
+              />
+            ))}
+          </View>
+        ))
+      )}
 
       <Text style={styles.footer}>Você entrou no app em: 03/05/2025</Text>
     </ScrollView>
@@ -52,10 +101,9 @@ const styles = StyleSheet.create({
   title: {
     color: "#1F284E",
     fontSize: 32,
-    fontWeight: '200',
+    fontWeight: "200",
     fontFamily: "Poppins-SemiBold",
-    },
-    
+  },
   date: {
     fontSize: 14,
     fontWeight: "bold",
@@ -66,6 +114,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 12,
     color: "#999",
+    marginTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    textAlign: "center",
+    color: "#777",
     marginTop: 20,
   },
 });
