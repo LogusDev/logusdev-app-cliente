@@ -21,7 +21,7 @@ export default function ActivityCard({
       activeOpacity={0.8}
       style={styles.card}
       onPress={() =>
-        navigation.navigate("Receipt", {
+        navigation.navigate("ReceiptScreen", {
           user,
           avatar,
           startTime,
@@ -101,6 +101,7 @@ user: {
   fontWeight: "700",
 },
 timeBox: {
+  display: "flex",
   flexDirection: "row",
   alignItems: "center",
 },
@@ -111,6 +112,8 @@ time: {
   marginHorizontal: 4,
 },
 addressContainer: {
+  width: "70%",
+  margin: "auto",
   flexDirection: "row",
   justifyContent: "space-between",
   marginTop: 12,
