@@ -65,6 +65,7 @@ export default function ActivityScreen({ userId }) {
             {groupedByDate[date].map((activity) => (
               <ActivityCard
                 key={activity.id}
+                id={activity.id}
                 user={activity.guincheiro?.nome || "Nome não encontrado"}
                 avatar={activity.guincheiro?.foto_url || "https://cdn-icons-png.flaticon.com/512/12225/12225881.png"}
                 startTime={new Date(activity.requisitado_em).toLocaleTimeString("pt-BR", {

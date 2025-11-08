@@ -1,20 +1,32 @@
-import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import ReceiptButton from "../../components/ReceiptButton/ReceiptButton";
+import { useState, useEffect } from "react";
+import { CallSearch } from "../../services/calls";
+import { ActivityIndicator } from "react-native";
 
-export default function ReceiptScreen({ 
-    user,
-    avatar,
-    date,
-    startTime, 
-    endTime, 
-    startAddress, 
-    endAddress, 
-    price 
- }) {
-        const navigation = useNavigation();
+export default function ReceiptScreen({ route }) {
+    const [driverData, setDriverData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const { receiptData } = route.params || {};
+    const id = receiptData?.id;
+    console.log("Dados: ", receiptData);
+    console.log("[ReceiptScreen] ID recebido:", id);
+    console.log(driverData)
+
+    useEffect(() => {
+        async function fetchCallDetails() {
+            const data = await CallSearch(id);
+            console.log("[TESTE] Resultado do callSearch:", data);
+            if (data) {
+                setDriverData(data);
+            }
+            setLoading(false);
+        }
+        fetchCallDetails();
+    }, []);
   
 return (
   <ScrollView style={styles.container}>
@@ -25,7 +37,6 @@ return (
     />  
     <ReceiptButton />
     </View>
-    {/* Header com logo e botões */}
     <View style={styles.header}>
       <View style={styles.headerContent}>
         <Image
@@ -35,59 +46,65 @@ return (
       </View>
     </View>
 
-    {/* Dados do motorista */}
     <View style={styles.profileBox}>
       <Image
-        source={avatar ? { uri: avatar } : require("../../assets/images/driverImage.png")}
+        source={receiptData.avatar ? { uri: receiptData.avatar } : require("../../assets/images/driverImage.png")}
         style={styles.avatar}
     />
       <View style={styles.profileInfo}>
-        <Text style={styles.userName}>{user}José Almeida</Text>
-        <Text style={styles.date}>{date}23/04/2025</Text>
+        <Text style={styles.userName}>{receiptData.user}</Text>
+        <Text style={styles.date}>{receiptData.date || "23/04/2025"}</Text>
         <Text style={styles.time}>
-            {startTime || "23:47"} <Ionicons name="timer-outline" size={14} color="#1F284E" /> {endTime || "00:15"}
+            {receiptData.startTime || "23:47"} <Ionicons name="timer-outline" size={14} color="#1F284E" /> {receiptData.endTime || "00:15"}
         </Text>
       </View>
     </View>
-
-    {/* Mapa */}
+    
     <Image
       source={require("../../assets/images/mapImage.png")}
       style={styles.map}
     />
 
-    {/* Dados do veículo e pagamento */}
+    {!loading && driverData ? (
     <View style={styles.vehicleBox}>
-      <Text style={styles.vehicleName}>Atego 1726 – Branco</Text>
-      <Text style={styles.vehicleDetails}>Mercedes-Benz</Text>
-      <Text style={styles.vehicleDetails}>2010 - 8m x 2.60m – 4m</Text> 
-
-      <View style={styles.paymentBox}>
-         <Ionicons name="card-outline" size={40} top={20} left={30} color="#1F284E" />
+        <Text style={styles.vehicleName}>
+        {driverData.guincho?.modelo || "Atego 1726 – Branco"}
+        </Text>
+        <Text style={styles.vehicleDetails}>
+        {driverData.guincho?.marca || "Mercedes-Benz"}
+        </Text>
+        <Text style={styles.vehicleDetails}>
+        {driverData.guincho?.ano_fabricacao || "2010"} - 
+        {driverData.guincho?.comprimento_plataforma || "ABC-1234"}m
+        </Text>
+        <View style={styles.paymentBox}>
+        <Ionicons name="card-outline" size={40} top={20} left={30} color="#1F284E" />
         <Text style={styles.paymentMethod}>CARTÃO</Text>
-      </View>
-      <Text style={styles.price}>
-        R$: 
-      <Text style={styles.priceValue}> 247,42</Text>
-     </Text>
-
+        </View>
+        <Text style={styles.price}>
+        R$: <Text style={styles.priceValue}>{receiptData.price || "247,42"}</Text>
+        </Text>
     </View>
+    ) : (
+    <View style={{ alignItems: "center", marginTop: 20 }}>
+        <ActivityIndicator size="small" color="#1F284E" />
+        <Text style={{ color: "#1F284E", marginTop: 5 }}>Carregando dados do guincho...</Text>
+    </View>
+    )}
+
 
     {/* Endereços */}
     <View style={styles.addressContainer}>
     <View style={styles.addressBox}>
         <View style={styles.startAddressBox}>
-        <Text style={styles.cityText}>Embu das Artes, SP.</Text>
-        <Text style={styles.streetText}>R. Capivari, Parque Luiza</Text>
-        <Text style={styles.numberText}>N°12</Text>
+        <Text style={styles.cityText}>{receiptData.startAddress}</Text>
         </View>
+
 
         <Ionicons name="arrow-forward-circle-outline" size={35} color="#1F284E" />
 
         <View style={styles.endAddressBox}>
-        <Text style={styles.cityText}>Embu das Artes, SP.</Text>
-        <Text style={styles.streetText}>R. Marcelino Pinto, Parque Industrial</Text>
-        <Text style={styles.numberText}>N°529</Text>
+        <Text style={styles.cityText}>{receiptData.endAddress}</Text>
         </View>
     </View>
     </View>
@@ -156,7 +173,7 @@ const styles = StyleSheet.create({
   },
   date: {
     top: "20%",
-    left: "67%",
+    left: "64%",
     fontSize: 15,
     fontWeight: "700",
     color: "#1F284E",
@@ -164,7 +181,7 @@ const styles = StyleSheet.create({
   },
   time: {
     top: "35%",
-    left: "61%",
+    left: "58%",
     fontSize: 15,
     fontWeight: "700",
     color: "#1F284E",
@@ -173,8 +190,8 @@ const styles = StyleSheet.create({
 
   map: {
     top: "-2%",
-    width: "90%",
-    height: 400,
+    width: "85%",
+    height: 380,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#000000ff",
@@ -189,18 +206,20 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   vehicleName: {
+    left: "5%",
     fontSize: 16,
     fontWeight: "700",
     color: "#1F284E",
   },
   vehicleDetails: {
+    left: "5%",
     fontSize: 13,
     fontWeight: "700",
     color: "#1F284E",
   },
   paymentBox: {
     top: "-60%",
-    left: "12%",
+    left: "10%",
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 8,
@@ -217,7 +236,7 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    left: "68%",
+    left: "65%",
     top: "-62%",
     fontSize: 21,
     fontWeight: "bold",
@@ -230,7 +249,7 @@ const styles = StyleSheet.create({
 
     addressContainer: {
     top: "-15%",
-    width: "90%",
+    width: "85%",
     margin: "auto",
     backgroundColor: "#fff",
     borderWidth: 1,

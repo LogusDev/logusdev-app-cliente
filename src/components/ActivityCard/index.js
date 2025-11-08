@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ActivityCard({
+  id,
   user,
   avatar,
   startTime,
@@ -22,21 +23,24 @@ export default function ActivityCard({
       style={styles.card}
       onPress={() =>
         navigation.navigate("ReceiptScreen", {
-          user,
-          avatar,
-          startTime,
-          endTime,
-          startAddress,
-          endAddress,
-          date,
-          price,
+          receiptData: {
+            id,
+            user,
+            avatar,
+            startTime,
+            endTime,
+            startAddress,
+            endAddress,
+            date,
+            price,
+          }
         })
       }
     >
 
       <View style={styles.header}>
         <View style={styles.userInfo}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <Image source={avatar? {uri: avatar} : require("../../assets/images/driverImage.png")} style={styles.avatar} />
           <Text style={styles.user}>{user}</Text>
         </View>
 

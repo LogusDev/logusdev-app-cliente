@@ -88,3 +88,29 @@ export async function updateExistingAddresses(token) {
 }
 
 
+
+export const CallSearch = async (id) => {
+    console.log(`[callSearch] Buscando dados na URL: /chamados/${id}`);
+    try {
+        const response = await api.get(`/chamados/${id}`);
+        console.log('[callSearch] Resposta da API recebida:', JSON.stringify(response.data, null, 2));
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            console.error('[callSearch] Erro na resposta da API:', {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers,
+            });
+        } else if (error.request) {
+            console.error('[callSearch] Nenhuma resposta recebida:', error.request);
+        } else {
+            console.error('[callSearch] Erro ao configurar a requisição:', error.message);
+        }
+        console.error('[callSearch] Config do Axios:', error.config);
+    
+        return null;
+    }
+};
+
+
