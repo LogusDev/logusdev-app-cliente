@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GuinchAqui",
-    "slug": "app-cliente",
+    "slug": "app-clienteV2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,12 +11,11 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Permita a localizacao"
+          "locationAlwaysAndWhenInUsePermission": "Permita a localização"
         }
       ],
       "expo-font",
-      "expo-video",
-      "expo-secure-store"
+      "expo-video"
     ],
     "splash": {
       "image": "./src/assets/images/splash-icon.png",
@@ -48,8 +47,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a17c794f-7c1d-42fa-aada-00aad7015590"
+        "projectId": "a3299923-bba6-4cb2-affd-b4d4e1cbb19f"
       }
-    }
+    },
+    "owner": "muriloweishaupt"
   }
 }

@@ -51,12 +51,13 @@ export default function CarSelection() {
 
   const handleSelectedVehicle = (vehicleId) => {
     setSelectedVehicle(vehicleId);
+    console.log("Carro selecionado:", vehicleId);
   };
 
   const handleEditVehicle = (vehicle) => {
     setVehicleEdit(vehicle);
     setVehicleEditModalVisible(true);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -89,41 +90,40 @@ export default function CarSelection() {
           <Text style={styles.noVehicles}>Nenhum veículo cadastrado</Text>
         )}
       </ScrollView>
+
       <VehicleEditModal
         visible={isVehicleEditModalVisible}
         onClose={() => setVehicleEditModalVisible(false)}
         vehicle={vehicleEdit}
         onSave={async (updatedVehicle) => {
           try {
-
             const formattedVehicle = {
               ...updatedVehicle,
-              placa: updatedVehicle.placa.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+              placa: updatedVehicle.placa.replace(/[^a-zA-Z0-9]/g, "").toUpperCase(),
             };
 
             const updated = await updateVehicle(formattedVehicle.id, formattedVehicle, user.token);
-            await fetchVehicles(); //Tá recarregando a lista pra aparecer a cor certinha depois de atualizar
+            await fetchVehicles();
 
-            setVehicles((prevVehicles) => 
-              prevVehicles.map((v) =>
-                v.id === updated.id ? updated : v))
+            setVehicles((prevVehicles) =>
+              prevVehicles.map((v) => (v.id === updated.id ? updated : v))
+            );
           } catch (error) {
-            console.log("Erro ao atualizar veículo", error)
+            console.log("Erro ao atualizar veículo", error);
           } finally {
             setVehicleEditModalVisible(false);
           }
         }}
       />
 
-        <VehicleAddModal
-            visible={isVehicleAddModalVisible}
-            onClose={() => setVehicleAddModalVisible(false)}
-            onSave={(newVehicle) => {
-                setVehicles((prevVehicles) => [...prevVehicles, newVehicle]);
-                setVehicleAddModalVisible(false);
-            }}
-        />
-
+      <VehicleAddModal
+        visible={isVehicleAddModalVisible}
+        onClose={() => setVehicleAddModalVisible(false)}
+        onSave={(newVehicle) => {
+          setVehicles((prevVehicles) => [...prevVehicles, newVehicle]);
+          setVehicleAddModalVisible(false);
+        }}
+      />
     </View>
   );
 }
