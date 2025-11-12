@@ -9,7 +9,13 @@ export const UserProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await api.post('/clientes/login', credentials);
-      setUser(response.data.cliente)
+
+      const userData = {
+        ...response.data.cliente,
+        token: response.data.token,
+      }
+
+      setUser(userData)
       return response.data;
   } catch (error) {
       throw error.response ? error.response.data : 'Erro ao conectar com o servidor';

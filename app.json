@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GuinchAqui",
-    "slug": "app-cliente",
+    "slug": "app-clienteV2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,7 +11,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Permita a localizacao"
+          "locationAlwaysAndWhenInUsePermission": "Permita a localização"
         }
       ],
       "expo-font",
@@ -30,7 +30,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "softwareKeyboardLayoutMode": "resize" ,
+      "softwareKeyboardLayoutMode": "resize",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U"
@@ -43,12 +43,13 @@
       "package": "logusdev.guinchaqui"
     },
     "web": {
-        "favicon": "./assets/icon.png"
-      },
+      "favicon": "./assets/icon.png"
+    },
     "extra": {
       "eas": {
-        "projectId": "a17c794f-7c1d-42fa-aada-00aad7015590"
+        "projectId": "a3299923-bba6-4cb2-affd-b4d4e1cbb19f"
       }
-    }
+    },
+    "owner": "muriloweishaupt"
   }
 }
