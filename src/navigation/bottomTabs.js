@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/Home';
 import ProfileScreen from '../screens/Profile';
+import ActivityScreen from '../screens/ActivityScreen';
 import CarSelection from '../screens/CarSelection';
 
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,13 @@ export default function MyTabs() {
         tabBarInactiveTintColor:'#A5A5A5',
         tabBarIcon:({color,size})=>(
           <Ionicons name="home-outline" size={28} color={color} />
+        ),
+      }}/>
+      <Tab.Screen name="Atividade" component={ActivityScreen} options={{
+        tabBarActiveTintColor:'#EF8108',
+        tabBarInactiveTintColor:'#A5A5A5',
+        tabBarIcon:({color,size})=>(
+          <Ionicons name="hourglass-outline" size={28} color={color} />
         ),
       }}/>
 

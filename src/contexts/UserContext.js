@@ -5,17 +5,13 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   const login = async (credentials) => {
     try {
       const response = await api.post('/clientes/login', credentials);
-
-      const userData = {
-        ...response.data.cliente,
-        token: response.data.token,
-      }
-
-      setUser(userData)
+      setUser(response.data.cliente);
+      setToken(response.data.token);
       return response.data;
   } catch (error) {
       throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
@@ -23,7 +19,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, login }}>
+    <UserContext.Provider value={{ user, setUser, token, setToken, login }}>
       {children}
     </UserContext.Provider>
   );
