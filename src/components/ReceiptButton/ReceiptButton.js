@@ -1,16 +1,16 @@
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ReceiptButton(props) {
+export default function ReceiptButton({ onPDFPress, onSharePress, ...props }) {
   return (
     <View style={styles.button}>
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity onPress={onPDFPress}>
         <View style={styles.pdfContainer}>
           <Text style={styles.buttonText}>PDF</Text>
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity onPress={onSharePress}>
         <Ionicons name="share-social-outline" size={35} color="#1F284E" />
       </TouchableOpacity>
 

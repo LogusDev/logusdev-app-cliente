@@ -12,6 +12,7 @@ export default function ActivityCard({
   startAddress,
   endAddress,
   date,
+  payment_method,
   price,
 }) {
   const navigation = useNavigation();
@@ -32,6 +33,7 @@ export default function ActivityCard({
             startAddress,
             endAddress,
             date,
+            payment_method,
             price,
           }
         })

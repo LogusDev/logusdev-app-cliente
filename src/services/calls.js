@@ -65,28 +65,27 @@ export const ratingCall = async (body) => {
 };
 
 
-export async function updateExistingAddresses(token) {
-  try {
-    console.log("Chamando atualização de endereços...");
-    const response = await api.put(
-      "/chamados/atualizar-enderecos",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+// export async function updateExistingAddresses(token) {
+//   try {
+//     console.log("Chamando atualização de endereços...");
+//     const response = await api.put(
+//       "/chamados/atualizar-enderecos",
+//       {},
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
 
 
-    console.log("Endereços atualizados:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar endereços:", error);
-    throw error;
-  }
-}
-
+//     console.log("Endereços atualizados:", response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Erro ao atualizar endereços:", error);
+//     throw error;
+//   }
+// }
 
 
 export const CallSearch = async (id) => {

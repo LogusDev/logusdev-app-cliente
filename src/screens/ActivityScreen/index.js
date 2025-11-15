@@ -16,8 +16,8 @@ export default function ActivityScreen({ userId }) {
       try {
         setLoading(true);
 
-        await updateExistingAddresses(token);
-        console.log("Atualizou endereços, agora vai buscar os chamados...")
+        // await updateExistingAddresses(token);
+        // console.log("Atualizou endereços, agora vai buscar os chamados...")
         const data = await getUserCalls(token);
         setActivities(data);
       } catch (error) {
