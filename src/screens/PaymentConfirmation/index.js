@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Button'; 
@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import { getVehicles } from '../../services/services';
 import IconOrigem from '../../components/IconOrigem';
-import { createCall } from '../../services/calls';
+import { createCall, priceCalc } from '../../services/calls';
 
 export default function PaymentConfirmation({ route, navigation }) {
     const { origem, destino, actualVehicle } = route.params;
@@ -20,6 +20,20 @@ export default function PaymentConfirmation({ route, navigation }) {
     const [cartao, setCartao] = useState(false);
 
     const [selectedPayment, setSelectedPayment] = useState(null);
+
+    const [preco, setPreco] = useState(null);
+
+    useEffect(() => {
+      async function loadPrice() {
+        const p = await priceCalc(origem, destino);
+        setPreco(p);
+      }
+      loadPrice();
+    }, []);
+
+
+    console.log(origem)
+
 
     const handlePaymentSelection = () => {
       if (selectedPayment === 'pix') {
@@ -138,6 +152,17 @@ export default function PaymentConfirmation({ route, navigation }) {
           <Text style={styles.paymentOptionText}>Cartão</Text>
         </TouchableOpacity>
 
+        <Text style={styles.sectionTitle}>Valor aproximado:</Text>
+
+        {preco === null ? (
+          <ActivityIndicator color="#FFA500" />
+        ) : (
+          <Text style={{ fontSize: 32, fontWeight: 'bold', color: "#1B5E20" }}>
+            R$ {preco.toFixed(2)}
+          </Text>
+        )}
+
+
         {/* Botão Buscar */}
         <Button
           text="Buscar"
@@ -151,6 +176,7 @@ export default function PaymentConfirmation({ route, navigation }) {
                 descricao: 'Chamado via app',
                 carro_id: actualVehicle?.id,
                 cliente_id: user?.id,
+                metodo_pagamento: selectedPayment,
               };
               const novo = await createCall(payload);
               navigation.navigate('SearchCall', { origem, destino, actualVehicle, callId: novo.id });

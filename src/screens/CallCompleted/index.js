@@ -15,7 +15,7 @@ export default function CallCompleted({ route, navigation }) {
     
     const [isRatingModalVisible, setRatingModalVisible] = useState(false);
 
-    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y';
+    const GOOGLE_API_KEY = 'AIzaSyAmfl_CD7XtRiiETKRzh0EfQmtVW59b-Cw';
 
     const handleFinalizar = async () => {
         if (isLoading) return;

@@ -11,7 +11,7 @@ export const createCall = async (payload) => {
 
 export const getCallStatus = async (id) => {
     try {
-        const response = await api.get(`/chamados/${id}`); // alterado: endpoint padrão
+        const response = await api.get(`/chamados/${id}`);
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
@@ -39,12 +39,20 @@ export const updateCall = async (id, body) => {
 
 export const ratingCall = async (body) => {
     try {
-        // CORREÇÃO: A URL não precisa mais do parâmetro 'id'
-        // e agora aponta para o endpoint correto.
         const response = await api.post(`/chamados/avaliar`, body);
         return response.data;
     } catch (error) {
-        // Lança o erro para que o componente possa tratá-lo no bloco catch.
         throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
     }
+}
+
+export async function priceCalc(origem, destino) {
+  const response = await api.post("/chamados/calcularPreco", {
+    latitude_inicial: origem.lat,
+    longitude_inicial: origem.lng,
+    latitude_final: destino.lat,
+    longitude_final: destino.lng,
+  });
+
+  return response.data.preco;
 }

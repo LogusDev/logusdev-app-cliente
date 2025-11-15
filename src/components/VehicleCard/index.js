@@ -24,6 +24,11 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
     return clearLicensePlate
   }
 
+  const normalizeString = (str) => {
+  if (!str) return "";
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  };  
+
   const colorMap = {
     vermelho: "#FF3B30",
     azul: "#007AFF",
@@ -36,7 +41,9 @@ export default function VehicleCard({ vehicle, active, onSelect, onEdit }) {
     marrom: "#A52A2A",
   };
 
-  const colorKey = cor?.trim().toLowerCase();
+  const colorKey = normalizeString(cor);
+
+  console.log(colorKey, colorMap[colorKey]);
 
   return (
     <TouchableOpacity 

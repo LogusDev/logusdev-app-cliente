@@ -21,7 +21,7 @@ export default function SearchCall({ route, navigation }) {
     const { user } = useContext(UserContext);
     const [videoReady, setVideoReady] = useState(false);
     const [guincheiroInfo, setGuincheiroInfo] = useState(null);
-    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+    const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M'; 
 
 
 
