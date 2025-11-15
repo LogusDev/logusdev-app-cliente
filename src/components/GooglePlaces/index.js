@@ -24,7 +24,7 @@ function limparEndereco(endereco) {
     .replace(/\s*-\s*SP$/i, '');
 }
 
-const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M'; 
 
 export default function GooglePlaces({userLocation, onConfirm }) {
   const [origem, setOrigem] = useState('');

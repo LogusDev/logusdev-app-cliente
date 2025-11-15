@@ -15,9 +15,12 @@ import Toast from 'react-native-toast-message';
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada } = route.params;
+  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada, categoria,cor } = route.params;
 
   const {login} = useContext(UserContext);
+
+  console.log(categoria);
+
 
   const successAlert = () => {
           Toast.show({
@@ -98,17 +101,19 @@ const handleSignIn = async () => {
 
     const id = userRes.id;
 
-
     const ano = anoSelecionado.slice(0, -2)
 
     const vehicleData = {
-
       placa: "1234567", 
       marca: marcaSelecionada,
       modelo: modeloSelecionado,
       ano_fabricacao: ano,
+      categoria: categoria,
+      cor: cor,
       cliente_id: id
     };
+
+    console.log(id);
 
     const vehicleRes = await createVehicle(vehicleData);
     console.log('Veículo cadastrado:', vehicleRes);

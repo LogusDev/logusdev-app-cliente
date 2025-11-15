@@ -1,51 +1,61 @@
-import React, { useRef, useEffect, useState, use } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
-import Button from '../../components/Button'; 
-import styles from './style';
-import { UserContext } from '../../contexts/UserContext';
-import { useContext } from 'react';
-import { getVehicles } from '../../services/services';
-import IconOrigem from '../../components/IconOrigem';
-
+import React, { useRef, useEffect, useState, use } from "react";
+import { View, Text, ActivityIndicator } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { Ionicons } from "@expo/vector-icons";
+import Button from "../../components/Button";
+import styles from "./style";
+import { UserContext } from "../../contexts/UserContext";
+import { useContext } from "react";
+import { getVehicles } from "../../services/services";
+import IconOrigem from "../../components/IconOrigem";
 
 export default function CallConfirmation({ route, navigation }) {
-    const { origem, destino, veiculo } = route.params;
-    const mapRef = useRef(null);
-    const { user } = useContext(UserContext);
-    const [actualVehicle, setActualVehicles] = useState();
-    const [isLoading,setIsLoading] = useState(false)
+  const { origem, destino, veiculo } = route.params;
+  const mapRef = useRef(null);
+  const { user } = useContext(UserContext);
+  const [actualVehicle, setActualVehicles] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
 
-    const fetchVehicles = async () => {
-        try {
-            const vehicle = await getVehicles(user.id);
-            setActualVehicles(vehicle);
-        } catch (error) {
-            console.error('Erro ao buscar veículos:', error);
+  const fetchVehicles = async () => {
+    try {
+      const vehiclesArray = await getVehicles(user.id); 
+
+      // 2. Verifica se a API retornou uma lista e se essa lista não está vazia
+      if (vehiclesArray && Array.isArray(vehiclesArray) && vehiclesArray.length > 0) {
+        // 3. Pega o primeiro objeto de veículo da lista
+        const firstVehicle = vehiclesArray[0];
+        console.log("Veículo obtido:", firstVehicle); 
+        setActualVehicles(firstVehicle);
+      } else {
+        console.log("Nenhum veículo encontrado para o usuário logado.");
+        setActualVehicles(null);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar veículos:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
+  const onMapReady = () => {
+    if (mapRef.current && origem && destino) {
+      mapRef.current.fitToCoordinates(
+        [
+          { latitude: origem.lat, longitude: origem.lng },
+          { latitude: destino.lat, longitude: destino.lng },
+        ],
+        {
+          edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+          animated: true,
         }
-    };
-
-    useEffect(() => {
-        fetchVehicles();
-    }, []);
-
-
-    const onMapReady = () => {
-        if (mapRef.current && origem && destino) {
-        mapRef.current.fitToCoordinates(
-            [
-            { latitude: origem.lat, longitude: origem.lng },
-            { latitude: destino.lat, longitude: destino.lng }
-            ],
-            {
-            edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
-            animated: true
-            }
-        );
-        }
-    };
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -53,7 +63,7 @@ export default function CallConfirmation({ route, navigation }) {
         ref={mapRef}
         style={styles.map}
         onMapReady={onMapReady}
-        key={'AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U'}
+        key={"AIzaSyAaHYGbfNa4N9Me-f2g8hlwahNYZLy5l0U"}
         initialRegion={{
           latitude: origem.lat,
           longitude: origem.lng,
@@ -69,7 +79,6 @@ export default function CallConfirmation({ route, navigation }) {
             pinColor="green"
           >
             <IconOrigem width={31} height={31} />
-
           </Marker>
         )}
 
@@ -91,17 +100,24 @@ export default function CallConfirmation({ route, navigation }) {
 
         {/* Origem */}
         <View style={styles.infoItem}>
-            <Ionicons name="map" size={24} color="#FFA500" style={styles.infoIcon} />
-            <View style={styles.textContainer}>
+          <Ionicons
+            name="map"
+            size={24}
+            color="#FFA500"
+            style={styles.infoIcon}
+          />
+          <View style={styles.textContainer}>
             <Text style={styles.placeTitle}>
-              <Text style={{ fontWeight: 'bold' }}>
-                {origem.titulo || origem.endereco.split('-')[0]}
+              <Text style={{ fontWeight: "bold" }}>
+                {origem.titulo || origem.endereco.split("-")[0]}
               </Text>
             </Text>
             <Text style={styles.placeAddress}>
-              {origem.endereco.split('-')[1] ? origem.endereco.split('-')[1].trim() : origem.endereco}
+              {origem.endereco.split("-")[1]
+                ? origem.endereco.split("-")[1].trim()
+                : origem.endereco}
             </Text>
-            </View>
+          </View>
         </View>
 
         {/* Linha de separação */}
@@ -109,17 +125,24 @@ export default function CallConfirmation({ route, navigation }) {
 
         {/* Destino */}
         <View style={styles.infoItem}>
-            <Ionicons name="location" size={24} color="#FFA500" style={styles.infoIcon} />
-            <View style={styles.textContainer}>
+          <Ionicons
+            name="location"
+            size={24}
+            color="#FFA500"
+            style={styles.infoIcon}
+          />
+          <View style={styles.textContainer}>
             <Text style={styles.placeTitle}>
-              <Text style={{ fontWeight: 'bold' }}>
-                {destino.titulo || destino.endereco.split('-')[0]}
+              <Text style={{ fontWeight: "bold" }}>
+                {destino.titulo || destino.endereco.split("-")[0]}
               </Text>
             </Text>
             <Text style={styles.placeAddress}>
-              {destino.endereco.split('-')[1] ? destino.endereco.split('-')[1].trim() : destino.endereco}
+              {destino.endereco.split("-")[1]
+                ? destino.endereco.split("-")[1].trim()
+                : destino.endereco}
             </Text>
-            </View>
+          </View>
         </View>
 
         {/* Linha de separação */}
@@ -127,16 +150,44 @@ export default function CallConfirmation({ route, navigation }) {
 
         {/* Veículo */}
         <View style={styles.infoItem}>
-            <Ionicons name="car-sport" size={24} color="#FFA500" style={styles.infoIcon} />
-            <View style={styles.textContainer}>
-            {isLoading ?  <ActivityIndicator color="#fff" /> : <Text style={styles.placeTitle}>{actualVehicle?.modelo}</Text>}
-            {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.placeAddress}>{actualVehicle?.marca} • {actualVehicle?.ano_fabricacao}</Text>}
-            </View>
+          <Ionicons
+            name="car-sport"
+            size={24}
+            color="#FFA500"
+            style={styles.infoIcon}
+          />
+          <View style={styles.textContainer}>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.placeTitle}>{actualVehicle?.modelo}</Text>
+            )}
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.placeAddress}>
+                {actualVehicle?.marca} • {actualVehicle?.ano_fabricacao}
+              </Text>
+            )}
+          </View>
         </View>
 
         {/* Botão Confirmar */}
-        {isLoading ? <ActivityIndicator color="#fff" /> : <Button text="Confirmar" onPress={() => navigation.navigate('PaymentConfirmation', { origem, destino, actualVehicle })} />}
-        </View>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Button
+            text="Confirmar"
+            onPress={() =>
+              navigation.navigate("PaymentConfirmation", {
+                origem,
+                destino,
+                actualVehicle,
+              })
+            }
+          />
+        )}
+      </View>
     </View>
   );
 }

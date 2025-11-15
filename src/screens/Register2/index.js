@@ -15,6 +15,15 @@ export default function Register2({navigation,route}){
     const [marcaSelecionada,setMarcaSelecionada] = useState(null);
     const [modeloSelecionado,setModeloSelecionado] = useState(null);
     const [anoSelecionado,setAnoSelecionado] = useState(null);
+    const [corSelecionada,setCorSelecionada] = useState(null);
+    const [cor, setCores] = useState([
+        {label:'Branco', value:'Branco'},
+        {label:'Preto', value:'Preto'},
+        {label:'Prata', value:'Prata'},
+        {label:'Cinza', value:'Cinza'},
+        {label:'Vermelho', value:'Vermelho'}, 
+    ]);
+
 
     const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num } = route.params;
 
@@ -63,12 +72,16 @@ export default function Register2({navigation,route}){
         }
     },[modeloSelecionado]);
 
+    console.log(categoria);
+    console.log(corSelecionada);
+
+
     function handleSignIn(){
         if(!marcaSelecionada || !anoSelecionado || !modeloSelecionado){
             alert("Campo inválido")
         }
 
-        navigation.navigate('Register3', {email,password,name,cpf: unmaskedCpf,phone: unmaskedPhone,cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada,categoria});
+        navigation.navigate('Register3', {email,password,name,cpf: unmaskedCpf,phone: unmaskedPhone,cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada,categoria,cor: corSelecionada} );
     }
 
 
@@ -100,17 +113,24 @@ export default function Register2({navigation,route}){
              onValueChange={setAnoSelecionado}
             />
             <PickerSelect
+            placeholder={{label:"Selecione a cor...",value:null}}
+                items={cor}
+                value={corSelecionada}
+                name={"color-palette-outline"}
+                onValueChange={setCorSelecionada}
+            />
+            <PickerSelect
              placeholder={{label:"Selecione a categoria...",value:null}}
              items={[
-                {label:'Sedan', value:'sedan'},
-                {label:'Hatch', value:'hatch'},
-                {label:'SUV', value:'suv'},
-                {label:'Picape', value:'picape'},
+                {label:'Sedan', value:1},
+                {label:'Hatch', value:2},
+                {label:'SUV', value:3},
+                {label:'Picape', value:4},
              ]}
              value={categoria}
              name={"filter-outline"}
              onValueChange={setCategoria}
-            />
+            />      
             <Button style={{marginTop: 12}} text={'Proximo'} onPress={handleSignIn}/>
         </View>
     )

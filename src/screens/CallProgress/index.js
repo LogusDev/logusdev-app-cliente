@@ -18,7 +18,7 @@ export default function CallProgress({ route, navigation }) {
     const [chegada, setChegada] = useState(false);
     const [etapaViagem, setEtapaViagem] = useState('guincheiro_a_caminho');
 
-    const GOOGLE_API_KEY = 'AIzaSyDHH25GU6pD7YiP3s3Ff_Q6rE34xoMKp1Y'; 
+    const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M'; 
 
 
 
