@@ -185,8 +185,10 @@ export default function ReceiptScreen({ route }) {
             <Text style={styles.vehicleName}>{driverData.guincho?.modelo || "Atego 1726 – Branco"}</Text>
             <Text style={styles.vehicleDetails}>{driverData.guincho?.marca || "Mercedes-Benz"}</Text>
             <Text style={styles.vehicleDetails}>
-              {driverData.guincho?.ano_fabricacao || "2010"} -{" "}
-              {driverData.guincho?.comprimento_plataforma + "m"}
+              {driverData.guincho?.ano_fabricacao || "2010"} {" "}
+              {!driverData.guincho?.comprimento_plataforma ? (
+              driverData.guincho?.comprimento_plataforma || ""
+              ) : ""}
             </Text>
             <View style={styles.paymentBox}>
             {(() => {

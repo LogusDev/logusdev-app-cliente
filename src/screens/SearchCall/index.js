@@ -46,11 +46,15 @@ export default function SearchCall({ route, navigation }) {
                 }
                 try {
                     const res = await getCallStatus(callId);
+                    console.log(`[SearchCall] Status atual do chamado ${callId}:`, res?.status_chamado);
+                    
+                    // Verifica se o status mudou de 'aguardando' para outro status
                     if (res?.status_chamado && res.status_chamado !== 'aguardando') {
                         cancelled = true;
                         if (timer) clearTimeout(timer);
-                        // --- LÓGICA DE DEBUG ADICIONADA ---
-                        console.log("Status do chamado mudou. Buscando dados do guincheiro...");
+                        
+                        console.log("✅ Status do chamado mudou para:", res.status_chamado);
+                        console.log("Buscando dados do guincheiro...");
                         
                         // 1. BUSCA OS DADOS DO GUINCHEIRO
                         const driverData = await driverSearch(callId);
@@ -59,11 +63,21 @@ export default function SearchCall({ route, navigation }) {
                         // 2. EXTRAI O OBJETO 'GUINCHEIRO'
                         const guincheiro = driverData?.guincheiro || null;
                         console.log("Objeto 'guincheiro' que será enviado:", JSON.stringify(guincheiro, null, 2));
-                        navigation.replace('CallProgress', { origem, destino, actualVehicle, callId, guincheiroInfo: guincheiro });
+                        
+                        // Navega para a tela de progresso
+                        navigation.replace('CallProgress', { 
+                            origem, 
+                            destino, 
+                            actualVehicle, 
+                            callId, 
+                            guincheiroInfo: guincheiro 
+                        });
                         return;
                     }
+                    // Se ainda está aguardando, continua o polling com delay crescente
                     delayMs = Math.min(10000, Math.round(delayMs * 1.5));
                 } catch (e) {
+                    console.error("[SearchCall] Erro ao verificar status:", e);
                     delayMs = Math.min(10000, Math.round(delayMs * 1.5));
                 } finally {
                     if (!cancelled) timer = setTimeout(poll, delayMs);

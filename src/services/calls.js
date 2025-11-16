@@ -1,14 +1,20 @@
 import api from './api';
 
 
-export const getUserCalls = async (token) => {
+export const getUserCalls = async (id, token) => { // 1. Recebe o 'id' e o 'token'
   try {
-    if (!token) {
+    if (!token) { // 2. Agora esta verificação funciona
         throw new Error("Token não encontrado!")
     }
-    const response = await api.get(`/chamados/cliente/meus`, {
-        headers: { Authorization: `Bearer ${token}`}
-    });
+
+    const response = await api.get(`/chamados/cliente/meus/${id}`, 
+        { userId: id }, // 3. O 'body' da requisição
+        {
+            headers: { // 4. O 'config' com os headers de autenticação
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
     return response.data;
   } catch (error) {
     throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
@@ -26,7 +32,6 @@ export const createCall = async (payload) => {
 
 export const getCallStatus = async (id) => {
     try {
-        const response = await api.get(`/chamados/${id}`); 
         const response = await api.get(`/chamados/${id}`);
         return response.data;
     } catch (error) {
@@ -109,9 +114,6 @@ export const CallSearch = async (id) => {
         return null;
     }
 };
-
-
-}
 
 export async function priceCalc(origem, destino) {
   const response = await api.post("/chamados/calcularPreco", {
