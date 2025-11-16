@@ -150,7 +150,7 @@ export default function CallProgress({ route, navigation }) {
         console.log(`[CallProgress Cliente] Distância: ${distance.toFixed(3)} km, Etapa: ${etapaViagem}`);
 
         // 0.2 km = 200 metros - threshold idêntico
-        const threshold = 0.2;
+        const threshold = 0.1;
 
         if (etapaViagem === 'guincheiro_a_caminho' && distance < threshold) {
             console.log("✅ [Cliente] Chegou na origem, mudando para a etapa 2 (destino).");
@@ -188,6 +188,8 @@ export default function CallProgress({ route, navigation }) {
         rotaDestino = { latitude: destino.lat, longitude: destino.lng };
     }
 
+    console.log()
+
 
     const onMapReady = () => {
         if (mapRef.current && origem && destino) {
@@ -202,10 +204,6 @@ export default function CallProgress({ route, navigation }) {
                 }
             );
         }
-    };
-
-    const call = {
-        distance: "11 minutos"
     };
 
     const handleCall = () => {
@@ -304,13 +302,13 @@ export default function CallProgress({ route, navigation }) {
                     />
                     <View style={styles.guincheiroInfo}>
                         <View style={styles.nameRatingRow}>
-                            <Text style={styles.guincheiroName}>{guincheiro.name || ''}</Text>
+                            <Text style={styles.guincheiroName}>{guincheiroInfo.nome || ''}</Text>
                             <View style={styles.ratingContainer}>
-                                <Text style={styles.ratingText}>{guincheiro.rating}★</Text>
+                                <Text style={styles.ratingText}>{guincheiroInfo.media_avaliacoes + 0.0}★</Text>
                             </View>
                         </View>
                         <Text style={styles.guincheiroCalls}>
-                            Mais de {guincheiro.calls} chamados atendidos
+                            Mais de {guincheiroInfo.total_chamados_atendidos} chamados atendidos
                         </Text>
                         
                         {/* INFORMAÇÕES DO VEÍCULO DENTRO DO MESMO CONTAINER */}
@@ -336,7 +334,7 @@ export default function CallProgress({ route, navigation }) {
                 {!chegada ? (
                     <View style={styles.timeContainer}>
                         <Text style={styles.timeText}>
-                            <Text style={styles.timeHighlight}>{guincheiro.name || 'Nome não disponível'}</Text> está a{' '}
+                            <Text style={styles.timeHighlight}>{guincheiroInfo.nome || 'Nome não disponível'}</Text> está a{' '}
                             <Text style={styles.timeHighlight}>{duration ? Math.ceil(duration) : '—'}</Text> minutos do local destinado
                         </Text>
                     </View>
