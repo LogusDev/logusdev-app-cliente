@@ -163,7 +163,7 @@ export default function CallProgress({ route, navigation }) {
             console.log("✅ [Cliente] Chegou ao destino final! Navegando para CallCompleted...");
             setEtapaViagem('concluido'); // Previne múltiplas navegações
             navigation.replace('CallCompleted', {
-                origem, destino, guincheiro, vehicle, callId,
+                origem, destino, guincheiro, vehicle, callId,guincheiroInfo
             });
         }
 
@@ -304,7 +304,7 @@ export default function CallProgress({ route, navigation }) {
                         <View style={styles.nameRatingRow}>
                             <Text style={styles.guincheiroName}>{guincheiroInfo.nome || ''}</Text>
                             <View style={styles.ratingContainer}>
-                                <Text style={styles.ratingText}>{guincheiroInfo.media_avaliacoes + 0.0}★</Text>
+                                <Text style={styles.ratingText}>{guincheiroInfo.media_avaliacoes}★</Text>
                             </View>
                         </View>
                         <Text style={styles.guincheiroCalls}>

@@ -157,7 +157,7 @@ export default function PaymentConfirmation({ route, navigation }) {
         {preco === null ? (
           <ActivityIndicator color="#FFA500" />
         ) : (
-          <Text style={{ fontSize: 28, fontWeight: 'bold', color: "#1B5E20" }}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: "#1B5E20" }}>
             R$ {preco.toFixed(2)}
           </Text>
         )}

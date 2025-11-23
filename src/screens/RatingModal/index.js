@@ -5,7 +5,7 @@ import Button from "../../components/Button/index";
 import styles from './style';
 import { ratingCall } from '../../services/calls'; 
 
-export default function RatingModal({ visible, onClose, guincheiro, vehicle, callId, navigation }) {
+export default function RatingModal({ visible, onClose, guincheiro, vehicle, callId, navigation, guincheiroInfo }) {
     const [rating, setRating] = useState(0);
     const [comentario, setComentario] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,7 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
                                 <View style={styles.nameRatingRow}>
                                     <Text style={styles.guincheiroName} numberOfLines={1}>{guincheiro.name}</Text>
                                     <View style={styles.ratingBadge}>
-                                        <Text style={styles.ratingText}>{guincheiro.rating?.toFixed(1) || 'N/A'} ★</Text>
+                                        <Text style={styles.ratingText}>3.5 ★</Text>
                                     </View>
                                 </View>
                                 <Text style={styles.vehicleModel}>{vehicle.model} - {vehicle.color}</Text>
