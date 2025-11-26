@@ -22,7 +22,9 @@ export default function NearbyPlacesMap({ route }) {
             const { latitude, longitude } = position.coords;
             setUserLocation({ latitude, longitude });
 
-            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=4000&type=${tipo}&key=${GOOGLE_API_KEY}`;
+            const keyword = tipo === "tyre_shop" ? "&keyword=tyre_shop" : "";
+
+            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=4000&type=${tipo === "tyre_shop" ? "car_repair" : tipo}${keyword}&key=${GOOGLE_API_KEY}`;
 
             const { data } = await axios.get(url);
             setLocais(data.results);
@@ -76,6 +78,8 @@ export default function NearbyPlacesMap({ route }) {
                 return require('../../assets/images/gas-station-icon.png')
             case 'car_repair':
                 return require('../../assets/images/car-repair-icon.png')
+            case 'auto_parts_store':
+                return require('../../assets/images/auto-parts-icon.png')
             default:
                 return require('../../assets/images/car-default-icon.png')
         }

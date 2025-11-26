@@ -219,10 +219,10 @@ export default function GooglePlaces({userLocation, onConfirm }) {
 
         <TouchableOpacity 
           style={styles.quickActionButton}
-          onPress={() => navigation.navigate('NearbyPlaces', { tipo: 'car_repair' })}
+          onPress={() => navigation.navigate('NearbyPlaces', { tipo: 'auto_parts_store' })}
         >
           <Ionicons name="car-outline" size={28} color="#555" />
-          <Text style={styles.quickActionText}>Borracharia{"\n"}mais próxima</Text>
+          <Text style={styles.quickActionText}>Auto-Peças{"\n"}mais próxima</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
