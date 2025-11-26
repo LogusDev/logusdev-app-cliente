@@ -209,18 +209,30 @@ export default function GooglePlaces({userLocation, onConfirm }) {
 
       {/* SEÇÃO DE BOTÕES DE ATALHO */}
       <View style={styles.quickActionsContainer}>
-        <TouchableOpacity style={styles.quickActionButton}>
+        <TouchableOpacity 
+          style={styles.quickActionButton}
+          onPress={() => navigation.navigate('NearbyPlaces', { tipo: 'car_repair' })}
+        >
           <Ionicons name="build-outline" size={28} color="#D9534F" />
           <Text style={styles.quickActionText}>Oficina mais{"\n"}próxima</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.quickActionButton}>
+
+        <TouchableOpacity 
+          style={styles.quickActionButton}
+          onPress={() => navigation.navigate('NearbyPlaces', { tipo: 'car_repair' })}
+        >
           <Ionicons name="car-outline" size={28} color="#555" />
           <Text style={styles.quickActionText}>Borracharia{"\n"}mais próxima</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.quickActionButton}>
+
+        <TouchableOpacity 
+          style={styles.quickActionButton}
+          onPress={() => navigation.navigate('NearbyPlaces', { tipo: 'gas_station' })}
+        >
           <Ionicons name="flame-outline" size={28} color="#F0AD4E" />
           <Text style={styles.quickActionText}>Posto de{"\n"}combustível</Text>
         </TouchableOpacity>
+
       </View>
 
       {/* LISTA DE SUGESTÕES FLUTUANTE COM NOVAS REGRAS */}
