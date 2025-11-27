@@ -20,7 +20,7 @@ export default function Profile(){
             />
             <Options name={"lock-closed-outline"} text={"Trocar senha"} />
             <Options name={"people-outline"} text={"Parcerias"} />
-            <Options name={"help-circle-outline"} text={"Ajuda"} />
+            <Options name={"help-circle-outline"} text={"Ajuda"} onPress={() => {navigation.navigate("Help")}}/>
             <Options name={"information-circle-outline"} text={"Sobre nós"} />
             <Options name={"log-out-outline"} text={"Sair da conta"} color={'red'} />
         </View>
