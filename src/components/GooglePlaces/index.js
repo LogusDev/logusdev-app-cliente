@@ -26,18 +26,52 @@ function limparEndereco(endereco) {
 
 const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M'; 
 
-export default function GooglePlaces({userLocation, onConfirm }) {
+export default function GooglePlaces({userLocation, destinoInicial, onConfirm }) {
   const [origem, setOrigem] = useState('');
   const [destino, setDestino] = useState('');
   const [sugestoesOrigem, setSugestoesOrigem] = useState([]);
   const [sugestoesDestino, setSugestoesDestino] = useState([]);
   const [origemSelecionada, setOrigemSelecionada] = useState(null);
-  const [destinoSelecionada, setDestinoSelecionada] = useState(null);
+  const [destinoSelecionada, setDestinoSelecionado] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [destinoTexto, setDestinoTexto] = useState(destinoInicial?.nome || "");
+  const [destinoCoords, setDestinoCoords] = useState(
+    destinoInicial ? { lat: destinoInicial.lat, lng: destinoInicial.lng } : null
+  );
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+  if (destinoInicial) {
+    const enderecoLimpo = limparEndereco(destinoInicial.endereco);
+
+    setDestino(enderecoLimpo); 
+    setDestinoSelecionado({
+      lat: destinoInicial.lat,
+      lng: destinoInicial.lng,
+      description: enderecoLimpo
+    });
+  }
+}, [destinoInicial]);
+
+
+  useEffect(() => {
+  console.log("Destino Inicial recebido no GooglePlaces:", destinoInicial);
+  }, [destinoInicial]);
+
+
+  useEffect(() => {
+    if (destinoInicial?.lat && destinoInicial?.lng) {
+      setDestinoSelecionado({
+        place_id: null,
+        lat: destinoInicial.lat,
+        lng: destinoInicial.lng,
+        description: destinoInicial.endereco
+      });
+    }
+  }, [destinoInicial])
 
   // --- TODA A SUA LÓGICA ORIGINAL FOI MANTIDA ---
   const buscarSugestoes = async (input, setSugestoes) => {
@@ -90,7 +124,7 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   const handleSelecionarDestino = (item) => {
     setDestino(limparEndereco(item.description));
     setSugestoesDestino([]);
-    setDestinoSelecionada(item);
+    setDestinoSelecionado(item);
     setFocusedInput(null);
     Keyboard.dismiss();
   };
@@ -109,6 +143,7 @@ export default function GooglePlaces({userLocation, onConfirm }) {
   };
 
   const confirmationRide = async () => {
+    
     if (!origemSelecionada || !destinoSelecionada) {
         alert("Por favor, selecione uma origem e um destino válidos.");
         return;
@@ -123,9 +158,23 @@ export default function GooglePlaces({userLocation, onConfirm }) {
             if (!coords) throw new Error("Não foi possível obter as coordenadas da origem.");
             origemFinal = { lat: coords.latitude, lng: coords.longitude, endereco: limparEndereco(origemSelecionada.description) };
         }
-        const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
-        if (!destinoCoords) throw new Error("Não foi possível obter as coordenadas do destino.");
-        destinoFinal = { lat: destinoCoords.latitude, lng: destinoCoords.longitude, endereco: limparEndereco(destinoSelecionada.description) };
+
+        if (destinoSelecionada.lat && destinoSelecionada.lng) {
+          destinoFinal = { 
+            lat: destinoSelecionada.lat, 
+            lng: destinoSelecionada.lng,
+            endereco: limparEndereco(destinoSelecionada.description)
+          };
+        } else {
+          const destinoCoords = await getPlaceDetails(destinoSelecionada.place_id);
+          if (!destinoCoords) throw new Error("Não foi possível obter as coordenadas do destino.");
+          destinoFinal = { 
+            lat: destinoCoords.latitude, 
+            lng: destinoCoords.longitude,
+            endereco: limparEndereco(destinoSelecionada.description)
+          };
+        }
+
 
         navigation.navigate('CallConfirmation', { origem: origemFinal, destino: destinoFinal });
     } catch (error) {

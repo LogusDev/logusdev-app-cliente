@@ -4,6 +4,9 @@ import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
 import * as Location from 'expo-location';
 import MapViewDirections from 'react-native-maps-directions';
+import { useNavigation } from '@react-navigation/native';
+import Button from '../../components/Button';
+
 
 const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
@@ -12,6 +15,9 @@ export default function NearbyPlacesMap({ route }) {
     const [locais, setLocais] = useState([]);
     const [userLocation, setUserLocation] = useState(null);
     const [destination, setDestination] = useState(null);
+    const [showButton, setShowButton] = useState(false);
+
+    const navigation = useNavigation();
 
     async function loadPlaces() {
         try {
@@ -85,7 +91,8 @@ export default function NearbyPlacesMap({ route }) {
         }
     }
 
-    return (
+   return (
+  <View style={{ flex: 1 }}>
     <MapView
       style={styles.map}
       customMapStyle={mapStyle}
@@ -99,44 +106,61 @@ export default function NearbyPlacesMap({ route }) {
       <Marker
         coordinate={userLocation}
         title="Você está aqui"
-        pinColor="blue"
+        pinColor="Orange"
       />
       {locais.map((item) => (
         <Marker
-            key={item.place_id}
-            coordinate={{
+          key={item.place_id}
+          coordinate={{
             latitude: item.geometry.location.lat,
             longitude: item.geometry.location.lng,
-            }}
-            title={item.name}
-            description={item.vicinity}
-            onPress={() => setDestination(item.geometry.location)} //salvar o destino quando clicar em algum estabelecimento
+          }}
+          title={item.name}
+          description={item.vicinity}
+          onPress={() => {
+            setDestination(item)
+            setShowButton(true)
+          }}
         >
-            <Image
+          <Image
             source={getIcon(tipo)}
             style={{ width: 50, height: 50 }}
             resizeMode="contain"
-            />
-            </Marker>
+          />
+        </Marker>
       ))}
 
       {destination && (
         <MapViewDirections
-            origin={userLocation}
-            destination={{
-                latitude: destination.lat,
-                longitude: destination.lng,
-            }}
-            apikey={GOOGLE_API_KEY}
-            strokeWidth={4}
-            strokeColor="#e60"
-            optimizeWaypoints={true}
+          origin={userLocation}
+          destination={{
+            latitude: destination.geometry.location.lat,
+            longitude: destination.geometry.location.lng,
+          }}
+          apikey={GOOGLE_API_KEY}
+          strokeWidth={4}
+          strokeColor="#e68600ff"
+          optimizeWaypoints={true}
         />
       )}
-
     </MapView>
-  );
 
+    {showButton && destination && (
+      <View style={styles.btnContainer}>
+        <Button
+          text="Iniciar Chamado"
+          onPress={() => navigation.navigate('OriginDestiny', {
+            userLocation,
+            destinoLat: destination.geometry.location.lat,
+            destinoLng: destination.geometry.location.lng,
+            destinoNome: destination.name,
+            destinoEndereco: destination.vicinity
+          })}
+        />
+      </View>
+    )}
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -147,5 +171,13 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: "center", 
     alignItems: "center" 
-  }
+  },
+
+  btnContainer: {
+  position: 'absolute',
+  bottom: 20,
+  width: '100%',
+  alignItems: 'center'
+}
+
 });
