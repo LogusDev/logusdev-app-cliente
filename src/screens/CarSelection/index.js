@@ -7,6 +7,7 @@ import { getVehicles, updateVehicle } from "../../services/services";
 import { UserContext } from "../../contexts/UserContext";
 import VehicleEditModal from "../VehicleEditModal";
 import VehicleAddModal from "../VehicleAddModal";
+import api from "../../services/api";
 
 export default function CarSelection() {
   const { user } = useContext(UserContext);
@@ -49,9 +50,30 @@ export default function CarSelection() {
     }
   }, [user]);
 
-  const handleSelectedVehicle = (vehicleId) => {
-    setSelectedVehicle(vehicleId);
-    console.log("Carro selecionado:", vehicleId);
+  useEffect(() => {
+  if (vehicles.length > 0) {
+    const activeVehicle = vehicles.find(v => v.ativo === true);
+    if (activeVehicle) {
+      setSelectedVehicle(activeVehicle.id);
+    }
+  }
+}, [vehicles]);
+
+
+  const handleSelectedVehicle = async (vehicleId) => {
+    try {
+      await api.put(`/veiculos/${vehicleId}/selecionar`, {
+        cliente_id: user.id
+      });
+
+      setSelectedVehicle(vehicleId);
+      console.log("Carro selecionado:", vehicleId);
+      fetchVehicles();
+
+    } catch (error) {
+      console.log("Erro ao selecionar veículo", error);
+    }
+    
   };
 
   const handleEditVehicle = (vehicle) => {
