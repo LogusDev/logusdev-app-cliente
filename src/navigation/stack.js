@@ -20,6 +20,7 @@ import ActivityScreen from '../screens/ActivityScreen';
 import ReceiptScreen from '../screens/ReceiptScreen';
 import CarSelection from '../screens/CarSelection';
 import Help from '../screens/Help';
+import About from '../screens/About';
 
 
 const Stack = createNativeStackNavigator({
@@ -57,6 +58,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="ReceiptScreen" component={ReceiptScreen} />
                 <Stack.Screen name='CarSelect' component={CarSelection} />
                 <Stack.Screen name='Help' component={Help} />
+                <Stack.Screen name='About' component={About} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>
