@@ -21,6 +21,7 @@ import ReceiptScreen from '../screens/ReceiptScreen';
 import CarSelection from '../screens/CarSelection';
 import Help from '../screens/Help';
 import About from '../screens/About';
+import ChangePassword from '../screens/ChangePassword';
 
 
 const Stack = createNativeStackNavigator({
@@ -59,6 +60,7 @@ export default function StackNavigator(){
                 <Stack.Screen name='CarSelect' component={CarSelection} />
                 <Stack.Screen name='Help' component={Help} />
                 <Stack.Screen name='About' component={About} />
+                <Stack.Screen name='ChangePassword' component={ChangePassword} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>
