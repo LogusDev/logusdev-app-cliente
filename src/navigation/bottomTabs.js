@@ -42,7 +42,7 @@ export default function MyTabs() {
             }} />
 
 
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{
+      <Tab.Screen name="Perfil" component={ProfileScreen} options={{
         tabBarActiveTintColor: '#EF8108',
         tabBarInactiveTintColor: '#A5A5A5',
         tabBarIcon: ({ color, size }) => (

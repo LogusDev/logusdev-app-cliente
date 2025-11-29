@@ -14,6 +14,8 @@ import {UserProvider} from '../contexts/UserContext';
 import CallConfirmation from '../screens/CallConfirmation';
 import PaymentConfirmation from '../screens/PaymentConfirmation';
 import SearchCall from '../screens/SearchCall';
+import SelectDriver from '../screens/SelectDriver';
+import WaitingDriverResponse from '../screens/WaitingDriverResponse';
 import CallProgress from '../screens/CallProgress';
 import CallCompleted from '../screens/CallCompleted';
 import ActivityScreen from '../screens/ActivityScreen';
@@ -50,6 +52,8 @@ export default function StackNavigator(){
                 <Stack.Screen name="OriginDestiny" component={OriginDestiny} />
                 <Stack.Screen name="CallConfirmation" component={CallConfirmation} />
                 <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmation} />
+                <Stack.Screen name='SelectDriver' component={SelectDriver} />
+                <Stack.Screen name='WaitingDriverResponse' component={WaitingDriverResponse} />
                 <Stack.Screen name='SearchCall' component={SearchCall} />
                 <Stack.Screen name="CallProgress" component={CallProgress} />
                 <Stack.Screen name="CallCompleted" component={CallCompleted} />
