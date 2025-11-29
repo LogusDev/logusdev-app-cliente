@@ -5,13 +5,11 @@ import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './style';
 import IconOrigem from '../../components/IconOrigem';
-import { updateCall } from '../../services/calls';
 import RatingModal from '../../screens/RatingModal'; 
 import MapViewDirections from 'react-native-maps-directions';
 
 export default function CallCompleted({ route, navigation }) {
-    // DEBUG: Verifique o que está chegando
-    // console.log("DADOS RECEBIDOS:", JSON.stringify(route.params, null, 2));
+
     
     const { origem, destino, guincheiro, callId, vehicle, guincheiroInfo } = route.params;
     const mapRef = useRef(null);
@@ -19,29 +17,27 @@ export default function CallCompleted({ route, navigation }) {
     
     const [isRatingModalVisible, setRatingModalVisible] = useState(false);
 
-    const GOOGLE_API_KEY = 'AIzaSyAmfl_CD7XtRiiETKRzh0EfQmtVW59b-Cw';
+    const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
-    const handleFinalizar = async () => {
-        // ... (sem alterações)
-        if (isLoading) return;
-        setIsLoading(true);
-        try {
-            await updateCall(callId, { status_chamado: 'concluído' });
-            console.log('Chamado finalizado e status atualizado no backend.');
-            setRatingModalVisible(true); 
-        } catch (error) {
-            console.error('Erro ao finalizar o chamado:', error);
-            Alert.alert('Erro', 'Não foi possível finalizar o chamado. Tente novamente.');
-        } finally {
-            setIsLoading(false);
-        }
+    // Mostra o modal automaticamente quando a tela é aberta
+    useEffect(() => {
+        // Pequeno delay para garantir que a tela está renderizada
+        const timer = setTimeout(() => {
+            setRatingModalVisible(true);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleFinalizar = () => {
+        // Navega para a Home
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainHome' }],
+        });
     };
 
-    // --- 2. ALTERADO ---
-    // Usamos useEffect para reagir *depois* que os dados (origem/destino)
-    // e o mapa (mapRef.current) estiverem prontos.
+
     useEffect(() => {
-        // Só executa se o mapa estiver pronto E os dados existirem
         if (mapRef.current && origem?.lat && destino?.lat) {
             
             const coordinates = [
@@ -165,6 +161,8 @@ export default function CallCompleted({ route, navigation }) {
                 vehicle={vehicle}
                 callId={callId}
                 navigation={navigation}
+                guincheiroInfo={guincheiroInfo}
+                route={route}
             />
         </View>
     );

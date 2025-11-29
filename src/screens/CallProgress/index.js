@@ -7,12 +7,14 @@ import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import IconOrigem from '../../components/IconOrigem';
 import Guincho from '../../assets/images/guincho.svg';
+import ArrivalConfirmation from '../../components/ArrivalConfirmation';
 
-// --- MUDANÇA PRINCIPAL: IMPORTANDO A BIBLIOTECA IGUAL AO GUINCHEIRO ---
 import MapViewDirections from 'react-native-maps-directions';
 
 import { io } from 'socket.io-client';
 import api from '../../services/api';
+import { getCallStatus } from '../../services/calls';
+import { AppState } from 'react-native';
 
 export default function CallProgress({ route, navigation }) {
     const { origem, destino, callId, guincheiroInfo } = route.params;
@@ -22,11 +24,16 @@ export default function CallProgress({ route, navigation }) {
     const [duration, setDuration] = useState(null);
     const [chegada, setChegada] = useState(false);
     const [etapaViagem, setEtapaViagem] = useState('guincheiro_a_caminho');
+    
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [isEnderecoInicial, setIsEnderecoInicial] = useState(true);
+    const [clienteConfirmou, setClienteConfirmou] = useState(false);
+    const [guincheiroConfirmou, setGuincheiroConfirmou] = useState(false);
+    const [aguardandoConfirmacao, setAguardandoConfirmacao] = useState(false);
+    const isEnderecoInicialRef = useRef(true);
 
-    // --- MUDANÇA: Renomeado para consistência com o app do guincheiro ---
     const GOOGLE_MAPS_APIKEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
-    // Função para calcular distância entre duas coordenadas (Haversine) - IDÊNTICA
     const calcularDistancia = (lat1, lon1, lat2, lon2) => {
         const R = 6371; // Raio da Terra em km
         const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -51,7 +58,6 @@ export default function CallProgress({ route, navigation }) {
         longitude: -46.79256090559714
     };
 
-    // Posição do guincheiro recebida via Socket.IO
     const [guincheiroPos, setGuincheiroPos] = useState(null);
     const socketRef = useRef(null);
 
@@ -65,11 +71,7 @@ export default function CallProgress({ route, navigation }) {
         licensePlate: "ABC1D23"
     };
 
-    // -------------------------
-    // --- REMOVIDO: Wrapper MapViewDirections customizado, decodePolyline, getRouteFromGoogleV2 ---
-    // -------------------------
 
-    // CONFIGURAÇÃO DO SOCKET.IO (Idêntico)
     useEffect(() => {
         if (!callId) return;
 
@@ -85,11 +87,39 @@ export default function CallProgress({ route, navigation }) {
         });
 
         socket.on('guincheiro-location-update', (data) => {
-            // console.log('Localização do guincheiro recebida:', data); // Log pode ser muito verboso
             setGuincheiroPos({
                 latitude: data.latitude,
                 longitude: data.longitude
             });
+        });
+
+        socket.on('guincheiro-confirmou-chegada', (data) => {
+            console.log('Motorista confirmou chegada:', data);
+            setGuincheiroConfirmou(prev => {
+                if ((data.tipo === 'inicial' && isEnderecoInicialRef.current) || 
+                    (data.tipo === 'final' && !isEnderecoInicialRef.current)) {
+                    return true;
+                }
+                return prev;
+            });
+        });
+
+        socket.on('ambos-confirmaram', (data) => {
+            console.log('Ambos confirmaram, prosseguindo:', data);
+            setShowConfirmationModal(false);
+            setClienteConfirmou(false);
+            setGuincheiroConfirmou(false);
+            setAguardandoConfirmacao(false);
+            
+            if (data.tipo === 'inicial') {
+                setEtapaViagem('levando_ao_destino');
+                setDistance(null);
+            } else if (data.tipo === 'final') {
+                setEtapaViagem('concluido');
+                navigation.replace('CallCompleted', {
+                    origem, destino, guincheiro, vehicle, callId, guincheiroInfo
+                });
+            }
         });
 
         socket.on('disconnect', () => {
@@ -100,20 +130,16 @@ export default function CallProgress({ route, navigation }) {
             try {
                 socket.disconnect();
             } catch (err) {
-                // ignore
             }
         };
     }, [callId]);
     
-    // --- LÓGICA DE CÁLCULO MANUAL IDÊNTICA À DO GUINCHEIRO ---
-    // Verifica distância manualmente quando a posição do guincheiro muda
     useEffect(() => {
         if (!guincheiroPos || etapaViagem === 'concluido') return;
 
         let distanciaCalculada = null;
 
         if (etapaViagem === 'guincheiro_a_caminho') {
-            // Distância do guincheiro até o cliente (origem)
             distanciaCalculada = calcularDistancia(
                 guincheiroPos.latitude,
                 guincheiroPos.longitude,
@@ -121,7 +147,6 @@ export default function CallProgress({ route, navigation }) {
                 origem.lng
             );
         } else if (etapaViagem === 'levando_ao_destino') {
-            // Distância do guincheiro até o destino
             distanciaCalculada = calcularDistancia(
                 guincheiroPos.latitude,
                 guincheiroPos.longitude,
@@ -131,8 +156,6 @@ export default function CallProgress({ route, navigation }) {
         }
 
         if (distanciaCalculada !== null) {
-            // console.log(`[CallProgress Cliente] Distância calculada manualmente: ${distanciaCalculada.toFixed(3)} km`);
-            // Atualiza a distância (lógica idêntica à do guincheiro, com filtro de 0.05km)
             setDistance(prevDistance => {
                 if (prevDistance === null || Math.abs(prevDistance - distanciaCalculada) > 0.05) {
                     return distanciaCalculada;
@@ -143,33 +166,93 @@ export default function CallProgress({ route, navigation }) {
     }, [guincheiroPos, etapaViagem, origem, destino]);
 
 
-    // --- LÓGICA DE MUDANÇA DE ETAPA IDÊNTICA À DO GUINCHEIRO ---
     useEffect(() => {
-        if (distance === null) return;
+        if (distance === null || aguardandoConfirmacao) return;
 
         console.log(`[CallProgress Cliente] Distância: ${distance.toFixed(3)} km, Etapa: ${etapaViagem}`);
 
-        // 0.2 km = 200 metros - threshold idêntico
         const threshold = 0.1;
 
-        if (etapaViagem === 'guincheiro_a_caminho' && distance < threshold) {
-            console.log("✅ [Cliente] Chegou na origem, mudando para a etapa 2 (destino).");
-            setEtapaViagem('levando_ao_destino');
-            setDistance(null); // Reseta a distância para o próximo cálculo de etapa
+        if (etapaViagem === 'guincheiro_a_caminho' && distance < threshold && !showConfirmationModal) {
+            console.log("✅ [Cliente] Próximo ao endereço inicial, mostrando modal de confirmação.");
+            setIsEnderecoInicial(true);
+            isEnderecoInicialRef.current = true;
+            setShowConfirmationModal(true);
+            setAguardandoConfirmacao(true);
+            setClienteConfirmou(false);
+            setGuincheiroConfirmou(false);
             return;
         }
         
-        if (etapaViagem === 'levando_ao_destino' && distance < threshold) {
-            console.log("✅ [Cliente] Chegou ao destino final! Navegando para CallCompleted...");
-            setEtapaViagem('concluido'); // Previne múltiplas navegações
-            navigation.replace('CallCompleted', {
-                origem, destino, guincheiro, vehicle, callId,guincheiroInfo
-            });
+        if (etapaViagem === 'levando_ao_destino' && distance < threshold && !showConfirmationModal) {
+            console.log("✅ [Cliente] Próximo ao endereço final, mostrando modal de confirmação.");
+            setIsEnderecoInicial(false);
+            isEnderecoInicialRef.current = false;
+            setShowConfirmationModal(true);
+            setAguardandoConfirmacao(true);
+            setClienteConfirmou(false);
+            setGuincheiroConfirmou(false);
+            return;
         }
 
-    }, [distance, etapaViagem, navigation, origem, destino]);
+    }, [distance, etapaViagem, showConfirmationModal, aguardandoConfirmacao]);
 
-    // Aguarda a posição do guincheiro ser recebida via Socket.IO
+    // Polling para verificar se o guincheiro finalizou o chamado
+    useEffect(() => {
+        if (!callId || etapaViagem === 'concluido') return;
+
+        let cancelled = false;
+        let delayMs = 3000; // Verifica a cada 3 segundos
+        const appStateRef = { current: AppState.currentState };
+
+        const onAppStateChange = (next) => {
+            appStateRef.current = next;
+        };
+        const sub = AppState.addEventListener('change', onAppStateChange);
+        let timer = null;
+
+        const poll = async () => {
+            if (cancelled) return;
+            if (appStateRef.current !== 'active') {
+                timer = setTimeout(poll, 3000);
+                return;
+            }
+            try {
+                const res = await getCallStatus(callId);
+                console.log(`[CallProgress Cliente] Status do chamado:`, res?.status_chamado);
+                
+                // Se o status mudou para "concluido", navega para CallCompleted
+                if (res?.status_chamado === 'concluido') {
+                    cancelled = true;
+                    if (timer) clearTimeout(timer);
+                    
+                    console.log("✅ Chamado foi finalizado pelo guincheiro!");
+                    navigation.replace('CallCompleted', {
+                        origem,
+                        destino,
+                        guincheiro,
+                        vehicle,
+                        callId,
+                        guincheiroInfo
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.error("[CallProgress Cliente] Erro ao verificar status:", e);
+            } finally {
+                if (!cancelled) timer = setTimeout(poll, delayMs);
+            }
+        };
+
+        poll();
+
+        return () => {
+            cancelled = true;
+            if (timer) clearTimeout(timer);
+            sub.remove();
+        };
+    }, [callId, etapaViagem, navigation, origem, destino, guincheiro, vehicle, guincheiroInfo]);
+
     if (!guincheiroPos) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -178,7 +261,6 @@ export default function CallProgress({ route, navigation }) {
         );
     }
 
-    // Lógica de definição de rota idêntica
     let rotaOrigem, rotaDestino;
     if (etapaViagem === 'guincheiro_a_caminho') {
         rotaOrigem = { latitude: guincheiroPos.latitude, longitude: guincheiroPos.longitude };
@@ -212,6 +294,21 @@ export default function CallProgress({ route, navigation }) {
 
     const handleChat = () => {
         navigation.navigate('Chat', { guincheiro, call });
+    };
+
+    const handleConfirmArrival = () => {
+        if (!socketRef.current) return;
+        
+        setClienteConfirmou(true);
+        
+        const tipo = isEnderecoInicial ? 'inicial' : 'final';
+        socketRef.current.emit('cliente-confirmou-chegada', {
+            callId,
+            tipo,
+            userId: user?.id
+        });
+        
+        console.log(`[Cliente] Confirmação de chegada enviada: ${tipo}`);
     };
 
     return (
@@ -363,6 +460,18 @@ export default function CallProgress({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* Modal de Confirmação de Chegada */}
+            <ArrivalConfirmation
+                visible={showConfirmationModal}
+                onConfirm={handleConfirmArrival}
+                guincheiroInfo={guincheiroInfo}
+                endereco={isEnderecoInicial ? origem : destino}
+                isEnderecoInicial={isEnderecoInicial}
+                vehicle={vehicle}
+                clienteConfirmou={clienteConfirmou}
+                guincheiroConfirmou={guincheiroConfirmou}
+            />
         </View>
     );
 }

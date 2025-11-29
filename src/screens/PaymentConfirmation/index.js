@@ -179,7 +179,7 @@ export default function PaymentConfirmation({ route, navigation }) {
                 metodo_pagamento: selectedPayment,
               };
               const novo = await createCall(payload);
-              navigation.navigate('SearchCall', { origem, destino, actualVehicle, callId: novo.id });
+              navigation.navigate('SelectDriver', { origem, destino, actualVehicle, callId: novo.id });
             } catch (e) {
               alert('Não foi possível criar o chamado. Tente novamente.');
             }

@@ -125,3 +125,25 @@ export async function priceCalc(origem, destino) {
 
   return response.data.preco;
 }
+
+// Buscar guincheiros disponíveis para um chamado
+export const getAvailableDrivers = async (chamadoId) => {
+  try {
+    const response = await api.get(`/chamados/${chamadoId}/guincheiros-disponiveis`);
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
+  }
+};
+
+// Escolher um guincheiro para o chamado
+export const chooseDriver = async (chamadoId, guincheiroId) => {
+  try {
+    const response = await api.post(`/chamados/${chamadoId}/escolher-guincheiro`, {
+      guincheiro_id: guincheiroId
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : 'Erro ao conectar com o servidor';
+  }
+};
