@@ -21,6 +21,7 @@ import CallCompleted from '../screens/CallCompleted';
 import ActivityScreen from '../screens/ActivityScreen';
 import ReceiptScreen from '../screens/ReceiptScreen';
 import CarSelection from '../screens/CarSelection';
+import NearbyPlacesMap from '../screens/NearbyPlacesMap';
 
 
 const Stack = createNativeStackNavigator({
@@ -59,6 +60,7 @@ export default function StackNavigator(){
                 <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
                 <Stack.Screen name="ReceiptScreen" component={ReceiptScreen} />
                 <Stack.Screen name='CarSelect' component={CarSelection} />
+                <Stack.Screen name="NearbyPlaces" component={NearbyPlacesMap} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>
