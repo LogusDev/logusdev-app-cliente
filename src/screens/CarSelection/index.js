@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, ScrollView } from "react-native";
+import { View, Text, StatusBar, ScrollView, ActivityIndicator } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import VehicleCard from "../../components/VehicleCard";
 import styles from "./styles";
@@ -15,9 +15,11 @@ export default function CarSelection() {
   const [isVehicleEditModalVisible, setVehicleEditModalVisible] = useState(false);
   const [isVehicleAddModalVisible, setVehicleAddModalVisible] = useState(false);
   const [vehicleEdit, setVehicleEdit] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchVehicles = async () => {
     try {
+      setLoading(true);
       const response = await getVehicles(user.id);
       console.log("Tipo:", typeof response);
       console.log("É array?", Array.isArray(response));
@@ -40,6 +42,8 @@ export default function CarSelection() {
     } catch (error) {
       console.error("Erro ao buscar veículos:", error);
       setVehicles([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,6 +62,18 @@ export default function CarSelection() {
     setVehicleEdit(vehicle);
     setVehicleEditModalVisible(true);
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="#FFFFFF" />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1F284E" />
+          <Text style={styles.loadingText}>Carregando veículos...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
