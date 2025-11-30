@@ -42,7 +42,6 @@ export default StyleSheet.create({
   messagesContent: {
     padding: 16,
     paddingBottom: 8,
-    flexGrow: 0,
   },
   dateSeparator: {
     alignItems: 'center',
@@ -110,6 +109,7 @@ export default StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
+    marginTop: 8,
   },
   emojiButton: {
     padding: 8,
