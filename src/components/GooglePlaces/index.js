@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react'
+import React, {useState, useEffect, useRef } from 'react'
 import {
   View,
   TextInput,
@@ -9,11 +9,12 @@ import {
   Keyboard,
   ActivityIndicator
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../Button';
 import { useNavigation } from '@react-navigation/native';
-import { getCurrentPositionAsync } from 'expo-location';
+import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location';
 
 // Função para limpar sufixos indesejados dos endereços
 function limparEndereco(endereco) {
@@ -42,6 +43,10 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
   );
 
   const navigation = useNavigation();
+  
+  // Refs para os inputs para controlar a seleção do cursor
+  const origemInputRef = useRef(null);
+  const destinoInputRef = useRef(null);
 
   useEffect(() => {
   if (destinoInicial) {
@@ -145,7 +150,13 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
   const confirmationRide = async () => {
     
     if (!origemSelecionada || !destinoSelecionada) {
-        alert("Por favor, selecione uma origem e um destino válidos.");
+        Toast.show({
+            type: 'error',
+            text1: 'Atenção',
+            text2: 'Por favor, selecione uma origem e um destino válidos.',
+            position: 'bottom',
+            visibilityTime: 2000,
+        });
         return;
     }
     try {
@@ -179,7 +190,13 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
         navigation.navigate('CallConfirmation', { origem: origemFinal, destino: destinoFinal });
     } catch (error) {
         console.error("Erro na confirmação da corrida:", error.message);
-        alert("Ocorreu um erro ao confirmar os locais. Por favor, tente novamente.");
+        Toast.show({
+            type: 'error',
+            text1: 'Erro',
+            text2: 'Ocorreu um erro ao confirmar os locais. Por favor, tente novamente.',
+            position: 'bottom',
+            visibilityTime: 2000,
+        });
     } finally {
       setIsLoading(false);
     }
@@ -188,14 +205,60 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
   async function handleUseCurrentLocation() {
     setLoadingLocation(true);
     try {
-      const position = await getCurrentPositionAsync({});
+      // Solicita permissão de localização
+      const { granted } = await requestForegroundPermissionsAsync();
+      
+      if (!granted) {
+        Toast.show({
+          type: 'error',
+          text1: 'Permissão negada',
+          text2: 'É necessário permitir o acesso à localização para usar esta funcionalidade.',
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
+        setLoadingLocation(false);
+        return;
+      }
+
+      const position = await getCurrentPositionAsync({
+        accuracy: 6, // LocationAccuracy.Balanced
+      });
+      
       const { latitude, longitude } = position.coords;
       const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`);
       const endereco = response.data.results[0]?.formatted_address || 'Localização atual';
-      setOrigem(limparEndereco(endereco));
-      setOrigemSelecionada({ endereco, lat: latitude, lng: longitude, titulo: 'Localização atual' });
+      const enderecoLimpo = limparEndereco(endereco);
+      
+      setOrigem(enderecoLimpo);
+      setOrigemSelecionada({ 
+        endereco: enderecoLimpo, 
+        lat: latitude, 
+        lng: longitude, 
+        description: enderecoLimpo,
+        titulo: 'Localização atual' 
+      });
+      
+      // Fecha o teclado e limpa sugestões
+      Keyboard.dismiss();
+      setSugestoesOrigem([]);
+      setFocusedInput(null);
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Localização obtida',
+        text2: 'Sua localização atual foi definida como origem.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
     } catch (error) {
-      alert('Não foi possível obter sua localização.');
+      console.error('Erro ao obter localização:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível obter sua localização. Verifique as permissões do app.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
     }
     setLoadingLocation(false);
   }
@@ -234,6 +297,7 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
         <View style={styles.inputRow}>
           <Ionicons name="book-outline" size={22} color="#888" style={styles.inputIcon} />
           <TextInput
+            ref={origemInputRef}
             style={styles.input}
             placeholder="Local atual..."
             placeholderTextColor="#999"
@@ -241,6 +305,17 @@ export default function GooglePlaces({userLocation, destinoInicial, onConfirm })
             onChangeText={setOrigem}
             onFocus={() => setFocusedInput('origem')}
           />
+          <TouchableOpacity 
+            onPress={handleUseCurrentLocation}
+            disabled={loadingLocation}
+            style={styles.locationButton}
+          >
+            {loadingLocation ? (
+              <ActivityIndicator size="small" color="#1F284E" />
+            ) : (
+              <Ionicons name="locate-outline" size={22} color="#1F284E" />
+            )}
+          </TouchableOpacity>
         </View>
         <View style={{ height: 16 }} />
         <View style={styles.inputRow}>
@@ -344,6 +419,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     paddingRight: 15,
+  },
+  locationButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   quickActionsContainer: {
     flexDirection: 'row',

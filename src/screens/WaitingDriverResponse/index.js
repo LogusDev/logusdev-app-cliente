@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { Video } from 'expo-av';
+import Toast from 'react-native-toast-message';
 import styles from './styles';
 import IconOrigem from '../../components/IconOrigem';
 import { getCallStatus } from '../../services/calls';
@@ -13,9 +14,8 @@ import SearchingVideo from '../../assets/images/searching.mp4';
 export default function WaitingDriverResponse({ route, navigation }) {
   const { origem, destino, actualVehicle, callId, guincheiroInfo, selectedDriverId } = route.params;
   const [videoReady, setVideoReady] = useState(false);
-  const [status, setStatus] = useState('aguardando'); // aguardando, aceito, recusado
+  const [status, setStatus] = useState('aguardando'); 
 
-  // Polling do status do chamado
   useEffect(() => {
     let cancelled = false;
     let delayMs = 2000;
@@ -38,18 +38,15 @@ export default function WaitingDriverResponse({ route, navigation }) {
         console.log(`[WaitingDriverResponse] Status atual do chamado ${callId}:`, res?.status_chamado);
         console.log(`[WaitingDriverResponse] Guincheiro ID:`, res?.guincheiro_id);
         
-        // Se o status mudou para "em andamento", o guincheiro aceitou
         if (res?.status_chamado === 'em andamento' && res?.guincheiro_id === selectedDriverId) {
           cancelled = true;
           if (timer) clearTimeout(timer);
           
           console.log("✅ Guincheiro aceitou o chamado!");
           
-          // Buscar dados completos do guincheiro
           const driverData = await driverSearch(callId);
           const guincheiro = driverData?.guincheiro || guincheiroInfo;
           
-          // Navegar para a tela de progresso
           navigation.replace('CallProgress', {
             origem,
             destino,
@@ -60,34 +57,38 @@ export default function WaitingDriverResponse({ route, navigation }) {
           return;
         }
         
-        // Se o guincheiro_id voltou para null, o guincheiro recusou
         if (res?.guincheiro_id === null || res?.guincheiro_id !== selectedDriverId) {
           cancelled = true;
           if (timer) clearTimeout(timer);
           
           console.log("❌ Guincheiro recusou o chamado");
-          Alert.alert(
-            'Guincheiro recusou',
-            'O guincheiro escolhido recusou o chamado. Você pode escolher outro guincheiro.',
-            [
-              {
-                text: 'Escolher outro',
-                onPress: () => {
-                  // Voltar para a tela de seleção de guincheiros
-                  navigation.replace('SelectDriver', {
-                    origem,
-                    destino,
-                    actualVehicle,
-                    callId
-                  });
-                }
-              }
-            ]
-          );
+          Toast.show({
+            type: 'error',
+            text1: 'Guincheiro recusou',
+            text2: 'O guincheiro escolhido recusou o chamado. Você pode escolher outro guincheiro.',
+            position: 'bottom',
+            visibilityTime: 3000,
+            onPress: () => {
+              navigation.replace('SelectDriver', {
+                origem,
+                destino,
+                actualVehicle,
+                callId
+              });
+            }
+          });
+          // Navega automaticamente após um delay
+          setTimeout(() => {
+            navigation.replace('SelectDriver', {
+              origem,
+              destino,
+              actualVehicle,
+              callId
+            });
+          }, 3000);
           return;
         }
         
-        // Se ainda está aguardando, continua o polling
         delayMs = Math.min(10000, Math.round(delayMs * 1.5));
       } catch (e) {
         console.error("[WaitingDriverResponse] Erro ao verificar status:", e);
@@ -107,7 +108,6 @@ export default function WaitingDriverResponse({ route, navigation }) {
   }, [callId, navigation, origem, destino, actualVehicle, selectedDriverId]);
 
   const onMapReady = () => {
-    // Mapa já está configurado
   };
 
   return (

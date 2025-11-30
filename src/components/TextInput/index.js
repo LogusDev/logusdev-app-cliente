@@ -3,7 +3,7 @@ import {View,Text,TextInput} from "react-native";
 import {Ionicons} from '@expo/vector-icons';
 
 
-export default function TextInputComponent({label,placeholder,value,onChangeText,secureTextEntry,name,keyboardType,readOnly,size,style}){
+export default function TextInputComponent({label,placeholder,value,onChangeText,secureTextEntry,name,keyboardType,readOnly,size,style,maxLength,autoCapitalize}){
     return(
         <View style={styles.container}>
             <Ionicons style={{marginRight:10}} name={name} size={size || 20} color="#A7A7A7" />
@@ -16,6 +16,8 @@ export default function TextInputComponent({label,placeholder,value,onChangeText
                 secureTextEntry={secureTextEntry}
                 keyboardType={keyboardType}
                 readOnly={readOnly}
+                maxLength={maxLength}
+                autoCapitalize={autoCapitalize}
             />
         </View>
     )

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert} from "react-native";
+import { Modal, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import Toast from 'react-native-toast-message';
 import Button from "../../components/Button";
 import PickerSelect from "../../components/PickerSelect";
 import axios from "axios";
@@ -91,7 +92,13 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
 
   const handleSave = async () => {
     if (!marcaSelecionada || !modeloSelecionado || !anoSelecionado || !categoriaSelecionada || !placaSelecionada || !corSelecionada) {
-      Alert.alert("Atenção", "Por favor, preencha todos os campos.");
+      Toast.show({
+        type: 'error',
+        text1: 'Atenção',
+        text2: 'Por favor, preencha todos os campos.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       return;
     }
 
@@ -113,7 +120,13 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
       if (onSave) onSave(savedVehicle);
       onClose();
     } catch (error) {
-      Alert.alert("Erro", "Não foi possível adicionar o veículo.");
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível adicionar o veículo.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       console.log("Erro ao adicionar veículo:", error);
     }
   };
@@ -126,6 +139,12 @@ export default function VehicleAddModal({ visible, onClose, vehicle, onSave }) {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={onClose}
+            >
+              <Icon name="close" size={28} color="#666" />
+            </TouchableOpacity>
             <Text style={styles.title}>{vehicle ? "Editar Veículo" : "Adicionar novo Veículo"}</Text>
 
             {/* Marcas */}

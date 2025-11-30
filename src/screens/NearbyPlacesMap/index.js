@@ -124,7 +124,7 @@ export default function NearbyPlacesMap({ route }) {
         >
           <Image
             source={getIcon(tipo)}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 35, height: 35 }}
             resizeMode="contain"
           />
         </Marker>

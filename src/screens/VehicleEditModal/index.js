@@ -8,8 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
 } from "react-native";
+import Toast from 'react-native-toast-message';
 import Button from "../../components/Button";
 import PickerSelect from "../../components/PickerSelect";
 import axios from "axios";
@@ -113,7 +113,13 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
 
   const handleSave = async () => {
     if(!marcaSelecionada || !modeloSelecionado || !anoSelecionado || !categoriaSelecionada || !placaSelecionada || !corSelecionada) {
-      Alert.alert("Atenção", "Preencha todos os campos.");
+      Toast.show({
+        type: 'error',
+        text1: 'Atenção',
+        text2: 'Preencha todos os campos.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       return;
     }
 
@@ -140,7 +146,13 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
     });
       onClose();
     } catch(err) {
-      Alert.alert("Erro", "Não foi possível atualizar o veículo.");
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível atualizar o veículo.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       console.log("Erro ao atualizar veículo:", err);
     }
   };
@@ -150,6 +162,12 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
       <KeyboardAvoidingView behavior={Platform.OS==="ios"?"padding":"height"} style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={onClose}
+            >
+              <Icon name="close" size={28} color="#666" />
+            </TouchableOpacity>
             <Text style={styles.title}>Editar Veículo</Text>
 
             {/* Marcas */}

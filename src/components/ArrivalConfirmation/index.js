@@ -6,6 +6,7 @@ import Button from '../Button';
 export default function ArrivalConfirmation({
     visible,
     onConfirm,
+    onClose,
     guincheiroInfo,
     endereco,
     isEnderecoInicial,
@@ -13,12 +14,18 @@ export default function ArrivalConfirmation({
     clienteConfirmou,
     guincheiroConfirmou,
 }) {
+    // Não renderiza o modal se não estiver visível para economizar memória
+    if (!visible) {
+        return null;
+    }
+
     return (
         <Modal
             visible={visible}
             transparent={true}
             animationType="slide"
             onRequestClose={() => {}}
+            hardwareAccelerated={true}
         >
             <View style={styles.overlay}>
                 <View style={styles.container}>
@@ -133,6 +140,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 40,
         maxHeight: '80%',
+        overflow: 'hidden',
     },
     content: {
         paddingHorizontal: 20,
@@ -157,6 +165,8 @@ const styles = StyleSheet.create({
         marginRight: 12,
         borderColor: '#A5A5A5',
         borderWidth: 2,
+        backgroundColor: '#f0f0f0',
+        overflow: 'hidden',
     },
     guincheiroName: {
         fontSize: 18,
@@ -227,6 +237,13 @@ const styles = StyleSheet.create({
     },
     confirmButtonDisabled: {
         opacity: 0.6,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 15,
+        right: 20,
+        zIndex: 10,
+        padding: 5,
     },
 });
 

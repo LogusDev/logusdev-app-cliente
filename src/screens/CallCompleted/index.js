@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react'; // 1. Importar useEffect
-import { View, Text, Image, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react'; 
+import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import Button from '../../components/Button';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,9 +19,7 @@ export default function CallCompleted({ route, navigation }) {
 
     const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
-    // Mostra o modal automaticamente quando a tela é aberta
     useEffect(() => {
-        // Pequeno delay para garantir que a tela está renderizada
         const timer = setTimeout(() => {
             setRatingModalVisible(true);
         }, 500);
@@ -29,7 +27,6 @@ export default function CallCompleted({ route, navigation }) {
     }, []);
 
     const handleFinalizar = () => {
-        // Navega para a Home
         navigation.reset({
             index: 0,
             routes: [{ name: 'MainHome' }],
@@ -50,12 +47,9 @@ export default function CallCompleted({ route, navigation }) {
                 animated: true
             });
         }
-    }, [mapRef.current, origem, destino]); // Dependências: re-executa se algo mudar
+            }, [mapRef.current, origem, destino]); 
 
 
-    // --- 3. ADICIONADO (Fallback) ---
-    // Define uma região inicial (ex: centro do Brasil)
-    // para o mapa não ficar em (0, 0) enquanto os dados carregam.
     const initialRegion = {
         latitude: -14.2350,
         longitude: -51.9253,
@@ -69,13 +63,9 @@ export default function CallCompleted({ route, navigation }) {
                 provider="google"
                 ref={mapRef} 
                 style={styles.map}
-                // --- 4. ALTERADO ---
-                // Removemos o onMapReady e usamos o initialRegion
-                // O useEffect acima vai cuidar do foco quando os dados chegarem.
+
                 initialRegion={initialRegion} 
             >
-                {/* --- 5. ALTERADO (VALIDAÇÃO) --- */}
-                {/* Só renderiza os marcadores se tiver dados */}
                 {origem?.lat && (
                     <Marker coordinate={{ latitude: origem.lat, longitude: origem.lng }} title="Ponto de partida">
                         <IconOrigem width={35} height={35} />
@@ -88,8 +78,6 @@ export default function CallCompleted({ route, navigation }) {
                     </Marker>
                 )}
 
-                {/* --- 6. ALTERADO (VALIDAÇÃO) --- */}
-                {/* Só renderiza a rota se tiver dados */}
                 {(origem?.lat && destino?.lat) && (
                     <MapViewDirections
                         origin={{ latitude: origem.lat, longitude: origem.lng }}
@@ -105,7 +93,6 @@ export default function CallCompleted({ route, navigation }) {
             </MapView>
 
             <View style={styles.infoContainer}>
-                {/* ... (Restante do seu componente sem alterações) ... */}
                 <Text style={styles.sectionTitle}>Chamado Concluído</Text>
                 
                 <View style={styles.guincheiroContainer}>

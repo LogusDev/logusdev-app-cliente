@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Toast from 'react-native-toast-message';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Button'; 
@@ -152,17 +153,6 @@ export default function PaymentConfirmation({ route, navigation }) {
           <Text style={styles.paymentOptionText}>Cartão</Text>
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Valor aproximado:</Text>
-
-        {preco === null ? (
-          <ActivityIndicator color="#FFA500" />
-        ) : (
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: "#1B5E20" }}>
-            R$ {preco.toFixed(2)}
-          </Text>
-        )}
-
-
         {/* Botão Buscar */}
         <Button
           text="Buscar"
@@ -181,7 +171,13 @@ export default function PaymentConfirmation({ route, navigation }) {
               const novo = await createCall(payload);
               navigation.navigate('SelectDriver', { origem, destino, actualVehicle, callId: novo.id });
             } catch (e) {
-              alert('Não foi possível criar o chamado. Tente novamente.');
+              Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Não foi possível criar o chamado. Tente novamente.',
+                position: 'bottom',
+                visibilityTime: 2000,
+              });
             }
           }}
         />

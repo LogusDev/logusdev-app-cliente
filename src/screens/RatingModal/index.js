@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 import StarRating from "react-native-star-rating-widget";
 import Button from "../../components/Button/index"; 
 import styles from './style';
@@ -27,10 +29,16 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
     }, [visible]);
 
     const handleRating = async () => {
-        if (isLoading || hasRated) return; // Previne múltiplas submissões
+        if (isLoading || hasRated) return; 
         
         if (rating === 0) {
-            alert("Por favor, selecione uma nota de 1 a 5 estrelas.");
+            Toast.show({
+                type: 'error',
+                text1: 'Atenção',
+                text2: 'Por favor, selecione uma nota de 1 a 5 estrelas.',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
         
@@ -39,14 +47,19 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
             await ratingCall({ nota: rating, comentario, chamado_id: finalCallId });
             setHasRated(true);
             
-            // Apenas fecha o modal - a navegação será feita pelo botão Finalizar
             if (onClose) {
                 onClose();
             }
         } catch (error) {
             console.error("Erro ao enviar avaliação:", error);
             const errorMessage = error?.response?.data?.error || error?.message || "Não foi possível enviar sua avaliação. Tente novamente.";
-            alert(errorMessage);
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: errorMessage,
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -79,6 +92,12 @@ export default function RatingModal({ visible, onClose, guincheiro, vehicle, cal
                     {!isLoading && <TouchableOpacity style={StyleSheet.absoluteFill} onPress={handleClose} />}
 
                     <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+                        <TouchableOpacity 
+                            style={styles.closeButton}
+                            onPress={handleClose}
+                        >
+                            <Ionicons name="close" size={28} color="#666" />
+                        </TouchableOpacity>
                         <Text style={styles.title}>Avaliação</Text>
                         
                         <View style={styles.guincheiroContainer}>

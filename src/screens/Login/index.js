@@ -46,12 +46,24 @@ export default function Login(){
         }
 
         if (!email.includes('@') || !email.includes('.')) {
-            alert('E-mail inválido!');
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'E-mail inválido!',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
     
         if (password.length < 6) {
-            alert('A senha deve ter pelo menos 6 caracteres');
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'A senha deve ter pelo menos 6 caracteres',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
         if (isLoading) return;
@@ -97,8 +109,13 @@ export default function Login(){
              secureTextEntry={true}
              name={"lock-closed-outline"}
             />
-            <TouchableOpacity onPress={() => {navigation.navigate("Register")}}>
-                <Text style={{color:"#929292",fontSize:13}}>Não tem uma conta? <Text style={{color:'#1F284E', fontWeight:'bold',fontFamily:'Poppins-Regular'}}>Crie uma</Text></Text>
+            <TouchableOpacity onPress={() => {navigation.navigate("Register")}} style={{flexWrap: 'wrap', maxWidth: '100%'}}>
+                <Text style={{color:"#929292",fontSize:12, flexWrap: 'wrap', flexShrink: 1}}>
+                    Não tem uma conta?{' '}
+                    <Text style={{color:'#1F284E', fontWeight:'bold',fontFamily:'Poppins-Regular'}}>
+                        Crie uma conta
+                    </Text>
+                </Text>
             </TouchableOpacity>
             <Button text={isLoading ? <ActivityIndicator color="#fff" /> : 'Entrar'} onPress={handleLogin}/>
         </KeyboardAvoidingView>

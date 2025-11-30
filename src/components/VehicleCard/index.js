@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     elevation: 4,
     position: "relative",
+    overflow: "hidden",
   },
 
   editButton: {
@@ -113,13 +114,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderWidth: 1,
-    borderRadius: 100,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
+    overflow: "hidden",
   },
 
   textContainer: {

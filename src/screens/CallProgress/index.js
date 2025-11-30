@@ -35,7 +35,7 @@ export default function CallProgress({ route, navigation }) {
     const GOOGLE_MAPS_APIKEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
     const calcularDistancia = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // Raio da Terra em km
+        const R = 6371; 
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
         const a =
@@ -43,7 +43,7 @@ export default function CallProgress({ route, navigation }) {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // Distância em km
+        return R * c; 
     };
 
     console.log('guincheiroInfo', guincheiroInfo?.nome, guincheiroInfo?.foto_url)
@@ -197,12 +197,11 @@ export default function CallProgress({ route, navigation }) {
 
     }, [distance, etapaViagem, showConfirmationModal, aguardandoConfirmacao]);
 
-    // Polling para verificar se o guincheiro finalizou o chamado
     useEffect(() => {
         if (!callId || etapaViagem === 'concluido') return;
 
         let cancelled = false;
-        let delayMs = 3000; // Verifica a cada 3 segundos
+        let delayMs = 3000; 
         const appStateRef = { current: AppState.currentState };
 
         const onAppStateChange = (next) => {
@@ -221,7 +220,6 @@ export default function CallProgress({ route, navigation }) {
                 const res = await getCallStatus(callId);
                 console.log(`[CallProgress Cliente] Status do chamado:`, res?.status_chamado);
                 
-                // Se o status mudou para "concluido", navega para CallCompleted
                 if (res?.status_chamado === 'concluido') {
                     cancelled = true;
                     if (timer) clearTimeout(timer);
@@ -331,7 +329,7 @@ export default function CallProgress({ route, navigation }) {
                     title="Guincheiro"
                     anchor={{ x: 0.5, y: 0.5 }}
                 >
-                    <Guincho width={35} height={35} />
+                    <Guincho width={30} height={30} />
                 </Marker>
 
                 {etapaViagem === 'guincheiro_a_caminho' ? (
@@ -340,7 +338,7 @@ export default function CallProgress({ route, navigation }) {
                         title="Você"
                         description={origem.endereco}
                     >
-                        <IconOrigem width={35} height={35} />
+                        <IconOrigem width={30} height={30} />
                     </Marker>
                 ) : (
                     <Marker
@@ -352,22 +350,19 @@ export default function CallProgress({ route, navigation }) {
                     </Marker>
                 )}
                 
-                {/* --- MUDANÇA: USANDO O COMPONENTE DA BIBLIOTECA, IGUAL AO GUINCHEIRO --- */}
                 {origem && destino && guincheiroPos && (
                     <MapViewDirections
                         key={`route-${etapaViagem}-${guincheiroPos.latitude.toFixed(4)}-${guincheiroPos.longitude.toFixed(4)}`}
                         origin={rotaOrigem}
                         destination={rotaDestino}
-                        apikey={GOOGLE_MAPS_APIKEY} // Usando a chave
+                        apikey={GOOGLE_MAPS_APIKEY} 
                         strokeWidth={3}
                         precision='high'
-                        // Cor da rota idêntica à do guincheiro (muda de cor por etapa)
                         strokeColor={etapaViagem === 'guincheiro_a_caminho' ? "#EF8108" : "#3498DB"}
                         mode='driving'
                         onReady={result => {
                             console.log(`[CallProgress Cliente] Rota API - Dist: ${result.distance} km, Dur: ${result.duration} min`);
                             
-                            // Define a distância e duração primariamente pela API
                             if (result.distance && result.distance > 0) {
                                 setDistance(result.distance);
                                 setDuration(result.duration);
@@ -381,7 +376,6 @@ export default function CallProgress({ route, navigation }) {
                             }
                         }}
                         onError={(errorMessage) => {
-                            // Se a API falhar, o cálculo manual no useEffect servirá como fallback
                             console.warn('[CallProgress Cliente] Erro API Directions (fallback p/ manual):', errorMessage);
                         }}
                     />
@@ -408,7 +402,6 @@ export default function CallProgress({ route, navigation }) {
                             Mais de {guincheiroInfo.total_chamados_atendidos} chamados atendidos
                         </Text>
                         
-                        {/* INFORMAÇÕES DO VEÍCULO DENTRO DO MESMO CONTAINER */}
                         <View style={styles.vehicleInfoInline}>
                             <View style={styles.vehicleTextContainer}>
                                 <Text style={styles.vehicleModel}>
@@ -427,7 +420,6 @@ export default function CallProgress({ route, navigation }) {
 
                 <View style={styles.separatorLine} />
 
-                {/* TEMPO ESTIMADO */}
                 {!chegada ? (
                     <View style={styles.timeContainer}>
                         <Text style={styles.timeText}>
@@ -465,6 +457,11 @@ export default function CallProgress({ route, navigation }) {
             <ArrivalConfirmation
                 visible={showConfirmationModal}
                 onConfirm={handleConfirmArrival}
+                onClose={() => {
+                    if (!aguardandoConfirmacao) {
+                        setShowConfirmationModal(false);
+                    }
+                }}
                 guincheiroInfo={guincheiroInfo}
                 endereco={isEnderecoInicial ? origem : destino}
                 isEnderecoInicial={isEnderecoInicial}

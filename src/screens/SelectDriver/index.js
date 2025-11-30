@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 import styles from './styles';
 import IconOrigem from '../../components/IconOrigem';
 import { getAvailableDrivers, chooseDriver } from '../../services/calls';
@@ -23,7 +24,13 @@ export default function SelectDriver({ route, navigation }) {
       setDrivers(data || []);
     } catch (error) {
       console.error('Erro ao carregar guincheiros:', error);
-      Alert.alert('Erro', 'Não foi possível carregar os guincheiros disponíveis.');
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível carregar os guincheiros disponíveis.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -56,7 +63,13 @@ export default function SelectDriver({ route, navigation }) {
       });
     } catch (error) {
       console.error('Erro ao escolher guincheiro:', error);
-      Alert.alert('Erro', 'Não foi possível escolher este guincheiro. Tente novamente.');
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível escolher este guincheiro. Tente novamente.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
     } finally {
       setSelecting(false);
     }
