@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
 
   badgeText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 8,
     fontStyle: 'italic',
   },
 });

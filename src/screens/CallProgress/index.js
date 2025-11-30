@@ -291,7 +291,7 @@ export default function CallProgress({ route, navigation }) {
     };
 
     const handleChat = () => {
-        navigation.navigate('Chat', { guincheiro, call });
+        navigation.navigate('Chat', { callId, guincheiroInfo });
     };
 
     const handleConfirmArrival = () => {
