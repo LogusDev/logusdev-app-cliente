@@ -115,6 +115,16 @@ export const CallSearch = async (id) => {
     }
 };
 
+export const getMessages = async (callId) => {
+    try {
+        const response = await api.get(`/mensagens/${callId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar mensagens:', error);
+        return [];
+    }
+};
+
 export async function priceCalc(origem, destino) {
   const response = await api.post("/chamados/calcularPreco", {
     latitude_inicial: origem.lat,
