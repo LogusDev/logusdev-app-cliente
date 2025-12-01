@@ -36,12 +36,15 @@ export default StyleSheet.create({
     color: '#666',
     marginTop: 2,
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   messagesContainer: {
     flex: 1,
   },
   messagesContent: {
     padding: 16,
-    paddingBottom: 8,
+    paddingBottom: 16,
   },
   dateSeparator: {
     alignItems: 'center',
@@ -103,13 +106,12 @@ export default StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
-    marginTop: 8,
   },
   emojiButton: {
     padding: 8,
