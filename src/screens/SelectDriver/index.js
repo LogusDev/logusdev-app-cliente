@@ -76,8 +76,14 @@ export default function SelectDriver({ route, navigation }) {
   };
 
   const formatPrice = (price) => {
+    if (typeof price !== 'number' || isNaN(price)) return 'R$ 0,00';
     return `R$ ${price.toFixed(2).replace('.', ',')}`;
   };
+
+  const safeFixed = (value, digits = 1) => {
+    return typeof value === 'number' && !isNaN(value) ? value.toFixed(digits) : '0.0';
+  };
+
 
   return (
     <View style={styles.container}>
@@ -177,7 +183,7 @@ export default function SelectDriver({ route, navigation }) {
                     {driver.guincho?.modelo} - {driver.guincho?.marca}
                   </Text>
                   <Text style={styles.vehicleDetails}>
-                    {driver.guincho?.ano} - {driver.guincho?.comprimento}m x {driver.guincho?.capacidade.toFixed(1)}m
+                    {driver.guincho?.ano} - {driver.guincho?.comprimento ?? 0}m x {safeFixed(driver.guincho?.capacidade)}m
                   </Text>
                 </View>
 
