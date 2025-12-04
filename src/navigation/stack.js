@@ -21,6 +21,9 @@ import CallCompleted from '../screens/CallCompleted';
 import ActivityScreen from '../screens/ActivityScreen';
 import ReceiptScreen from '../screens/ReceiptScreen';
 import CarSelection from '../screens/CarSelection';
+import Help from '../screens/Help';
+import About from '../screens/About';
+import ChangePassword from '../screens/ChangePassword';
 import NearbyPlacesMap from '../screens/NearbyPlacesMap';
 import Chat from '../screens/Chat';
 
@@ -61,6 +64,9 @@ export default function StackNavigator(){
                 <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
                 <Stack.Screen name="ReceiptScreen" component={ReceiptScreen} />
                 <Stack.Screen name='CarSelect' component={CarSelection} />
+                <Stack.Screen name='Help' component={Help} />
+                <Stack.Screen name='About' component={About} />
+                <Stack.Screen name='ChangePassword' component={ChangePassword} />
                 <Stack.Screen name="NearbyPlaces" component={NearbyPlacesMap} />
                 <Stack.Screen name="Chat" component={Chat} />
             </Stack.Navigator>

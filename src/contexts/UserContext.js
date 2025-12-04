@@ -18,8 +18,18 @@ export const UserProvider = ({ children }) => {
   }
   };
 
+  const logout = () => {
+    try {
+      setUser(null);
+      setToken(null);
+      console.log("Logout realizado com sucesso.")
+    } catch (error) {
+      console.log("Erro ao fazer logout: ", error);
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ user, setUser, token, setToken, login }}>
+    <UserContext.Provider value={{ user, setUser, token, setToken, login, logout }}>
       {children}
     </UserContext.Provider>
   );
