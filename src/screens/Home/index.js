@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet, Text, View, TouchableOpacity, Animated } from "react-native"; // Adicionado Animated
+import { StatusBar, StyleSheet, Text, View, TouchableOpacity, Animated, Modal } from "react-native"; // Adicionado Animated
 import React, { useEffect, useState, useRef } from "react"; // Adicionado useRef
 import MapView, { Marker } from 'react-native-maps';
 import { getCurrentPositionAsync, LocationAccuracy, requestForegroundPermissionsAsync, watchPositionAsync } from "expo-location";
@@ -71,9 +71,15 @@ export default function MainHome({ navigation }) {
 
     if (isLoading) {
         return (
-            <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-                <LoadingScreen />
-            </Animated.View>
+            <Modal
+                visible={true}
+                transparent={false}
+                animationType="fade"
+            >
+                <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+                    <LoadingScreen />
+                </Animated.View>
+            </Modal>
         );
     }
 

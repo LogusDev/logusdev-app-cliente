@@ -2,16 +2,14 @@ import { StyleSheet } from "react-native";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function PhotoPicker({ name, onPress }) {
+export default function PhotoPicker({ name, onPress, label = "Foto do Rosto" }) {
     return (
-        <View>
-            <TouchableOpacity onPress={onPress}>
-                <View style={styles.container}>
-                    <Ionicons style={{ marginRight: 10 }} name={name} size={24} color="#A7A7A7" />
-                    <Text style={styles.texto}>Foto do motorista</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+            <View style={styles.container}>
+                <Ionicons name={name || "person-outline"} size={24} color="#A7A7A7" style={styles.icon} />
+                <Text style={styles.texto}>{label}</Text>
+            </View>
+        </TouchableOpacity>
     );
 }
 
@@ -19,18 +17,23 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#FFF",
-        width: 360,
+        backgroundColor: "#FFFFFF",
+        width: 320,
+        alignSelf: 'center',
         height: 61,
-        borderRadius: 8,
-        paddingHorizontal: 15, 
-        marginVertical: 5,
-        borderWidth: 1,
-        borderColor: "#E0E0E0", 
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        marginVertical: 10,
         marginBottom: 15,
+        borderColor: '#E0E0E0',
+        borderWidth: 1,
+    },
+    icon: {
+        marginRight: 12,
     },
     texto: {
         fontSize: 14,
         color: '#A7A7A7',
+        fontWeight: '400',
     }
 });

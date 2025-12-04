@@ -1,59 +1,95 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, Image, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react'; 
+import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import Button from '../../components/Button';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './style';
 import IconOrigem from '../../components/IconOrigem';
-import { updateCall } from '../../services/calls';
 import RatingModal from '../../screens/RatingModal'; 
+import MapViewDirections from 'react-native-maps-directions';
 
 export default function CallCompleted({ route, navigation }) {
-    const { origem, destino, guincheiro, callId, vehicle } = route.params;
+
+    
+    const { origem, destino, guincheiro, callId, vehicle, guincheiroInfo } = route.params;
     const mapRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
     
     const [isRatingModalVisible, setRatingModalVisible] = useState(false);
 
-    const GOOGLE_API_KEY = 'AIzaSyAmfl_CD7XtRiiETKRzh0EfQmtVW59b-Cw';
+    const GOOGLE_API_KEY = 'AIzaSyBkx6mo29bFuoPzoNSLpE97c8EoWptHl1M';
 
-    const handleFinalizar = async () => {
-        if (isLoading) return;
-        setIsLoading(true);
-        try {
-            await updateCall(callId, { status_chamado: 'concluído' });
-            console.log('Chamado finalizado e status atualizado no backend.');
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setRatingModalVisible(true);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleFinalizar = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainHome' }],
+        });
+    };
+
+
+    useEffect(() => {
+        if (mapRef.current && origem?.lat && destino?.lat) {
             
-            setRatingModalVisible(true); 
+            const coordinates = [
+                { latitude: origem.lat, longitude: origem.lng },
+                { latitude: destino.lat, longitude: destino.lng }
+            ];
 
-        } catch (error) {
-            console.error('Erro ao finalizar o chamado:', error);
-            Alert.alert('Erro', 'Não foi possível finalizar o chamado. Tente novamente.');
-        } finally {
-            setIsLoading(false);
+            mapRef.current.fitToCoordinates(coordinates, {
+                edgePadding: { top: 100, right: 50, bottom: 100, left: 50 },
+                animated: true
+            });
         }
+            }, [mapRef.current, origem, destino]); 
+
+
+    const initialRegion = {
+        latitude: -14.2350,
+        longitude: -51.9253,
+        latitudeDelta: 45,
+        longitudeDelta: 45,
     };
 
     return (
         <View style={styles.container}>
             <MapView
                 provider="google"
-                ref={mapRef}
+                ref={mapRef} 
                 style={styles.map}
-                initialRegion={{
-                    latitude: origem.lat,
-                    longitude: origem.lng,
-                    latitudeDelta: 0.05,
-                    longitudeDelta: 0.05,
-                }}
-            >
-                <Marker coordinate={{ latitude: origem.lat, longitude: origem.lng }} title="Ponto de partida">
-                    <IconOrigem width={35} height={35} />
-                </Marker>
 
-                <Marker coordinate={{ latitude: destino.lat, longitude: destino.lng }} title="Destino final">
-                    <Ionicons name="flag" size={30} color="#3498db" />
-                </Marker>
+                initialRegion={initialRegion} 
+            >
+                {origem?.lat && (
+                    <Marker coordinate={{ latitude: origem.lat, longitude: origem.lng }} title="Ponto de partida">
+                        <IconOrigem width={35} height={35} />
+                    </Marker>
+                )}
+
+                {destino?.lat && (
+                    <Marker coordinate={{ latitude: destino.lat, longitude: destino.lng }} title="Destino final">
+                        <Ionicons name="flag" size={30} color="#3498db" />
+                    </Marker>
+                )}
+
+                {(origem?.lat && destino?.lat) && (
+                    <MapViewDirections
+                        origin={{ latitude: origem.lat, longitude: origem.lng }}
+                        destination={{ latitude: destino.lat, longitude: destino.lng }}
+                        apikey={GOOGLE_API_KEY}
+                        strokeWidth={3}
+                        strokeColor="#3498db" 
+                        onError={(errorMessage) => {
+                            console.warn('[CallCompleted] Erro API Directions:', errorMessage);
+                        }}
+                    />
+                )}
             </MapView>
 
             <View style={styles.infoContainer}>
@@ -68,7 +104,7 @@ export default function CallCompleted({ route, navigation }) {
                         <View style={styles.nameRatingRow}>
                             <Text style={styles.guincheiroName}>{guincheiro.name}</Text>
                             <View style={styles.ratingContainer}>
-                                <Text style={styles.ratingText}>{guincheiro.rating?.toFixed(1) || 'N/A'}★</Text>
+                                <Text style={styles.ratingText}>{guincheiroInfo?.media_avaliacoes || 'N/A'}★</Text>
                             </View>
                         </View>
                         <Text style={styles.guincheiroCalls}>
@@ -112,6 +148,8 @@ export default function CallCompleted({ route, navigation }) {
                 vehicle={vehicle}
                 callId={callId}
                 navigation={navigation}
+                guincheiroInfo={guincheiroInfo}
+                route={route}
             />
         </View>
     );

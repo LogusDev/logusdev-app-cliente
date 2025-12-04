@@ -1,82 +1,123 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 import StarRating from "react-native-star-rating-widget";
 import Button from "../../components/Button/index"; 
 import styles from './style';
 import { ratingCall } from '../../services/calls'; 
 
-export default function RatingModal({ visible, onClose, guincheiro, vehicle, callId, navigation }) {
+export default function RatingModal({ visible, onClose, guincheiro, vehicle, callId, navigation, guincheiroInfo, route }) {
+    // Se route.params existir, usa os dados de lá (compatibilidade)
+    const params = route?.params || {};
+    const finalGuincheiro = guincheiro || params.guincheiro;
+    const finalVehicle = vehicle || params.vehicle;
+    const finalCallId = callId || params.callId;
+    const finalGuincheiroInfo = guincheiroInfo || params.guincheiroInfo;
+    
     const [rating, setRating] = useState(0);
     const [comentario, setComentario] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [hasRated, setHasRated] = useState(false);
 
     useEffect(() => {
         if (visible) {
             setRating(0);
             setComentario('');
+            setHasRated(false);
         }
     }, [visible]);
 
     const handleRating = async () => {
+        if (isLoading || hasRated) return; 
+        
         if (rating === 0) {
-            alert("Por favor, selecione uma nota de 1 a 5 estrelas.");
+            Toast.show({
+                type: 'error',
+                text1: 'Atenção',
+                text2: 'Por favor, selecione uma nota de 1 a 5 estrelas.',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
+        
         setIsLoading(true);
         try {
-            await ratingCall({ nota: rating, comentario, chamado_id: callId });
-            onClose(); 
-            navigation.reset({
-                index:0,
-                routes: [{ name: 'MainHome' }],
-            })
+            await ratingCall({ nota: rating, comentario, chamado_id: finalCallId });
+            setHasRated(true);
+            
+            if (onClose) {
+                onClose();
+            }
         } catch (error) {
             console.error("Erro ao enviar avaliação:", error);
-            alert("Não foi possível enviar sua avaliação. Tente novamente.");
+            const errorMessage = error?.response?.data?.error || error?.message || "Não foi possível enviar sua avaliação. Tente novamente.";
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: errorMessage,
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
         } finally {
             setIsLoading(false);
         }
     };
 
-    if (!guincheiro || !vehicle) {
+    console.log('guincheiroInfo', finalGuincheiroInfo?.media_avaliacoes);  
+
+    if (!finalGuincheiro || !finalVehicle) {
         return null;
     }
+
+    const handleClose = () => {
+        if (onClose && typeof onClose === 'function') {
+            onClose();
+        }
+    };
 
     return (
         <Modal
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={onClose}
+            onRequestClose={handleClose}
         >
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.modalOverlay}
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onClose} />
+                    {!isLoading && <TouchableOpacity style={StyleSheet.absoluteFill} onPress={handleClose} />}
 
                     <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+                        <TouchableOpacity 
+                            style={styles.closeButton}
+                            onPress={handleClose}
+                        >
+                            <Ionicons name="close" size={28} color="#666" />
+                        </TouchableOpacity>
                         <Text style={styles.title}>Avaliação</Text>
                         
                         <View style={styles.guincheiroContainer}>
                             <Image
                                 style={styles.guincheiroImage}
-                                source={{ uri: guincheiro.photo }}
+                                source={{ uri: finalGuincheiro.photo }}
                             />
                             <View style={styles.guincheiroInfo}>
                                 <View style={styles.nameRatingRow}>
-                                    <Text style={styles.guincheiroName} numberOfLines={1}>{guincheiro.name}</Text>
-                                    <View style={styles.ratingBadge}>
-                                        <Text style={styles.ratingText}>{guincheiro.rating?.toFixed(1) || 'N/A'} ★</Text>
+                                    <Text style={styles.guincheiroName} numberOfLines={1}>{finalGuincheiro.name}</Text>
+                                    <View style={styles.ratingBadge}>   
+                                        <Text style={styles.ratingText}>{finalGuincheiroInfo?.media_avaliacoes || 'N/A'} ★</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.vehicleModel}>{vehicle.model} - {vehicle.color}</Text>
-                                <Text style={styles.licensePlate}>Placa: {vehicle.licensePlate}</Text>
+                                <Text style={styles.vehicleModel}>{finalVehicle.model} - {finalVehicle.color}</Text>
+                                <Text style={styles.licensePlate}>Placa: {finalVehicle.licensePlate}</Text>
                             </View>
                         </View>
 
-                        <Text style={styles.ratingQuestion}>Avalie o serviço prestado por {guincheiro.name.split(' ')[0]}</Text>
+                        <Text style={styles.ratingQuestion}>Avalie o serviço prestado por {finalGuincheiro.name.split(' ')[0]}</Text>
 
                         <StarRating
                             rating={rating}

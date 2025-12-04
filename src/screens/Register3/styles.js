@@ -20,12 +20,24 @@ const styles = StyleSheet.create({
         fontSize:22,
         fontWeight:"bold",
         color:"#1F284E",
-        padding:24,
+        padding:8,
+        fontFamily:"Poppins-SemiBold",
+        fontWeight:"bold",
     },
     texto2:{
         textAlign:"center",
-        color:"#1F284E",
-    }
+        color:"#929292",
+        fontSize:13,
+        paddingHorizontal:24,
+        paddingBottom:24,
+    },
+    backButton: {
+        position: 'absolute',
+        top: Constants.statusBarHeight + 20,
+        left: 20,
+        zIndex: 10,
+        padding: 8,
+    },
 })
 
 export default styles;

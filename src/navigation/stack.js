@@ -14,6 +14,8 @@ import {UserProvider} from '../contexts/UserContext';
 import CallConfirmation from '../screens/CallConfirmation';
 import PaymentConfirmation from '../screens/PaymentConfirmation';
 import SearchCall from '../screens/SearchCall';
+import SelectDriver from '../screens/SelectDriver';
+import WaitingDriverResponse from '../screens/WaitingDriverResponse';
 import CallProgress from '../screens/CallProgress';
 import CallCompleted from '../screens/CallCompleted';
 import ActivityScreen from '../screens/ActivityScreen';
@@ -22,6 +24,8 @@ import CarSelection from '../screens/CarSelection';
 import Help from '../screens/Help';
 import About from '../screens/About';
 import ChangePassword from '../screens/ChangePassword';
+import NearbyPlacesMap from '../screens/NearbyPlacesMap';
+import Chat from '../screens/Chat';
 
 
 const Stack = createNativeStackNavigator({
@@ -52,6 +56,8 @@ export default function StackNavigator(){
                 <Stack.Screen name="OriginDestiny" component={OriginDestiny} />
                 <Stack.Screen name="CallConfirmation" component={CallConfirmation} />
                 <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmation} />
+                <Stack.Screen name='SelectDriver' component={SelectDriver} />
+                <Stack.Screen name='WaitingDriverResponse' component={WaitingDriverResponse} />
                 <Stack.Screen name='SearchCall' component={SearchCall} />
                 <Stack.Screen name="CallProgress" component={CallProgress} />
                 <Stack.Screen name="CallCompleted" component={CallCompleted} />
@@ -61,6 +67,8 @@ export default function StackNavigator(){
                 <Stack.Screen name='Help' component={Help} />
                 <Stack.Screen name='About' component={About} />
                 <Stack.Screen name='ChangePassword' component={ChangePassword} />
+                <Stack.Screen name="NearbyPlaces" component={NearbyPlacesMap} />
+                <Stack.Screen name="Chat" component={Chat} />
             </Stack.Navigator>
         </NavigationContainer>
         </UserProvider>

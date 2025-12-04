@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Alert, ActivityIndicator, StatusBar, Image, Text } from 'react-native';
+import { View, ActivityIndicator, StatusBar, Image, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import Toast from 'react-native-toast-message';
 import { uploadFotoPorEmail } from '../../services/upload.js';
 import styles from './styles.js';
 import Button from '../../components/Button/index.js';
@@ -10,12 +12,11 @@ import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext.js';
 import { createVehicle } from '../../services/services.js';
 import Logo from '../../components/Logo/index.js';
-import Toast from 'react-native-toast-message';
 
 export default function Register3({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada, categoria,cor } = route.params;
+  const { email, password, name, cpf: unmaskedCpf, phone: unmaskedPhone, cnh_num,anoSelecionado,modeloSelecionado,marcaSelecionada, categoria,cor, placa } = route.params;
 
   const {login} = useContext(UserContext);
 
@@ -46,7 +47,13 @@ export default function Register3({ route, navigation }) {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permissão necessária', 'Precisamos acessar suas fotos para fazer o upload');
+        Toast.show({
+          type: 'error',
+          text1: 'Permissão necessária',
+          text2: 'Precisamos acessar suas fotos para fazer o upload',
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
         return;
       }
 
@@ -62,7 +69,13 @@ export default function Register3({ route, navigation }) {
       }
     } catch (error) {
       console.error('Erro ao selecionar imagem:', error);
-      Alert.alert('Erro', 'Não foi possível selecionar a imagem');
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível selecionar a imagem',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
     }
   };
 
@@ -73,16 +86,88 @@ export default function Register3({ route, navigation }) {
 
 const handleSignIn = async () => {
   if (!selectedImage) {
-    Alert.alert('Selecione uma imagem antes de cadastrar!');
+    Toast.show({
+      type: 'error',
+      text1: 'Atenção',
+      text2: 'Selecione uma imagem antes de cadastrar!',
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
     return;
   }
   setIsLoading(true);
+  
+  let uploadResult = null;
+  let hasUploadError = false;
+  
   try {
-    const uploadResult = await handleUpload(selectedImage);
+    // Primeiro, tenta fazer o upload da foto
+    uploadResult = await handleUpload(selectedImage);
     console.log('Resultado do upload:', uploadResult);
+  } catch (error) {
+    console.error('Erro ao fazer upload da foto:', error);
+    hasUploadError = true;
+    Toast.show({
+      type: 'error',
+      text1: 'Erro no Upload',
+      text2: error?.message || 'Não foi possível enviar a foto. Tente novamente.',
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+    setIsLoading(false);
+    return;
+  }
+  
+  try {
 
-    if (!uploadResult || !uploadResult.success || !uploadResult.data?.fotoUrl) {
-      Alert.alert('Erro no Upload', uploadResult?.data?.message || 'Falha ao enviar a foto. Tente novamente.');
+    // Validação rigorosa do resultado do upload
+    if (!uploadResult) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no Upload',
+        text2: 'Não foi possível realizar o upload da foto. Tente novamente.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (!uploadResult.success) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no Upload',
+        text2: uploadResult?.data?.message || 'Falha ao enviar a foto. Tente novamente.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (!uploadResult.data || !uploadResult.data.fotoUrl) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no Upload',
+        text2: 'Foto não foi enviada corretamente. Por favor, tente novamente.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Só continua com o cadastro se o upload foi bem-sucedido e tem fotoUrl
+    const fotoUrl = uploadResult.data.fotoUrl;
+    
+    if (!fotoUrl || fotoUrl.trim() === '') {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no Upload',
+        text2: 'URL da foto inválida. Por favor, selecione e envie a foto novamente.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       setIsLoading(false);
       return;
     }
@@ -94,17 +179,22 @@ const handleSignIn = async () => {
       email,
       senha: password,
       cnh_num: "ABC12345671",
-      foto_url: uploadResult.data.fotoUrl
+      foto_url: fotoUrl
     };
+    
     const userRes = await registerUser(userData);
     console.log('Usuário cadastrado:', userRes);
+
+    if (!userRes || !userRes.id) {
+      throw new Error('Falha ao cadastrar usuário: resposta inválida');
+    }
 
     const id = userRes.id;
 
     const ano = anoSelecionado.slice(0, -2)
 
     const vehicleData = {
-      placa: "1234567", 
+      placa: placa || "1234567", 
       marca: marcaSelecionada,
       modelo: modeloSelecionado,
       ano_fabricacao: ano,
@@ -120,12 +210,23 @@ const handleSignIn = async () => {
 
     successAlert();
     navigation.navigate('Login', {
-      fotoUrl: uploadResult.data.fotoUrl
+      fotoUrl: fotoUrl
     });
 
   } catch (error) {
     console.error('Erro ao cadastrar', error);
-    errorAlert();
+    // Se o upload falhou ou não foi completado, não deve cadastrar
+    if (!uploadResult || !uploadResult.success || !uploadResult.data?.fotoUrl) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no Upload',
+        text2: 'Não foi possível enviar a foto. O cadastro foi cancelado.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+    } else {
+      errorAlert();
+    }
   } finally {
     setIsLoading(false);
   }
@@ -137,18 +238,20 @@ const handleSignIn = async () => {
           <StatusBar barStyle={'light-content'} />
           <Logo/>
           <Image source={require('../../assets/images/register.png')} />
-          <Text style={styles.texto}>Verificação de documentos</Text>
+          <Text style={styles.texto}>Cadastro da foto de perfil</Text>
           <Text style={styles.texto2}>
-            Envie as imagens solicitadas abaixo para validar sua conta GuinchAqui.
-          </Text>
-          <PhotoPicker onPress={handleSelectImage} name={'albums-outline'} />
+          Envie as imagens solicitadas abaixo para validar sua conta GuinchAqui.          </Text>
+          <PhotoPicker onPress={handleSelectImage} name={'person-outline'} label={'Foto do Rosto'} />
           {selectedImage && (
             <Image
               source={{ uri: selectedImage.uri }}
               style={{ width: 120, height: 120, alignSelf: 'center', marginVertical: 10, borderRadius: 10 }}
             />
           )}
-          <Button text={isLoading ? <ActivityIndicator size="small" color="#ffffff" /> : "Cadastrar"} onPress={handleSignIn} />
+          <View style={{ width: '100%', alignItems: 'center' }}  >
+            <Button text={isLoading ? <ActivityIndicator size="small" color="#ffffff" /> : "Criar sua conta"} onPress={handleSignIn} />
+
+          </View>
     </View>
   );
 }

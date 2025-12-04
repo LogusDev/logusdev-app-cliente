@@ -9,6 +9,7 @@ export default function ActivityScreen({ userId }) {
   const [loading, setLoading] = useState(true);
 
   const { user, token } = useContext(UserContext);
+  
 
   
   useEffect(() => {
@@ -88,7 +89,7 @@ export default function ActivityScreen({ userId }) {
         ))
       )}
 
-      <Text style={styles.footer}>Você entrou no app em: 03/05/2025</Text>
+      <Text style={styles.footer}>Você entrou no app em: {new Date(user.created_at).toLocaleDateString("pt-BR") || "Não disponível"}</Text>
     </ScrollView>
   );
 }

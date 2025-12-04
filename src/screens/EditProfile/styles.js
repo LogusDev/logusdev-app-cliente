@@ -19,11 +19,13 @@ const styles = StyleSheet.create({
     avatar:{
         width: 171,
         height: 180,
-        borderRadius: 100,
+        borderRadius: 85.5,
         marginTop: 40,     
         marginBottom: 40, 
         borderWidth: 3,
         borderColor: '#DADADA',
+        overflow: 'hidden',
+        backgroundColor: '#f0f0f0',
     },
     textInput:{
         textAlignVertical: 'center',

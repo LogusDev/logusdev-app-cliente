@@ -1,7 +1,11 @@
 import StackNavigator from './src/navigation/stack';
 import * as Font from 'expo-font';
 import { useFonts } from 'expo-font';
+import { LogBox } from 'react-native';
 import Toast from 'react-native-toast-message';
+import './src/services/firebase'; // Inicializa o Firebase
+
+LogBox.ignoreAllLogs();
 
 export default function App() {
 

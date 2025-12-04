@@ -8,8 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
 } from "react-native";
+import Toast from 'react-native-toast-message';
 import Button from "../../components/Button";
 import PickerSelect from "../../components/PickerSelect";
 import axios from "axios";
@@ -32,45 +32,64 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
   const [placaSelecionada, setPlacaSelecionada] = useState("");
   const [corSelecionada, setCorSelecionada] = useState("");
 
-  // Inicializa valores do veículo ao abrir modal
-    useEffect(() => {
-    if (vehicle) {
-        setMarcaSelecionada(vehicle.marca_codigo || null);
-        setModeloSelecionado(vehicle.modelo_codigo || null);
-        setAnoSelecionado(vehicle.ano_fabricacao?.toString() || null);
-        setCategoriaSelecionada(vehicle.categoria || null);
-        setPlacaSelecionada(vehicle.placa || "");
-        setCorSelecionada(vehicle.cor || "");
-    }
-    }, [vehicle, visible]);
-
-
-    useEffect(() => {
-    if (vehicle?.marca && marcas.length > 0) {
-        const marcaObj = marcas.find(m => m.label === vehicle.marca);
-        if (marcaObj) {
-        setMarcaSelecionada(marcaObj.value);
-        }
-    }
-    }, [marcas, vehicle]);
-
-
-  // Buscar marcas
+  // Limpa os campos quando o modal fecha
   useEffect(() => {
-    axios.get("https://fipe.parallelum.com.br/api/v2/cars/brands/")
-      .then((response) => {
-        const lista = response.data.map((item) => ({
-          label: item.name,
-          value: item.code,
-        }));
-        setMarcas(lista);
-      })
-      .catch(err => console.log("Erro ao buscar marcas:", err));
-    }, [vehicle]);
+    if (!visible) {
+      setMarcaSelecionada(null);
+      setModeloSelecionado(null);
+      setAnoSelecionado(null);
+      setCategoriaSelecionada(null);
+      setPlacaSelecionada("");
+      setCorSelecionada("");
+      setModelos([]);
+      setAnos([]);
+    } else if (visible && vehicle) {
+      // Inicializa campos simples
+      setCategoriaSelecionada(vehicle.categoria || null);
+      // Formata a placa se necessário
+      let placaFormatada = vehicle.placa || "";
+      if (placaFormatada && !placaFormatada.includes("-")) {
+        placaFormatada = placaFormatada.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+        if (placaFormatada.length > 3) {
+          placaFormatada = placaFormatada.slice(0, 3) + "-" + placaFormatada.slice(3);
+        }
+      }
+      setPlacaSelecionada(placaFormatada);
+      setCorSelecionada(vehicle.cor || "");
+    }
+  }, [visible, vehicle]);
+
+
+  // Buscar marcas e inicializar marca do veículo
+  useEffect(() => {
+    if (visible) {
+      axios.get("https://fipe.parallelum.com.br/api/v2/cars/brands/")
+        .then((response) => {
+          const lista = response.data.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }));
+          setMarcas(lista);
+          
+          // Encontra e seta a marca do veículo após carregar as marcas
+          if (vehicle?.marca && lista.length > 0) {
+            const marcaObj = lista.find(m => m.label === vehicle.marca);
+            if (marcaObj) {
+              setMarcaSelecionada(marcaObj.value);
+            }
+          }
+        })
+        .catch(err => console.log("Erro ao buscar marcas:", err));
+    }
+  }, [visible, vehicle]);
 
   // Buscar modelos quando marca muda
   useEffect(() => {
-    if(!marcaSelecionada) return;
+    if(!marcaSelecionada) {
+      setModelos([]);
+      setModeloSelecionado(null);
+      return;
+    }
 
     console.log(`Buscando modelos da ${marcaSelecionada}`)
 
@@ -82,17 +101,24 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
         }));
         setModelos(lista);
 
-        if(vehicle) {
+        // Encontra e seta o modelo do veículo após carregar os modelos
+        if(vehicle?.modelo && lista.length > 0) {
           const modeloObj = lista.find(m => m.label === vehicle.modelo);
-          if(modeloObj) setModeloSelecionado(modeloObj.value);
+          if(modeloObj) {
+            setModeloSelecionado(modeloObj.value);
+          }
         }
       })
       .catch(err => console.log("Erro ao buscar modelos:", err));
-  }, [marcaSelecionada]);
+  }, [marcaSelecionada, vehicle]);
 
   // Buscar anos quando modelo muda
   useEffect(() => {
-    if(!marcaSelecionada || !modeloSelecionado) return;
+    if(!marcaSelecionada || !modeloSelecionado) {
+      setAnos([]);
+      setAnoSelecionado(null);
+      return;
+    }
 
     console.log(`Buscando o ano com: ${marcaSelecionada}, ${modeloSelecionado}`)
     axios.get(`https://fipe.parallelum.com.br/api/v2/cars/brands/${marcaSelecionada}/models/${modeloSelecionado}/years`)
@@ -103,17 +129,27 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
         }));
         setAnos(lista);
 
-        if(vehicle) {
-          const anoObj = lista.find(a => a.label.startsWith(vehicle.ano_fabricacao?.toString()));
-          if(anoObj) setAnoSelecionado(anoObj.value);
+        // Encontra e seta o ano do veículo após carregar os anos
+        if(vehicle?.ano_fabricacao && lista.length > 0) {
+          const anoFabricacao = vehicle.ano_fabricacao.toString();
+          const anoObj = lista.find(a => a.label.startsWith(anoFabricacao));
+          if(anoObj) {
+            setAnoSelecionado(anoObj.value);
+          }
         }
       })
       .catch(err => console.log("Erro ao buscar anos:", err));
-  }, [marcaSelecionada, modeloSelecionado]);
+  }, [marcaSelecionada, modeloSelecionado, vehicle]);
 
   const handleSave = async () => {
     if(!marcaSelecionada || !modeloSelecionado || !anoSelecionado || !categoriaSelecionada || !placaSelecionada || !corSelecionada) {
-      Alert.alert("Atenção", "Preencha todos os campos.");
+      Toast.show({
+        type: 'error',
+        text1: 'Atenção',
+        text2: 'Preencha todos os campos.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       return;
     }
 
@@ -140,7 +176,13 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
     });
       onClose();
     } catch(err) {
-      Alert.alert("Erro", "Não foi possível atualizar o veículo.");
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Não foi possível atualizar o veículo.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
       console.log("Erro ao atualizar veículo:", err);
     }
   };
@@ -150,6 +192,12 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
       <KeyboardAvoidingView behavior={Platform.OS==="ios"?"padding":"height"} style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={onClose}
+            >
+              <Icon name="close" size={28} color="#666" />
+            </TouchableOpacity>
             <Text style={styles.title}>Editar Veículo</Text>
 
             {/* Marcas */}
@@ -160,6 +208,7 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
                 value={marcaSelecionada}
                 onValueChange={setMarcaSelecionada}
                 style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"key-outline"}
                 useNativeAndroidPickerStyle={false}
               />
             </View>
@@ -172,6 +221,7 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
                 value={modeloSelecionado}
                 onValueChange={setModeloSelecionado}
                 style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"car-outline"}
                 useNativeAndroidPickerStyle={false}
               />
             </View>
@@ -184,6 +234,7 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
                 value={anoSelecionado}
                 onValueChange={setAnoSelecionado}
                 style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"calendar-outline"}
                 useNativeAndroidPickerStyle={false}
               />
             </View>
@@ -206,6 +257,7 @@ export default function VehicleEditModal({ visible, onClose, vehicle, onSave }) 
                 value={categoriaSelecionada}
                 onValueChange={setCategoriaSelecionada}
                 style={{ inputIOS: styles.textInput, inputAndroid: styles.textInput }}
+                name={"car-sport-outline"}
                 useNativeAndroidPickerStyle={false}
               />
             </View>

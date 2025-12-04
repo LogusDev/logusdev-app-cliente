@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
 import styles from './styles';
 import TextInput from '../../components/TextInput';
 import Button from '../../components/Button/index.js';
@@ -35,12 +36,24 @@ export default function EditProfile() {
         const id = user.id
 
         if(!telefone || !email){
-            Alert.alert('Erro','Credenciais Invalidas, preencha os campos')
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Credenciais inválidas, preencha os campos',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return
         }
 
         if (!email.includes('@') || !email.includes('.')) {
-            alert('E-mail inválido!');
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'E-mail inválido!',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
 
@@ -50,10 +63,22 @@ export default function EditProfile() {
                 email
             }
             await updateUser(id,userData)
-            alert('Credenciais Atualizadas com sucesso')
+            Toast.show({
+                type: 'success',
+                text1: 'Sucesso',
+                text2: 'Credenciais atualizadas com sucesso',
+                position: 'top',
+                visibilityTime: 2000,
+            });
         } catch (error){
             console.error('Erro ao atualizar', error);
-            Alert.alert('Erro', error.message || 'Erro ao atualizar');
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: error.message || 'Erro ao atualizar',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
         }
     }
 

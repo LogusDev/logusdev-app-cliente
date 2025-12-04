@@ -1,6 +1,8 @@
-import {View,Text,Image, StatusBar} from 'react-native';
+import {View,Text,Image, StatusBar, TouchableOpacity} from 'react-native';
 import {useState} from 'react';
+import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
+import {Ionicons} from '@expo/vector-icons';
 import styles from './styles.js';
 import TextInputComponent from '../../components/TextInput/index.js';
 import Button from '../../components/Button/index.js';
@@ -31,7 +33,13 @@ export default function Register1({route}){
     const handleSignIn = async () => {
 
         if (!name || !cpf || !phone) {
-            alert('Preencha todos os campos!');
+            Toast.show({
+                type: 'error',
+                text1: 'Atenção',
+                text2: 'Preencha todos os campos!',
+                position: 'bottom',
+                visibilityTime: 2000,
+            });
             return;
         }
 
